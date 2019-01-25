@@ -1,68 +1,116 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Boilerplate
 
-## Available Scripts
+This is a boilerplate project for:
 
-In the project directory, you can run:
+* React/Redux/React-router
+* Node/graphql-yoga
+* Prisma/Graphql/Postgres
 
-### `npm start`
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## Project structure
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+* Node server lives in the root folder with all its files living in /src
+  * schema.graphql holds the datamodel for the Node server, which are the queries/mutations/subscriptions available to the client
+  * Running `npm run get-schema` in root folder gets the Prisma graphql schema (generated Prisma schema from datamodel.graphql) as specified by /.graphqlconfig (it tells us where the source Prisma schema lives and where the generated schema should be saved) and make the entire Prisma schema available to our Node server via prisma-binding (i.e. `prisma.query`)
+* Prisma server lives in /prisma
+  * datamodel.graphql holds the datamodel for the Prisma server
+  * Running `prisma deploy` in /prisma generates the full graphql schema (i.e. CRUD for all types) based on /prisma/datamodel.graphql and deploys to the Prisma server
+* Client lives in /client folder - set up by running `npx react-create-app client` in the root folder
+* /config has all the ENV variables - dev & test should have same values except for PRISMA_ENDPOINT
+* Ports
+  * Client: 3000
+  * Node server: 4000 (should see graphql playground)
+  * Prisma server: 4466 (should see graphql playground - it's directly connected to DB)
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Get started
 
-### `npm run build`
+1. Follow the setup instructions below before proceeding!
+2. To deploy and run dev: 
+  1. Prisma: `npm run deploy:prisma:dev`
+  2. First make sure docker is running in /prisma: `cd prisma && docker-compose up -d`
+  3. Go back to the root folder and then run `npm run dev`
+3. To deploy test:
+  1. Prisma: `npm run deploy:prisma:test`
+5. To deploy to production:
+  1. Node: 
+    1. Make sure all ENV variables are set in Heroku
+    2. Push everything to the staging server in git (make sure Heroku pipeline is set up):
+      1. `git commit -am "deploy"`
+      2. `git push`
+      3. Lastly, promote it to prod if staging looks good
+  2. Prisma: `npm run deploy:prisma:prod`
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## 1) Prisma Dev Server Setup Instructions
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Clone the repository and create a new git repo.
+2. Run `yarn install` and then run `yarn upgrade`.
+3. Create /config and create dev.env, test.env, and prod.env
+  * dev.env example: 
+    ```
+    PRISMA_ENDPOINT=http://localhost:4466/default/dev
+    PRISMA_SECRET=fijoasd89i3jrkek
+    JWT_SECRET=df9j28ifjs78ryoh
+    ```
+  * test.env example: 
+    ```
+    PRISMA_ENDPOINT=http://localhost:4466/default/test
+    PRISMA_SECRET=fijoasd89i3jrkek
+    JWT_SECRET=df9j28ifjs78ryoh
+    ```
+  * prod.env example: 
+    ```
+    PRISMA_ENDPOINT=[to be entered later once Prisma prod server is deployed]
+    PRISMA_SECRET=23iokfdjs0a9j13
+    JWT_SECRET=90iosfjgaishlok8
+    ```
+  * Note: dev.env and test.env can have same values for PRISMA_SECRET, JWT_SECRET
+4. Setup Heroku server for "X-prisma-dev" and add an add-on called "Heroku Postgres".
+5. Download and open pgAdmin and create a new server for "X-prisma-dev". Fill out the server details from Heroku Postgres settings.
+6. Download and run Docker app.
+7. Run `npm i prisma -g` if Prisma doesn't exist globally already.
+8. Inside the root folder, run: `prisma init prisma`.
+  1. Select "Use existing database"
+  2. Postgres
+  3. No (empty db)
+  4. Fill out the connection info from Heroku Postgres (use SSL)
+  5. pick "Don’t generate" for language selection for prisma client
+9. Add `secret: ${env:PRISMA_SECRET}` to prisma.yml and update "endpoint" to `${env:PRISMA_ENDPOINT}`.
+10. Add `ssl: true` below `user` in docker-compose.yml.
+11. Follow the next steps as prompted with one exception (step 3):
+  1. `cd prisma`
+  2. `docker-compose up -d` (run the Prisma service locally)
+  3. `prisma deploy -e ../config/dev.env` (deploy the code to the Docker Prisma service)
+12. Check localhost:4466 (default port) to see if it's graphql playground is working properly. (if localhost doesn't work, try 127.0.0.1 after changing the endpoint in prisma.yml)
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## 2) Production Database & Prisma Docker Container (DB & Prisma Server) Setup Instructions
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+1. Sign up for Prisma Cloud.
+2. Create servers (DB and Prisma Server) via Heroku by following the instructions.
+3. Create a service so we can deploy the datamodel to the server created above. 
+  1. Run `cd prisma` and then `prisma login`. Then click "Grant Permission".
+  2. Run `prisma deploy -e ../config/prod.env`
+  3. Move the "endpoint" filled out in prisma.yml to PRISMA_ENDPOINT in /config/prod.env and uncomment "endpoint" in prisma.yml.
+  4. Run `prisma deploy -e ../config/prod.env` again to check if all went well (you should see "Service is already up to date.").
+  5. Check Prisma Cloud to see if the Service has been created.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## 3) Node application Hosting Setup Instructions
 
-## Learn More
+1. Run `npm i heroku -g` if it doesn't already exist.
+2. Run `heroku login`.
+3. Create both staging and production server in Heroku.
+3. Set up a pipeline in Heroku and connect the staging server to git repo for the project.
+4. Push to git to deploy to staging server and then promote it to prod server.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 4) (Optional) Identity Provider Auth Setup Instructions
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+* Google:
+  1. Add ENV variables for GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in /config/dev.env
 
-### Code Splitting
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+## 5) (Optional) Update create-react-app
 
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+* Create-react-app is not ejected, so feel free to update it. See this page for the instruction: https://github.com/facebook/create-react-app/blob/master/CHANGELOG.md
