@@ -56,6 +56,6 @@ export const runGoogleStrategy = (passport) => {
       })
     }
 
-    return done(null, newUser)
+    return done(null, user)
   }))
 }
