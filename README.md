@@ -34,7 +34,9 @@ This is a boilerplate project for:
   1. Prisma: `npm run deploy:prisma:test`
 5. To deploy to production:
   1. Node: 
-    1. Make sure all ENV variables are set in Heroku
+    1. Make sure all ENV variables are set in Heroku: 
+      * Add server ENVs: /config/*.env
+      * Add client ENVs: /client/.env.development
     2. Push everything to the staging server in git (make sure Heroku pipeline is set up):
       1. `git commit -am "deploy"`
       2. `git push`

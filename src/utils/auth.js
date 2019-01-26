@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
+import * as R from 'ramda'
 import prisma from '../prisma'
 
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
@@ -33,10 +34,10 @@ export const runGoogleStrategy = (passport) => {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: '/auth/google/callback'
-  }, (accessToken, refreshToken, profile, done) => {
+  }, async (accessToken, refreshToken, profile, done) => {
     const { id, emails } = profile
     const email = emails[0].value
-    let user = await prisma.query.user({
+    let user = await prisma.query.users({
       where: {
         OR: [
           { id },
@@ -45,12 +46,12 @@ export const runGoogleStrategy = (passport) => {
       }
     })
 
-    if (!user) {
+    if (R.isEmpty(user)) {
       // User doesn't exist; create one
       user = await prisma.mutation.createUser({
         data: {
-          id,
-          type: 'google',
+          // id,
+          // type: 'google',
           email,
         }
       })

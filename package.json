@@ -8,14 +8,14 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "server": "env-cmd ./config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
-    "client": "env-cmd ./config/dev.env node npm start --prefix client",
+    "server": "env-cmd config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
+    "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "get-schema": "graphql get-schema -p prisma --dotenv ../config/dev.env",
+    "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
     "deploy:prisma:dev": "cd prisma && prisma deploy -e ../config/dev.env && cd .. && npm run get-schema",
     "deploy:prisma:test": "cd prisma && prisma deploy -e ../config/test.env",
     "deploy:prisma:prod": "cd prisma && prisma deploy -e ../config/prod.env",
-    "test": "env-cmd ./config/test.env jest --watch --runInBand",
+    "test": "env-cmd config/test.env jest --watch --runInBand",
     "heroku-postbuild": "babel src --out-dir dist --copy-files && npm install --prefix client && npm run build --prefix client"
   },
   "jest": {
@@ -33,8 +33,10 @@
     "babel-register": "^6.26.0",
     "bcryptjs": "^2.4.3",
     "concurrently": "^4.1.0",
+    "cors": "^2.8.5",
     "cross-fetch": "^2.2.2",
     "env-cmd": "^8.0.2",
+    "express": "^4.16.4",
     "graphql": "^0.13.2",
     "graphql-cli": "^3.0.5",
     "graphql-yoga": "^1.17.0",
@@ -42,10 +44,15 @@
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
     "prisma-binding": "^2.2.14",
+    "ramda": "^0.26.1",
+    "sse-express": "^1.0.2",
     "subscriptions-transport-ws": "^0.9.15"
   },
   "devDependencies": {
     "jest": "^23.6.0",
     "nodemon": "^1.18.9"
+  },
+  "resolutions": {
+    "graphql": "^0.13.2"
   }
 }

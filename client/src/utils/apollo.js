@@ -6,9 +6,11 @@ import { onError } from 'apollo-link-error'
 import { ApolloLink, Observable } from 'apollo-link'
 import { WebSocketLink } from "apollo-link-ws"
 import { getMainDefinition } from 'apollo-utilities'
+import { PRISMA_HTTP_URL, PRISMA_WS_URL } from './constants'
 
-const httpURL = `${process.env.NODE_ENV === 'production' ? 'https' : 'http'}://${process.env.PRISMA_SERVER_HOST}:${process.env.PORT || 4000}`
-const websocketURL = `${process.env.NODE_ENV === 'production' ? 'wss' : 'ws'}://${process.env.PRISMA_SERVER_HOST}:${process.env.PORT || 4000}`
+console.log('REACT_APP_PRISMA_SERVER_HOST', process.env.REACT_APP_PRISMA_SERVER_HOST)
+const httpURL = PRISMA_HTTP_URL
+const websocketURL = PRISMA_WS_URL
 
 const getClient = (jwt) => {
   // Setup the authorization header for the http client
