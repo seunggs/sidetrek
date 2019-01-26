@@ -5,7 +5,7 @@ const LoginPage = () => {
   return (
     <div>
       <div>I'm LoginPage</div>
-      <div><a href={`${PRISMA_HTTP_URL}/auth/google`}>Login to Google</a></div>
+      <div><a href={`/auth/google`}>Login to Google</a></div>
     </div>
   )
 }
