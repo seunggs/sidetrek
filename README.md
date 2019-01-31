@@ -21,6 +21,26 @@ This is a boilerplate project for:
   * Client: 3000
   * Node server: 4000 (should see graphql playground)
   * Prisma server: 4466 (should see graphql playground - it's directly connected to DB)
+* Authentication & Authorization (Auth0)
+  * Auth strategy:
+    * New login sessions are executed in Auth0 servers (via auth0-js library) and sent back to /callback route (for all strategies - i.e. including Identity Providers).
+    * Renewal of sessions are also checked in Auth0 servers on App load
+  * Ultimately, two places handle authentication logic:
+    1. App.js `checkAuth()`: checks to see if "loggedIn" exists in localStorage and renews the sessions via Auth0.
+      * This handles the cases where user is already logged in from previous visits
+      * Authentication state is saved in Redux store once returned
+    2. /callback route: all Auth0 login is sent back to this route after authenticating and CallBack component handles authentication logic.
+      * This handles the cases where user logs in
+      * Authentication state is saved in Redux store once returned
+  * /utils/auth.js:
+    * `setSession()` sets the auth session for the user by saving `isLoggedIn` in localStorage and setting expiresAt, idToken, and accessToken in Redux store which is used to handle authentication throughout the app
+    * For API calls, `setAuthHeader()` in /client/utils/auth.js sets the token in axios header
+  * Automatic token renewal:
+    * The token expiry is set to 2 hours - but for the convenience of the users, the token will autorenew based on token expiry until logout
+  * API authorization:
+    * Send the access token (jwt when API is setup in Auth0) in Authorization Header in Axios for all calls and backend checks for the validity of the token (using RS246)
+  * User profile:
+    * The single source of truth for user profile info is in our own DB. On Auth0 authentication, all user profile data from Auth0 is copied to our own DB. All user profile updates are done to our own DB and calls should be made to our own DB to retrieve profile related info.
 
 
 ## Get started
@@ -107,11 +127,10 @@ This is a boilerplate project for:
 3. Set up a pipeline in Heroku and connect the staging server to git repo for the project.
 4. Push to git to deploy to staging server and then promote it to prod server.
 
-## 4) (Optional) Identity Provider Auth Setup Instructions
+## 4) Authentication/Authorization Setup
 
-* Google:
-  1. Add ENV variables for GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET in /config/dev.env
-
+1. Add ENV vars for Auth0 in server: /config/*.env -> AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET
+2. Add ENV vars for Auth0 in client: /client/.env.* -> REACT_APP_AUTH0_CLIENT_ID, REACT_APP_AUTH0_CLIENT_SECRET
 
 ## 5) (Optional) Update create-react-app
 

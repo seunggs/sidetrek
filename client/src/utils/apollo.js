@@ -8,17 +8,19 @@ import { WebSocketLink } from "apollo-link-ws"
 import { getMainDefinition } from 'apollo-utilities'
 import { PRISMA_HTTP_URL, PRISMA_WS_URL } from './constants'
 
-console.log('REACT_APP_PRISMA_SERVER_HOST', process.env.REACT_APP_PRISMA_SERVER_HOST)
+// console.log('REACT_APP_PRISMA_SERVER_HOST', process.env.REACT_APP_PRISMA_SERVER_HOST)
 const httpURL = PRISMA_HTTP_URL
 const websocketURL = PRISMA_WS_URL
 
-const getClient = (jwt) => {
+const getClient = (store) => {
   // Setup the authorization header for the http client
   const request = async (operation) => {
-    if (jwt) {
+    const { accessToken } = store.getState().auth
+    // console.log('accessToken in get apollo client requestLink', accessToken)
+    if (accessToken) {
       operation.setContext({
         headers: {
-          Authorization: `Bearer ${jwt}`
+          Authorization: `Bearer ${accessToken}`
         }
       })
     }
@@ -70,9 +72,11 @@ const getClient = (jwt) => {
       options: {
         reconnect: true,
         connectionParams: () => {
-          if (jwt) {
+          const { accessToken } = store.getState().auth
+          // console.log('accessToken in get apollo client wsLink', accessToken)      
+          if (accessToken) {
             return {
-              Authorization: `Bearer ${jwt}`,
+              Authorization: `Bearer ${accessToken}`,
             }
           }
         }

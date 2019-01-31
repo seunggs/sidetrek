@@ -22,11 +22,12 @@ const Query = {
 	me(parent, args, { prisma, request }, info) {
 		const userId = getUserId(request)
 
-		return prisma.query.user({
-			where: {
-				id: userId
-			}
-		})
+		return { id: userId }
+		// return prisma.query.user({
+		// 	where: {
+		// 		id: userId
+		// 	}
+		// })
 	}
 }
 

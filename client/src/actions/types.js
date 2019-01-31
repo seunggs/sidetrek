@@ -1,2 +1,2 @@
-export const LOGIN = 'LOGIN'
-export const LOGOUT = 'LOGOUT'
+export const SET_AUTH = 'SET_AUTH'
+export const CLEAR_TOKEN_RENEWAL_TIMEOUT = 'CLEAR_TOKEN_RENEWAL_TIMEOUT'

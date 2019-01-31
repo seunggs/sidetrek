@@ -1,11 +1,25 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { withApollo } from 'react-apollo'
+import { connect } from 'react-redux'
+import { history } from '../App'
+import { Link } from 'react-router-dom'
+import { startLogout } from '../actions/auth'
 
-const Header = () => {
-  return (
-    <div>
-      I'm Header
-    </div>
-  )
+class Header extends Component {
+  handleLogout = () => {
+    const { startLogout, client: apolloClient } = this.props
+    startLogout(history, apolloClient)
+  }
+  render() {
+    const { auth } = this.props
+    return (
+      <div className="pv3">
+        <div>{auth.isAuthenticated ? <a onClick={this.handleLogout}>Log out</a> : <Link to='/'>Login</Link>}</div>
+      </div>
+    )
+  }
 }
 
-export default Header
+const mapStateToProps = ({ auth }) => ({ auth })
+
+export default connect(mapStateToProps, { startLogout })(withApollo(Header))
