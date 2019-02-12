@@ -15,6 +15,7 @@
     "apollo-utilities": "1.0.21",
     "auth0-js": "^9.9.1",
     "axios": "^0.18.0",
+    "babel-loader": "8.0.4",
     "formik": "^1.4.2",
     "graphql": "0.13.2",
     "lodash.debounce": "^4.0.8",
