@@ -2,9 +2,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import * as R from 'ramda'
-import Button1 from '../common/Button1'
-import { startLogin } from '../../actions/auth';
+import logger from '../../utils/logger'
+import ButtonPrimary from '../common/ButtonPrimary'
+import { startLogin } from '../../actions/auth'
+import { parseServerErrors } from '../../utils/errors'
+import FormErrorMessage from '../common/FormErrorMessage'
 
 const LoginSchema = Yup
   .object()
@@ -16,8 +18,6 @@ const LoginSchema = Yup
     password: Yup
       .string()
       .required('Password is required')
-      .min(8, 'At least 8 characters')
-      .matches(/[a-zA-Z]+[^a-zA-Z\s]+/, 'Contains a number or symbol')
   })
 
 class LoginForm extends Component {
@@ -38,32 +38,36 @@ class LoginForm extends Component {
             password: '',
           }}
           validationSchema={LoginSchema}
-          onSubmit={async ({ email, password }, { setSubmitting }) => {
+          validateOnChange={false}
+          onSubmit={async ({ email, password }, { setSubmitting, setFieldError }) => {
             try {
               await startLogin(email, password)
               setSubmitting(false)
-              console.log('Login successful')
-            } catch (err) {
-              console.log('Login failed')
-              console.log(err)
+              logger('Login successful')
+            } catch (errors) {
+              logger('Login failed')
+              const errorMessage = parseServerErrors(errors)
               setSubmitting(false)
-              this.setState(() => ({ submitError: err.error_description }))
-              setTimeout(() => this.setState(() => ({ submitError: '' })), 3000)
+              setFieldError('form', errorMessage)
             }
           }}
         >
           {({ isSubmitting }) => (
             <Form>
-              <div><Field type="email" name="email" placeholder="Email" /></div>
-              <ErrorMessage name="email" component="div" />
-              <div><Field type="password" name="password" placeholder="Password" /></div>
-              <ErrorMessage name="password" component="div" />
               <div>
-                <Button1 type="submit" disabled={isSubmitting}>
-                  Login
-              </Button1>
+                <Field type="email" name="email" placeholder="Email" />
               </div>
-              <div style={{ display: R.isEmpty(this.state.submitError) ? 'none' : 'block' }}>{this.state.submitError}</div>
+              <ErrorMessage name="email" component="div" />
+
+              <div>
+                <Field type="password" name="password" placeholder="Password" />
+              </div>
+              <ErrorMessage name="password" component="div" />
+
+              <div>
+                <ButtonPrimary type="submit" disabled={isSubmitting}>Login</ButtonPrimary>
+              </div>
+              <FormErrorMessage />
             </Form>
           )}
         </Formik>

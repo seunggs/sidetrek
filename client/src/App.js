@@ -6,6 +6,8 @@ import configureStore from './store/configureStore'
 import { ApolloProvider } from "react-apollo"
 import getClient from './utils/apollo'
 import auth from './utils/auth'
+import { setAuthCompleted } from './actions/auth';
+import logger from './utils/logger';
 
 // Setup Redux and Apollo Client
 const store = configureStore()
@@ -16,15 +18,17 @@ export const history = createHistory()
 
 // Set up Auth service and put it on state so it's globally available
 const checkAuth = async () => {
-  console.log('Checking auth...')
+  logger('Checking auth...')
   if (localStorage.getItem('isLoggedIn') === 'true') {
     try {
-      await auth().renewSession(store)
-      console.log(store.getState().auth)
-      console.log('Auth session renewed')
+      await auth().renewSession(store, client)
+      logger('Auth session renewed')
     } catch (err) {
-      console.log('Failed to renew session - logged out')
+      logger('Failed to renew session - logged out')
     }
+  } else {
+    // If not currently logged in, mark auth complete
+    store.dispatch(setAuthCompleted(true))
   }
 }
 checkAuth()
@@ -34,7 +38,7 @@ class App extends Component {
     return (
       <Provider store={store}>
         <ApolloProvider client={client}>
-          <AppRouter auth={auth} store={store} />
+          <AppRouter auth={auth} store={store} client={client} />
         </ApolloProvider>
       </Provider>
     )
@@ -48,7 +52,7 @@ export default App
 //   uri: Api.GRAPH_QL_URL,
 //   clientState: { defaults, resolvers },
 //   request: async operation => {
-//     console.log("Client request: ", {
+//     logger("Client request: ", {
 //       operationName: operation.operationName,
 //       variables: operation.variables,
 //       query: operation.query

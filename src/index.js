@@ -7,10 +7,9 @@ import cors from 'cors'
 // Set up CORS
 const whitelist = [
 	'http://localhost:3000',
-	'http://127.0.0.1:3000',
 	'http://localhost:4000',
-	'http://127.0.0.1:4000',
 	'https://sidetrek-node-stg.herokuapp.com',
+	'https://sidetrek-node-prd.herokuapp.com',
 	'https://sidetrek.com',
 	'https://www.sidetrek.com',
 ]

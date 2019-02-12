@@ -11,6 +11,8 @@ This is a boilerplate project for:
 
 * Node server lives in the root folder with all its files living in /src
   * schema.graphql holds the datamodel for the Node server, which are the queries/mutations/subscriptions available to the client
+    * Putting `# import * from './generated/prisma.graphql'` simply flows through all ops from generated Prisma schema from datamodel.graphql
+    * NOTE: But it seems still required to specify Query and Mutation types for some reason (?)
   * Running `npm run get-schema` in root folder gets the Prisma graphql schema (generated Prisma schema from datamodel.graphql) as specified by /.graphqlconfig (it tells us where the source Prisma schema lives and where the generated schema should be saved) and make the entire Prisma schema available to our Node server via prisma-binding (i.e. `prisma.query`)
 * Prisma server lives in /prisma
   * datamodel.graphql holds the datamodel for the Prisma server
@@ -39,16 +41,18 @@ This is a boilerplate project for:
     * The token expiry is set to 2 hours - but for the convenience of the users, the token will autorenew based on token expiry until logout
   * API authorization:
     * Send the access token (jwt when API is setup in Auth0) in Authorization Header in Axios for all calls and backend checks for the validity of the token (using RS246)
-  * User profile:
-    * The single source of truth for user profile info is in our own DB. On Auth0 authentication, all user profile data from Auth0 is copied to our own DB. All user profile updates are done to our own DB and calls should be made to our own DB to retrieve profile related info.
+  * User profile (& auth info):
+    * The single source of truth for auth is Auth0. The single source of truth for user info (i.e. profile) is in our own DB (User table). On Auth0 authentication, all user auth & profile data from Auth0 is copied to our own DB. Any updates should be done to our own DB to retrieve & update profile related info.
+    * For updating/deleting user auth (not profile), calls should be made to both our own DB and Auth0
+    * IMPORTANT: uid field in our DB matches Auth0 id
 
 
 ## Get started
 
 1. Follow the setup instructions below before proceeding!
 2. To deploy and run dev: 
-  1. Prisma: `npm run deploy:prisma:dev`
-  2. First make sure docker is running in /prisma: `cd prisma && docker-compose up -d`
+  1. First make sure docker is running in /prisma: `cd prisma && docker-compose up -d & cd ..` (this runs the server at localhost:4466)
+  2. Prisma: `npm run deploy:prisma:dev`
   3. Go back to the root folder and then run `npm run dev`
 3. To deploy test:
   1. Prisma: `npm run deploy:prisma:test`
@@ -104,7 +108,20 @@ This is a boilerplate project for:
   1. `cd prisma`
   2. `docker-compose up -d` (run the Prisma service locally)
   3. `prisma deploy -e ../config/dev.env` (deploy the code to the Docker Prisma service)
+  * NOTE: If there's a connection issue (i.e. Could not connect to server at http://localhost:4466), try `docker-compose down -v --rmi all --remove-orphans` to completely remove the docker container and retry
 12. Check localhost:4466 (default port) to see if it's graphql playground is working properly. (if localhost doesn't work, try 127.0.0.1 after changing the endpoint in prisma.yml)
+13. Update the /prisma/datamodel.prisma to:
+  ```
+  type User {
+    id: ID! @unique
+    email: String! @unique
+    name: String
+    username: String @unique
+    picture: String
+    updatedAt: DateTime!
+    createdAt: DateTime!
+  }
+  ```
 
 
 ## 2) Production Database & Prisma Docker Container (DB & Prisma Server) Setup Instructions
@@ -119,19 +136,45 @@ This is a boilerplate project for:
   5. Check Prisma Cloud to see if the Service has been created.
 
 
-## 3) Node application Hosting Setup Instructions
+## 3) Node Setup Instructions
+
+1. Update CORS info in ./src/index.js
+
+
+## 4) Node Application Hosting Setup Instructions
 
 1. Run `npm i heroku -g` if it doesn't already exist.
 2. Run `heroku login`.
 3. Create both staging and production server in Heroku.
-3. Set up a pipeline in Heroku and connect the staging server to git repo for the project.
-4. Push to git to deploy to staging server and then promote it to prod server.
+4. Set up a pipeline in Heroku and connect the staging server to git repo for the project.
+5. Push to git to deploy to staging server and then promote it to prod server.
 
-## 4) Authentication/Authorization Setup
+
+## 5) Authentication/Authorization Setup
 
 1. Add ENV vars for Auth0 in server: /config/*.env -> AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET
 2. Add ENV vars for Auth0 in client: /client/.env.* -> REACT_APP_AUTH0_CLIENT_ID, REACT_APP_AUTH0_CLIENT_SECRET
+3. Update URLS in ./client/utils/constants.js.
+4. Add a Rule in Auth0 (note that the APP_URL below should match the one in constants above):
+  ```javascript
+  function (user, context, callback) {
+    user.user_metadata = user.user_metadata || {};
+    context.idToken['[APP_URL]/email'] = user.email;
+    context.idToken['[APP_URL]/name'] = user.user_metadata.name;
+    context.accessToken['[APP_URL]/email'] = user.email;
 
-## 5) (Optional) Update create-react-app
+    auth0.users.updateUserMetadata(user.user_id, user.user_metadata)
+      .then(function(){
+          callback(null, user, context);
+      })
+      .catch(function(err){
+          callback(err);
+      });
+  }
+  ```
+5. Set up a new API in Auth0 Dashboard for the app and authorize Machine to Machine Applications with read:users, update:users, and delete:users scopes
+6. All related account signups with the same address (i.e. email-password + Google Login + Twitter Login) will be merged into a single account in our DB with the unique key of email.
+
+## 6) (Optional) Update create-react-app
 
 * Create-react-app is not ejected, so feel free to update it. See this page for the instruction: https://github.com/facebook/create-react-app/blob/master/CHANGELOG.md

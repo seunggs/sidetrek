@@ -1,4 +1,4 @@
-import { getUserId } from '../utils/auth'
+import { getUserEmail } from '../utils/auth'
 
 const Subscription = {
 

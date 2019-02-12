@@ -2,84 +2,143 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import * as Yup from 'yup'
-import * as R from 'ramda'
-import Button1 from '../common/Button1'
+import { ApolloConsumer } from 'react-apollo'
+import logger from '../../utils/logger'
+import ButtonPrimary from '../common/ButtonPrimary'
 import { startLogin, startSignup } from '../../actions/auth'
-
-const SignupSchema = Yup
-  .object()
-  .shape({
-    name: Yup
-      .string()
-      .min(2, 'At least 2 characters')
-      .required('Full name is required'),
-    email: Yup
-      .string()
-      .email('Email is not valid')
-      .required('Email is required'),
-    password: Yup
-      .string()
-      .required('Password is required')
-      .min(8, 'At least 8 characters')
-      .matches(/[a-zA-Z]+[^a-zA-Z\s]+/, 'Contains a number or symbol')
-  })
+import { validateEmail } from '../../utils/validators'
+import { parseServerErrors } from '../../utils/errors'
+import FormErrorMessage from '../common/FormErrorMessage'
+import debounce from 'lodash.debounce'
 
 class SignupForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      submitError: ''
+      // formValues: {},
+      isValidatingEmail: false,
+      emailAvailable: null,
+      submitErrors: '',
     }
+  }
+
+  // checkFieldUpdating = (newField, newValue) => {
+  //   // NOTE: This is a workaround for Formik running field level validation on blur of every field in the form 
+  //   // Only run field level validation on blur of the selected field
+  //   const oldValue = this.state.formValues[newField]
+  //   const isFieldUpdating = oldValue !== newValue
+  //   if (isFieldUpdating) { this.setState(() => ({ formValues: R.merge(this.state.formValues, { [newField]: newValue }) })) }
+  //   return isFieldUpdating
+  // }
+
+  setValidatingEmail = value => {
+    // Set loading status while async validating
+    this.setState(() => ({ isValidatingEmail: value }))
+  }
+  validateEmail = (email, client) => {
+    this.setState(() => ({ emailAvailable: null }))
+    return validateEmail({ email, client, setValidatingEmail: this.setValidatingEmail })
+      .then(() => this.setState(() => ({ emailAvailable: true })))
+  }
+  debouncedValidateEmail = debounce(this.validateEmail, 500)
+  validateNameAndPassword = values => {
+    return Yup
+      .object()
+      .shape({
+        name: Yup
+          .string()
+          .required('Full name is required.'),
+        password: Yup
+          .string()
+          .required('Password is required.')
+          .min(8, 'Should be at least 8 characters.')
+          .matches(/[a-zA-Z]+[^a-zA-Z\s]+/, 'Should contain a number or symbol.')
+      })
+      .validate(values, { abortEarly: false })
+      .catch(err => {
+        throw err.inner.reduce((errors, err) => {
+          const prevErrorMsgs = errors[err.path] || []
+          return {
+            ...errors,
+            [err.path]: prevErrorMsgs.concat(err.message)
+          }
+        }, {})
+      })
   }
 
   render() {
     const { startLogin, startSignup } = this.props
+    const CheckingAvailabilityMsg = ({ content = 'Checking availability...' }) => <span>{content}</span>
+
     return (
       <div>
-        <Formik
-          initialValues={{
-            name: '',
-            email: '',
-            password: '',
-          }}
-          validationSchema={SignupSchema}
-          onSubmit={async ({ name, email, password }, { setSubmitting }) => {
-            console.log('submitted')
-            try {
-              await startSignup(email, password, { name })
-              setSubmitting(false)
-              console.log('Sign up successful')
-  
-              // Now login
-              await startLogin(email, password)
-              console.log('Login successful')
-            } catch (err) {
-              console.log('Sign up failed')
-              console.log(err)
-              setSubmitting(false)
-              this.setState(() => ({ submitError: err.error_description }))
-              setTimeout(() => this.setState(() => ({ submitError: '' })), 3000)
-            }
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form>
-              <div><Field type="name" name="name" placeholder="Full name" /></div>
-              <ErrorMessage name="name" component="div" />
-              <div><Field type="email" name="email" placeholder="Email" /></div>
-              <ErrorMessage name="email" component="div" />
-              <div><Field type="password" name="password" placeholder="Password" /></div>
-              <ErrorMessage name="password" component="div" />
-              <div>
-                <Button1 type="submit" disabled={isSubmitting}>
-                  Sign Up
-                </Button1>
-              </div>
-              <div style={{ display: R.isEmpty(this.state.submitError) ? 'none' : 'block' }}>{this.state.submitError}</div>
-              <div>{this.state.submitError}</div>
-            </Form>
+        <ApolloConsumer>
+          {client => (
+            <Formik
+              initialValues={{
+                name: '',
+                email: '',
+                password: '',
+              }}
+              validate={this.validateNameAndPassword}
+              onSubmit={async ({ name, email, password }, { setSubmitting, setFieldError }) => {
+                logger('submitted')
+                try {
+                  await startSignup(email, password, { name })
+                  setSubmitting(false)
+                  logger('Sign up successful')
+
+                  // Now login
+                  await startLogin(email, password)
+                  logger('Login successful')
+                } catch (errors) {
+                  logger('Sign up failed')
+                  const errorMessage = parseServerErrors(errors)
+                  setSubmitting(false)
+                  setFieldError('form', errorMessage)
+                }
+              }}
+            >
+              {({ isSubmitting, errors, touched }) => (
+                <Form noValidate>
+                  <div>
+                    <Field
+                      name="name"
+                      placeholder="Full name"
+                    />
+                  </div>
+                  <ErrorMessage name="name" component="div" />
+
+                  <div>
+                    <Field
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      validate={email => this.debouncedValidateEmail(email, client)}
+                    />
+                    <span>{this.state.isValidatingEmail ? <CheckingAvailabilityMsg /> : null}</span>
+                    <span>{this.state.emailAvailable ? 'Email is available!' : null}</span>
+                  </div>
+                  <ErrorMessage name="email" component="div" />
+
+                  <div>
+                    <Field
+                      type="password"
+                      name="password"
+                      placeholder="Password"
+                    />
+                  </div>
+                  <ErrorMessage name="password">{errors => errors.map((err, i) => <div key={i}>{err}</div>)}</ErrorMessage>
+
+                  <div>
+                    <ButtonPrimary type="submit" disabled={isSubmitting}>Sign Up</ButtonPrimary>
+                  </div>
+                  <FormErrorMessage />
+                </Form>
+              )}
+            </Formik>
           )}
-        </Formik>
+        </ApolloConsumer>
       </div>
     )
   }

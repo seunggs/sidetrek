@@ -1,6 +1,12 @@
-import { SET_AUTH, CLEAR_TOKEN_RENEWAL_TIMEOUT } from './types'
+import { SET_AUTH, CLEAR_TOKEN_RENEWAL_TIMEOUT, SET_AUTH_COMPLETED } from './types'
 import webAuth from '../utils/auth0'
 import { setAuthHeader } from '../utils/auth'
+import { resetUser } from './user'
+
+export const setAuthCompleted = (authComplete) => ({
+  type: SET_AUTH_COMPLETED,
+  authComplete,
+})
 
 export const setAuth = ({ isAuthenticated, expiresAt, idToken, accessToken }) => ({
   type: SET_AUTH,
@@ -43,10 +49,12 @@ export const startSignup = (email, password, user_metadata) => dispatch => {
   })
 }
 
-export const startLogout = (history, apolloClient) => (dispatch, getState) => {
+export const startLogout = (history, client) => (dispatch, getState) => {
   console.log('Logging out...')
 
+  // Clear auth and user state
   dispatch(setAuth({ isAuthenticated: false, expiresAt: 0, idToken: null, accessToken: null }))
+  dispatch(resetUser())
 
   // Remove Authorization header in future Axios calls
   setAuthHeader()
@@ -57,9 +65,10 @@ export const startLogout = (history, apolloClient) => (dispatch, getState) => {
   // Clear the token renewal timeout
   console.log('Clearing token renewal timeout...')
   clearTimeout(getState().auth.tokenRenewalTimeoutHandler)
+  dispatch(setAuth({ tokenRenewalTimeoutHandler: null }))
 
   // Clear Apollo cache
-  apolloClient.resetStore()
+  client.resetStore()
 
   history.replace('/')
 }

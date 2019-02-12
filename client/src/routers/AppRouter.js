@@ -5,29 +5,35 @@ import PublicRoute from './PublicRoute'
 import PrivateRoute from './PrivateRoute'
 import CallBack from '../components/auth/CallBack'
 import NotFoundPage from '../components/NotFoundPage'
-import LoginPage from '../components/LoginPage'
 import HomePage from '../components/HomePage'
-import AccountPage from '../components/AccountPage'
+import LoginPage from '../components/LoginPage'
+import SignupPage from '../components/SignupPage'
+import UsernamePage from '../components/UsernamePage'
+import ProfilePage from '../components/ProfilePage'
+import SettingsPage from '../components/SettingsPage'
 
-const handleAuth = (store, auth, nextState) => {
+const handleAuth = (store, client, auth, nextState) => {
   console.log('Auth callback initiating...')
   if (/access_token|id_token|error/.test(nextState.location.hash)) {
-    auth().handleAuth(store)
+    auth().handleAuth(store, client)
   }
 }
 
-const AppRouter = ({ store, auth }) => (
+const AppRouter = ({ store, auth, client }) => (
   <Router history={history}>
     <div>
       <Switch>
-        <PublicRoute path="/" component={LoginPage} exact={true} />
+        <PublicRoute path="/" component={HomePage} exact={true} />
+        <PublicRoute path="/login" component={LoginPage} />
+        <PublicRoute path="/signup" component={SignupPage} />
         <Route path="/callback" render={props => {
           console.log('/callback called')
-          handleAuth(store, auth, props)
+          handleAuth(store, client, auth, props)
           return <CallBack {...props} />
         }} />
-        <PublicRoute path="/home" component={HomePage} />
-        <PrivateRoute path="/account" component={AccountPage} />
+        <PrivateRoute path="/username" component={UsernamePage} />
+        <PublicRoute path="/profile/:username" component={ProfilePage} />
+        <PrivateRoute path="/settings" component={SettingsPage} />
         <PublicRoute component={NotFoundPage} />
       </Switch>
     </div>

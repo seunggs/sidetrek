@@ -1,33 +1,30 @@
-import { getUserId } from '../utils/auth'
+import { getUserEmail } from '../utils/auth'
+import logger from '../../client/src/utils/logger'
 
 const Query = {
 	users(parent, args, { prisma }, info) {
-		const opArgs = {
-			first: args.first,
-			skip: args.skip,
-			after: args.after,
-			orderBy: args.orderBy
-		}
-
-		if (args.query) {
-			opArgs.where = {
-				OR: [{
-					name_contains: args.query
-				}]
-			}
-		}
-
-		return prisma.query.users(opArgs, info)
+		return prisma.query.users(args, info)
 	},
-	me(parent, args, { prisma, request }, info) {
-		const userId = getUserId(request)
 
-		return { id: userId }
-		// return prisma.query.user({
-		// 	where: {
-		// 		id: userId
-		// 	}
-		// })
+	user(parent, args, { prisma }, info) {
+		return prisma.query.user(args, info)
+	},
+
+	async me(parent, args, { prisma, request }, info) {
+		const email = await getUserEmail(request)
+		return prisma.query.user({
+			where: {
+				email
+			}
+		})
+	},
+
+	file(parent, { id }, { prisma }, info) {
+		return prisma.query.file({ where: { id } }, info)
+	},
+
+	files(parent, args, { prisma }, info) {
+		return prisma.query.files(args, info)
 	}
 }
 

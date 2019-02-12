@@ -1,6 +1,6 @@
 import React from 'react'
 import webAuth from '../../utils/auth0'
-import GoogleLoginButton from '../common/GoogleLoginButton'
+import ButtonGoogleLogin from '../common/ButtonGoogleLogin'
 
 const handleGoogleLoginClick = () => {
   webAuth.authorize({
@@ -10,9 +10,9 @@ const handleGoogleLoginClick = () => {
 
 const GoogleLogin = () => {
   return (
-    <GoogleLoginButton onClick={handleGoogleLoginClick}>
+    <ButtonGoogleLogin onClick={handleGoogleLoginClick}>
       Google Login
-    </GoogleLoginButton>
+    </ButtonGoogleLogin>
   )
 }
 

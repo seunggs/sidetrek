@@ -1,2 +1,7 @@
+export const SET_AUTH_COMPLETED = 'SET_AUTH_COMPLETED'
 export const SET_AUTH = 'SET_AUTH'
 export const CLEAR_TOKEN_RENEWAL_TIMEOUT = 'CLEAR_TOKEN_RENEWAL_TIMEOUT'
+
+export const SET_USER = 'SET_USER'
+export const RESET_USER = 'RESET_USER'
+export const UPDATE_USER = 'UPDATE_USER'

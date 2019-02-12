@@ -1,66 +1,71 @@
-import bcrypt from 'bcryptjs'
-import { getUserId, generateToken, hashPassword } from '../utils/auth'
+import { getUserEmail, updateUserInAuth0, deleteUserInAuth0 } from '../utils/auth'
+import logger from '../../client/src/utils/logger'
+import * as R from 'ramda'
+import { uploadToS3 } from '../utils/fileApi'
 
 const Mutation = {
-	async createUser(parent, args, { prisma }, info) {
-		const password = await hashPassword(args.data.password)
-		const user = await prisma.mutation.createUser({
+	async createUser(parent, args, { prisma, request }, info) {
+		const email = await getUserEmail(request)
+
+		return prisma.mutation.createUser({
 			data: {
 				...args.data,
-				password
 			}
 		})
-
-		return {
-			user,
-			token: generateToken(user.id)
-		}
 	},
-	async login(parent, args, { prisma }, info) {
-		const user = await prisma.query.user({
-			where: {
-				email: args.data.email
-			}
-		})
 
-		if (!user) {
-			throw new Error('Invalid user email')
-		}
-
-		const isMatch = await bcrypt.compare(args.data.password, user.password)
-
-		if (!isMatch) {
-			throw new Error('Invalid password')
-		}
-
-		return {
-			user,
-			token: generateToken(user.id)
-		}
-	},
 	async deleteUser(parent, args, { prisma, request }, info) {
-		const userId = getUserId(request)
+		const email = await getUserEmail(request)
+
+		// Must also delete in Auth0
+		try {
+			await deleteUserInAuth0(email)
+		} catch (err) {
+			logger(err.message)
+			throw new Error(err.message)
+		}
 
 		return prisma.mutation.deleteUser({
 			where: {
-				id: userId
+				email
 			}
 		}, info)
 	},
-	async updateUser(parent, args, { prisma, request }, info) {
-		const userId = getUserId(request)
 
-		if (typeof args.data.password === 'string') {
-			args.data.password = await hashPassword(args.data.password)
+	async updateUser(parent, args, { prisma, request }, info) {
+		const email = await getUserEmail(request)
+
+		// if user data to be updated includes 'email' or 'password', then update Auth0 as well since it involves auth
+		try {
+			const { email: newEmail, password: newPassword } = args.data
+			if (newEmail || newPassword) {
+				const updates = R.mergeAll([newEmail ? { email: newEmail } : {}, newPassword ? { password: newPassword } : {}])
+				await updateUserInAuth0(email, updates)
+			}
+		} catch (err) {
+			logger(err.message)
+			throw new Error(err.message)
 		}
 
 		return prisma.mutation.updateUser({
 			where: {
-				id: userId
+				email
 			},
-			data: args.data
+			data: {
+				...args.data
+			}
 		}, info)
-	}
+	},
+
+	async uploadFile(parent, { folder, file }, { prisma }, info) {
+		const s3URL = await uploadToS3(prisma, folder, file)
+		return s3URL
+	},
+
+	async uploadFiles(parent, { folder, files }, { prisma }, info) {
+		const s3URLs = await Promise.all(files.map(file => uploadToS3(prisma, folder, file)))
+		return s3URLs
+	},
 }
 
 export { Mutation as default }

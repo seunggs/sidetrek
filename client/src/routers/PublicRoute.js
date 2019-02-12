@@ -1,11 +1,19 @@
 import React from 'react'
+import logger from '../utils/logger'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import Spinner from '../components/common/Spinner'
 
-const PublicRoute = ({ component: Component, auth: { isAuthenticated }, ...rest }) => (
-  <Route {...rest} render={props => (
-    <Component {...props} />
-  )} />
+const PublicRoute = ({ component: Component, auth: { authComplete, isAuthenticated }, ...rest }) => (
+  <Route {...rest} component={(props) => {
+    if (!authComplete) {
+      return <Spinner page={true} />
+    } else {
+      return (
+        <Component {...props} />
+      )
+    }
+  }} />
 )
 
 const mapStateToProps = ({ auth }) => ({ auth })

@@ -7,14 +7,14 @@ import { startLogout } from '../actions/auth'
 
 class Header extends Component {
   handleLogout = () => {
-    const { startLogout, client: apolloClient } = this.props
-    startLogout(history, apolloClient)
+    const { startLogout, client } = this.props
+    startLogout(history, client)
   }
   render() {
     const { auth } = this.props
     return (
       <div className="pv3">
-        <div>{auth.isAuthenticated ? <a onClick={this.handleLogout}>Log out</a> : <Link to='/'>Login</Link>}</div>
+        <div>{auth.isAuthenticated ? <button onClick={this.handleLogout}>Log out</button> : <Link to='/'>Login</Link>}</div>
       </div>
     )
   }
