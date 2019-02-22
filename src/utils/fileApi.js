@@ -13,7 +13,7 @@ const s3 = new aws.S3({
 
 export const uploadToS3 = async (prisma, folder, file) => {
   if (!file) { 
-    logger('ERROR: No file received.')
+    logger.error('ERROR: No file received.')
     return
   }
 
@@ -39,8 +39,8 @@ export const uploadToS3 = async (prisma, folder, file) => {
 
   const fileInPrisma = await prisma.mutation.createFile({ data })
 
-  logger('Saved prisma file:')
-  logger(fileInPrisma)
+  logger.info('Saved prisma file:')
+  logger.info(fileInPrisma)
 
   return fileInPrisma
 }

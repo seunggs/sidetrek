@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { Formik, Form } from 'formik'
+import Field from '../common/Field'
 import { ApolloConsumer } from 'react-apollo'
 import logger from '../../utils/logger'
 import ButtonPrimary from '../common/ButtonPrimary'
@@ -9,7 +10,6 @@ import { validateUsername } from '../../utils/validators'
 import { startUpdateUser } from '../../actions/user'
 import { parseServerErrors } from '../../utils/errors'
 import FormErrorMessage from '../common/FormErrorMessage'
-import debounce from 'lodash.debounce'
 
 class UsernameForm extends Component {
   constructor(props) {
@@ -29,7 +29,6 @@ class UsernameForm extends Component {
     return validateUsername({ username, client, setValidatingUsername: this.setValidatingUsername })
       .then(() => this.setState(() => ({ usernameAvailable: true })))
   }
-  debouncedValidateUsername = debounce(this.validateUsername, 500)
 
   componentDidMount() {
     const { user, history } = this.props
@@ -50,14 +49,15 @@ class UsernameForm extends Component {
               initialValues={{
                 username: '',
               }}
+              validateOnChange={false}
               onSubmit={async ({ username: newUsername }, { setSubmitting, setFieldError }) => {
                 try {
                   await startUpdateUser(client, email, { username: newUsername })
                   setSubmitting(false)
-                  logger('Adding username successful')
+                  logger.info('Adding username successful')
                   history.push(`/profile/${newUsername}`)
                 } catch (errors) {
-                  logger('Adding username failed')
+                  logger.error('Adding username failed')
                   const errorMessage = parseServerErrors(errors)
                   setSubmitting(false)
                   setFieldError('form', errorMessage)
@@ -70,15 +70,14 @@ class UsernameForm extends Component {
                     <Field
                       name="username"
                       placeholder="Username"
-                      validate={newUsername => this.debouncedValidateUsername(newUsername, client)}
+                      validate={newUsername => this.validateUsername(newUsername, client)}
                     />
                     <span>{this.state.isValidatingUsername ? <CheckingAvailabilityMsg /> : ''}</span>
                     <span>{this.state.usernameAvailable ? 'Username is available!' : null}</span>
                   </div>
-                  <ErrorMessage name="username" component="div" />
 
                   <div>
-                    <ButtonPrimary type="submit" disabled={isSubmitting}>Next</ButtonPrimary>
+                    <ButtonPrimary type="submit" loading={isSubmitting}>Next</ButtonPrimary>
                   </div>
                   <FormErrorMessage />
                 </Form>

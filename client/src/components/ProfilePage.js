@@ -11,7 +11,6 @@ import { startUpdateUser } from '../actions/user'
 import { validateEmail } from '../utils/validators'
 import { parseServerErrors } from '../utils/errors'
 import ProfilePicture from './common/ProfilePicture'
-import debounce from 'lodash.debounce'
 
 class ProfilePage extends Component {
   constructor(props) {
@@ -33,10 +32,11 @@ class ProfilePage extends Component {
     return validateEmail({ email, client, setValidatingEmail: this.setValidatingEmail })
       .then(() => this.setState(() => ({ emailAvailable: true })))
   }
-  debouncedValidateEmail = debounce(this.validateEmail, 500)
+
   validateName = name => {
     return Yup.string().required('Full name is required.').isValidSync(name)
   }
+
   validateTwitter = twitter => {
     return Yup.string().required('Valid Twitter handle is required.').isValidSync(twitter)
   }
@@ -56,7 +56,7 @@ class ProfilePage extends Component {
       } else {
         this.setState(() => ({ profile, profileExists: true }))
       }
-    }).catch(err => logger(err))
+    }).catch(err => logger.error(err))
   }
 
   render() {
@@ -68,7 +68,7 @@ class ProfilePage extends Component {
     const { profileExists } = this.state
     const isEditable = viewingOwnProfile
     const profile = viewingOwnProfile ? authedUser : this.state.profile
-    logger(`profile${viewingOwnProfile ? ' (own)' : ''}`)
+    logger.info(`profile${viewingOwnProfile ? ' (own)' : ''}`)
     const { email, name, username, twitter, picture, createdAt, hasPassword, hasSocialLogin } = profile
 
     const CheckingAvailabilityMsg = ({ content = 'Checking availability...' }) => <span>{content}</span>
@@ -85,16 +85,16 @@ class ProfilePage extends Component {
               <EditableText
                 isEditable={hasPassword && !hasSocialLogin && isEditable}
                 name="email"
-                validate={newEmail => this.debouncedValidateEmail(newEmail, client)}
+                validate={newEmail => this.validateEmail(newEmail, client)}
                 onSubmit={async ({ email: newEmail }, { setSubmitting, setFieldError }) => {
                   try {
                     await startUpdateUser(client, email, { email: newEmail })
-                    logger('Email successfully updated')
+                    logger.info('Email successfully updated')
                     setSubmitting(false)
                   } catch (errors) {
                     const errorMessage = parseServerErrors(errors)
-                    logger('Updating email failed')
-                    logger(errorMessage)
+                    logger.error('Updating email failed')
+                    logger.error(errorMessage)
                     setSubmitting(false)
                     this.setState(() => ({ emailAvailable: null }))
                     setFieldError('email', errorMessage)
@@ -114,11 +114,11 @@ class ProfilePage extends Component {
                 onSubmit={async ({ name: newName }, { setSubmitting, setFieldError }) => {
                   try {
                     await startUpdateUser(client, email, { name: newName })
-                    logger('Name successfully updated')
+                    logger.info('Name successfully updated')
                     setSubmitting(false)
                   } catch (errors) {
                     const errorMessage = parseServerErrors(errors)
-                    logger('Updating name failed')
+                    logger.error('Updating name failed')
                     setSubmitting(false)
                     setFieldError('name', errorMessage)
                   }
@@ -135,11 +135,11 @@ class ProfilePage extends Component {
                 onSubmit={async ({ twitter: newTwitter }, { setSubmitting, setFieldError }) => {
                   try {
                     await startUpdateUser(client, email, { twitter: newTwitter })
-                    logger('Twitter handle successfully updated')
+                    logger.info('Twitter handle successfully updated')
                     setSubmitting(false)
                   } catch (errors) {
                     const errorMessage = parseServerErrors(errors)
-                    logger('Updating Twitter handle failed')
+                    logger.error('Updating Twitter handle failed')
                     setSubmitting(false)
                     setFieldError('twitter', errorMessage)
                   }

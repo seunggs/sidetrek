@@ -4,6 +4,7 @@ import { history } from '../App'
 import PublicRoute from './PublicRoute'
 import PrivateRoute from './PrivateRoute'
 import CallBack from '../components/auth/CallBack'
+import Test from '../components/Test'
 import NotFoundPage from '../components/NotFoundPage'
 import HomePage from '../components/HomePage'
 import LoginPage from '../components/LoginPage'
@@ -11,6 +12,7 @@ import SignupPage from '../components/SignupPage'
 import UsernamePage from '../components/UsernamePage'
 import ProfilePage from '../components/ProfilePage'
 import SettingsPage from '../components/SettingsPage'
+import NewProjectPage from '../components/project/NewProjectPage'
 
 const handleAuth = (store, client, auth, nextState) => {
   console.log('Auth callback initiating...')
@@ -34,6 +36,8 @@ const AppRouter = ({ store, auth, client }) => (
         <PrivateRoute path="/username" component={UsernamePage} />
         <PublicRoute path="/profile/:username" component={ProfilePage} />
         <PrivateRoute path="/settings" component={SettingsPage} />
+        <PrivateRoute path="/project/new" component={NewProjectPage} />
+        <PublicRoute path="/test" component={Test} />
         <PublicRoute component={NotFoundPage} />
       </Switch>
     </div>

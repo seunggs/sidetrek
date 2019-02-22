@@ -8,7 +8,6 @@ import { WebSocketLink } from "apollo-link-ws"
 import { getMainDefinition } from 'apollo-utilities'
 import { createUploadLink } from 'apollo-upload-client'
 import { PRISMA_HTTP_URL, PRISMA_WS_URL } from './constants'
-import logger from './logger'
 
 // console.log('REACT_APP_PRISMA_SERVER_HOST', process.env.REACT_APP_PRISMA_SERVER_HOST)
 const httpURL = PRISMA_HTTP_URL

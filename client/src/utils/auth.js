@@ -48,7 +48,7 @@ const auth = () => {
 
           // If it's in DB, first check hasPassword - update DB if this is email-password signup and hasPassword is false
           // Update DB if this is social login and hasSocialLogin is false
-          // logger('isEmailPasswordSignup', isEmailPasswordSignup)
+          // logger.info('isEmailPasswordSignup', isEmailPasswordSignup)
           if (isEmailPasswordSignup && !user.hasPassword) {
             try {
               const userData = await client.mutate({
@@ -60,9 +60,9 @@ const auth = () => {
                 },
                 mutation: UPDATE_USER_OP
               })
-              logger('Updated hasPassword: ', userData.data.updateUser)
+              logger.info('Updated hasPassword: ', userData.data.updateUser)
             } catch (err) {
-              logger('Failed to update hasPassword')
+              logger.info('Failed to update hasPassword')
             }
           } else if (!isEmailPasswordSignup && !user.hasSocialLogin) {
             try {
@@ -75,9 +75,9 @@ const auth = () => {
                 },
                 mutation: UPDATE_USER_OP
               })
-              logger('Updated hasSocialLogin: ', userData.data.updateUser)
+              logger.info('Updated hasSocialLogin: ', userData.data.updateUser)
             } catch (err) {
-              logger('Failed to update hasSocialLogin')
+              logger.info('Failed to update hasSocialLogin')
             }
           }
 
@@ -85,13 +85,13 @@ const auth = () => {
           store.dispatch(setUser(user))
           return resolve(user)
         } catch (err) {
-          logger('User not in DB')
-          logger(err)
+          logger.info('User not in DB')
+          logger.info(err)
         }
 
         // If not in DB, create the user in DB and set it in Redux state
         try {
-          logger('Adding user to User DB...')
+          logger.info('Adding user to User DB...')
           const userData = await client.mutate({
             variables: {
               data: {
@@ -100,6 +100,7 @@ const auth = () => {
                 hasSocialLogin: !isEmailPasswordSignup,
                 name,
                 picture,
+                role: 'USER',
               }
             },
             mutation: CREATE_USER_OP
@@ -110,15 +111,15 @@ const auth = () => {
           store.dispatch(setUser(user))
           return resolve(user)
         } catch (err) {
-          logger('Something went wrong while mutating User DB')
-          logger(err)
+          logger.error('Something went wrong while mutating User DB')
+          logger.error(err)
           reject(err)
         }
       })
     })
   }
   async function setSession(store, client, authResult) {
-    console.log('Setting auth session...')
+    logger.info('Setting auth session...')
     const { idToken, accessToken, expiresIn } = authResult
 
     // Set isLoggedIn flag in localStorage
@@ -149,12 +150,12 @@ const auth = () => {
       
       // If username doesn't exist, send to /username      
       if (R.isNil(userInfo.username)) { 
-        logger('Username doesn\'t exist: redirecting...')
+        logger.info('Username doesn\'t exist: redirecting...')
         history.replace('/username') 
         return
       }
     } catch (err) {
-      logger(err)
+      logger.info(err)
     }
     
     // navigate to the home route if in /callback but stay otherwise

@@ -1,4 +1,8 @@
 ## Client
+* General
+  * Adding or removing non-null values in graphql schema is a breaking change - so make sure to test for this
+  * All mutations should have auth mechanism
+  * User queries should have auth mechanism
 * /utils
   * /auth
     * Signup

@@ -1,8 +1,10 @@
 import React from 'react'
-import ButtonBase from './ButtonBase'
+import * as R from 'ramda'
+import Button from 'antd/es/button'
+import 'antd/es/button/style/css'
 
-const ButtonGoogleLogin = ({ children, ...rest }) => (
-  <ButtonBase className="b--light-red bg-light-red white ph3 pv3" {...rest}>{children}</ButtonBase>
+const ButtonGoogleLogin = ({ children, style, type, ...rest }) => (
+  <Button type="primary" htmlType={type} style={R.merge({ backgroundColor: '#FF725C', borderColor: '#FF725C' }, style)} {...rest}>{children}</Button>
 )
 
 export default ButtonGoogleLogin

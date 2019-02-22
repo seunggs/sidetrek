@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import jwks from 'jwks-rsa'
 import logger from '../../client/src/utils/logger'
 import { APP_URL, AUTH0_URL } from './constants'
+import { getQuery } from './query'
 
 const auth0 = new ManagementClient({
   domain: AUTH0_URL.replace('https://', ''),
@@ -13,6 +14,8 @@ const auth0 = new ManagementClient({
 })
 
 export const updateUserInAuth0 = (email, updates) => {
+	if (!email) { throw new Error('Unable to update user.') }
+
 	// Since Auth0 saves all emails in lowercase, but social login providers have different rules,
 	// search for both to catch all of user's accounts in Auth0
 	const allLowerCaseEmail = R.toLower(email)
@@ -50,19 +53,21 @@ export const updateUserInAuth0 = (email, updates) => {
 			return Promise.all(R.concat(passwordUpdatedUsers, updatedUsersPromises))
 		})
 		.then(updatedUsers => {
-			logger('Updating user successful!')
+			logger.info('Updating user successful!')
 			return updatedUsers
 		})
 }
 
 export const deleteUserInAuth0 = email => {
+	if (!email) { throw new Error('Unable to update user.') }
+	
 	// Since Auth0 saves all emails in lowercase, but social login providers have different rules,
 	// search for both to catch all of user's accounts in Auth0
 	const allLowerCaseEmail = R.toLower(email)
 	return Promise.all([auth0.getUsersByEmail(email), auth0.getUsersByEmail(allLowerCaseEmail)])
 		.then(([users1, users2]) => {
 			const users = R.uniqBy(R.prop('user_id'))(R.concat(users1, users2))
-			logger('users to be deleted in Auth0', users)
+			logger.info('users to be deleted in Auth0', users)
 
 			const deletedUsersPromises = R.map(user => {
 				const { user_id } = user
@@ -71,7 +76,7 @@ export const deleteUserInAuth0 = email => {
 			return Promise.all(deletedUsersPromises)
 		})
 		.then(deletedUsers => {
-			logger('Deleting user successful!')
+			logger.info('Deleting user successful!')
 			return deletedUsers
 		})
 }
@@ -94,32 +99,63 @@ const verifyJwt = (accessToken) => (new Promise((resolve, reject) => {
 			console.log(err)
 			reject('Authentication failed')
 		}
-		// logger('decoded', decoded)
+		// logger.info('decoded', decoded)
 		const email = decoded[`${APP_URL}/email`]
 		resolve(email)
 	})
 }))
 
-export const getUserEmail = async (request, { requireAuth = true } = {}) => {
+export const getMyEmail = async (request, { requireAuth = true } = {}) => {
 	const header = request.request ? request.request.headers.authorization : request.connection.context.Authorization
-	// console.log('header', header)
+	// logger.info('header', header)
 
 	if (header) {
 		const accessToken = header.replace('Bearer ', '')
-		// logger(accessToken)
+		// logger.info(accessToken)
 
 		try {
 			return await verifyJwt(accessToken)
 		} catch (err) {
-			throw Error(err)
+			throw new Error(err)
 		}
-
-		// Also handle admin scope if any
 	}
 
 	if (requireAuth) {
-		throw Error('Authentication required')
+		throw new Error('Authentication required')
 	}
 
 	return null
+}
+
+// getMyEmail gets the email of the user making the call (after authorization), whereas...
+// getUserEmail gets the email requested from the query (i.e. from Prisma's 'where' variable) after checking user role
+// If the user is root, return requested email (root can update/delete other users), but otherwise, return caller's email
+export const getUserEmail = async (prisma, request, where) => {
+	const myEmail = await getMyEmail(request)
+
+	// If another user is not requested, just return caller's email
+	if (!where) { return myEmail }
+	
+	// If requested email is the same as caller's email, return caller's email
+	if (where.email === myEmail) { return myEmail }
+	
+	const meQuery = prisma.query.user({
+		where: {
+			email: myEmail
+		}
+	})
+
+	const requestedUserQuery = prisma.query.user({
+		where: {
+			...where
+		}
+	})
+
+	const [me, requestedUser] = await Promise.all([meQuery, requestedUserQuery])
+		.then(([meData, requestedUserData]) => {
+			return [meData.data.user, requestedUserData.data.user]
+		})
+	
+	// only allow the user to update its own email if not ROOT
+	return me.role === 'ROOT' ? requestedUser.email : myEmail
 }

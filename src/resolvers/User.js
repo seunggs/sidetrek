@@ -1,5 +1,3 @@
-import { getUserEmail } from '../utils/auth'
-
 const User = {
 	// email: {
 	// 	fragment: 'fragment email on User { email }',
@@ -12,7 +10,7 @@ const User = {
 	// 			return null
 	// 		}
 	// 	}
-	// }
+	// }	
 }
 
 export { User as default }

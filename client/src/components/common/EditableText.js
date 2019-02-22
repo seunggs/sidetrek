@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
-import logger from '../../utils/logger';
 
 /**
  * EditableText uses Formik Form and Field underneath

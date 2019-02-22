@@ -11,14 +11,16 @@ const uploadOps = {
         mimetype
         encoding
         url
+        hero
+        project
       }
     `
   }
 }
 
 export const UPLOAD_FILE_OP = gql`
-  mutation uploadFile($folder: String, $file: Upload!) {
-    uploadFile(folder: $folder, file: $file)
+  mutation uploadFile($folder: String, $file: Upload!, $project: Project, $hero: Boolean) {
+    uploadFile(folder: $folder, file: $file, project: $project, hero: $hero)
     {
       ...FileInfo
     }

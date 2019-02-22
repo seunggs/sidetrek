@@ -54,6 +54,7 @@ This is a boilerplate project for:
   1. First make sure docker is running in /prisma: `cd prisma && docker-compose up -d & cd ..` (this runs the server at localhost:4466)
   2. Prisma: `npm run deploy:prisma:dev`
   3. Go back to the root folder and then run `npm run dev`
+  4. To run the Graphql Playground (localhost:4466/default/dev), set the Authorization header in the browser (obtain the token using `prisma token -e ../config/dev.env`)
 3. To deploy test:
   1. Prisma: `npm run deploy:prisma:test`
 5. To deploy to production:
@@ -66,6 +67,10 @@ This is a boilerplate project for:
       2. `git push`
       3. Lastly, promote it to prod if staging looks good
   2. Prisma: `npm run deploy:prisma:prod`
+  3. To run the Graphql Playground (see PRISMA_ENDPOINT in /config/prod.env), set the Authorization header in the browser (obtain the token using `prisma token -e ../config/prod.env`)
+6. To analyze the CRA bundle size:
+  1. Inside /client, run: `npm run build`
+  2. Open /build/bundle-stats.html
 
 
 ## 1) Prisma Dev Server Setup Instructions

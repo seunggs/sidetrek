@@ -1,4 +1,3 @@
-import logger from '../utils/logger'
 import {
   SET_USER,
   RESET_USER,

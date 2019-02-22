@@ -1,5 +1,4 @@
 import React from 'react'
-import logger from '../utils/logger'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 import Spinner from '../components/common/Spinner'

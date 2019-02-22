@@ -1,0 +1,4 @@
+.transition-in {
+  transition: all .15s cubic-bezier(.92,.23,.82,1.61);
+  transition-property: opacity, transform;
+}

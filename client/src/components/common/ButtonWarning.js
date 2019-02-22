@@ -1,8 +1,10 @@
 import React from 'react'
-import ButtonBase from './ButtonBase'
+import * as R from 'ramda'
+import Button from 'antd/es/button'
+import 'antd/es/button/style/css'
 
-const ButtonPrimary = ({ children, ...rest }) => (
-  <ButtonBase className="ba b--red red ph3 pv3" {...rest}>{children}</ButtonBase>
+const ButtonWarning = ({ children, type, style, ...rest }) => (
+  <Button type="danger" htmlType={type} style={R.merge({ fontWeight: '500' }, style)} {...rest}>{children}</Button>
 )
 
-export default ButtonPrimary
+export default ButtonWarning

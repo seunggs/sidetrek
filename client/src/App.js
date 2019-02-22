@@ -18,13 +18,13 @@ export const history = createHistory()
 
 // Set up Auth service and put it on state so it's globally available
 const checkAuth = async () => {
-  logger('Checking auth...')
+  logger.info('Checking auth...')
   if (localStorage.getItem('isLoggedIn') === 'true') {
     try {
       await auth().renewSession(store, client)
-      logger('Auth session renewed')
+      logger.info('Auth session renewed')
     } catch (err) {
-      logger('Failed to renew session - logged out')
+      logger.error('Failed to renew session - logged out')
     }
   } else {
     // If not currently logged in, mark auth complete
@@ -46,23 +46,3 @@ class App extends Component {
 }
 
 export default App
-
-// return new ApolloClient({
-//   cache,
-//   uri: Api.GRAPH_QL_URL,
-//   clientState: { defaults, resolvers },
-//   request: async operation => {
-//     logger("Client request: ", {
-//       operationName: operation.operationName,
-//       variables: operation.variables,
-//       query: operation.query
-//     });
-//     let token = await AsyncStorage.getItem(strings.keyToken);
-//     operation.setContext({
-//       headers: {
-//         Accept: "application/json",
-//         authorization: token ? JWT ${ token } : ""
-//   }
-// });
-//   }
-//   })

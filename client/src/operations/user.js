@@ -9,14 +9,33 @@ const userOps = {
     userInfo: gql`
       fragment UserInfo on User {
         id
+        updatedAt
+        createdAt
         email
         hasPassword
         hasSocialLogin
         name
         username
         picture
-        updatedAt
-        createdAt
+        role
+        memberOf {
+          id
+          role
+        }
+        createdProjects {
+          published
+          name
+          url
+          title
+          description
+        }
+        votedProjects {
+          published
+          name
+          url
+          title
+          description
+        }
       }
     `
   }

@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
-import { Formik, Form, Field, ErrorMessage } from 'formik'
+import { Formik, Form } from 'formik'
+import Field from '../common/Field'
 import * as Yup from 'yup'
 import { ApolloConsumer } from 'react-apollo'
 import logger from '../../utils/logger'
@@ -9,38 +10,28 @@ import { startLogin, startSignup } from '../../actions/auth'
 import { validateEmail } from '../../utils/validators'
 import { parseServerErrors } from '../../utils/errors'
 import FormErrorMessage from '../common/FormErrorMessage'
-import debounce from 'lodash.debounce'
 
 class SignupForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      // formValues: {},
       isValidatingEmail: false,
       emailAvailable: null,
       submitErrors: '',
     }
   }
 
-  // checkFieldUpdating = (newField, newValue) => {
-  //   // NOTE: This is a workaround for Formik running field level validation on blur of every field in the form 
-  //   // Only run field level validation on blur of the selected field
-  //   const oldValue = this.state.formValues[newField]
-  //   const isFieldUpdating = oldValue !== newValue
-  //   if (isFieldUpdating) { this.setState(() => ({ formValues: R.merge(this.state.formValues, { [newField]: newValue }) })) }
-  //   return isFieldUpdating
-  // }
-
   setValidatingEmail = value => {
     // Set loading status while async validating
     this.setState(() => ({ isValidatingEmail: value }))
   }
+
   validateEmail = (email, client) => {
     this.setState(() => ({ emailAvailable: null }))
     return validateEmail({ email, client, setValidatingEmail: this.setValidatingEmail })
       .then(() => this.setState(() => ({ emailAvailable: true })))
   }
-  debouncedValidateEmail = debounce(this.validateEmail, 500)
+
   validateNameAndPassword = values => {
     return Yup
       .object()
@@ -71,7 +62,7 @@ class SignupForm extends Component {
     const CheckingAvailabilityMsg = ({ content = 'Checking availability...' }) => <span>{content}</span>
 
     return (
-      <div>
+      <Fragment>
         <ApolloConsumer>
           {client => (
             <Formik
@@ -80,19 +71,20 @@ class SignupForm extends Component {
                 email: '',
                 password: '',
               }}
+              validateOnChange={false}
               validate={this.validateNameAndPassword}
               onSubmit={async ({ name, email, password }, { setSubmitting, setFieldError }) => {
-                logger('submitted')
+                logger.info('submitted')
                 try {
                   await startSignup(email, password, { name })
                   setSubmitting(false)
-                  logger('Sign up successful')
+                  logger.info('Sign up successful')
 
                   // Now login
                   await startLogin(email, password)
-                  logger('Login successful')
+                  logger.info('Login successful')
                 } catch (errors) {
-                  logger('Sign up failed')
+                  logger.error('Sign up failed')
                   const errorMessage = parseServerErrors(errors)
                   setSubmitting(false)
                   setFieldError('form', errorMessage)
@@ -107,19 +99,17 @@ class SignupForm extends Component {
                       placeholder="Full name"
                     />
                   </div>
-                  <ErrorMessage name="name" component="div" />
 
                   <div>
                     <Field
                       type="email"
                       name="email"
                       placeholder="Email"
-                      validate={email => this.debouncedValidateEmail(email, client)}
+                      validate={email => this.validateEmail(email, client)}
                     />
                     <span>{this.state.isValidatingEmail ? <CheckingAvailabilityMsg /> : null}</span>
                     <span>{this.state.emailAvailable ? 'Email is available!' : null}</span>
                   </div>
-                  <ErrorMessage name="email" component="div" />
 
                   <div>
                     <Field
@@ -128,10 +118,9 @@ class SignupForm extends Component {
                       placeholder="Password"
                     />
                   </div>
-                  <ErrorMessage name="password">{errors => errors.map((err, i) => <div key={i}>{err}</div>)}</ErrorMessage>
 
                   <div>
-                    <ButtonPrimary type="submit" disabled={isSubmitting}>Sign Up</ButtonPrimary>
+                    <ButtonPrimary type="submit" loading={isSubmitting}>Sign Up</ButtonPrimary>
                   </div>
                   <FormErrorMessage />
                 </Form>
@@ -139,7 +128,7 @@ class SignupForm extends Component {
             </Formik>
           )}
         </ApolloConsumer>
-      </div>
+      </Fragment>
     )
   }
 }

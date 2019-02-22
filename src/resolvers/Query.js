@@ -1,31 +1,14 @@
-import { getUserEmail } from '../utils/auth'
-import logger from '../../client/src/utils/logger'
+import * as R from 'ramda'
+import UserQuery from './UserQuery'
+import FileQuery from './FileQuery'
+import ProjectQuery from './ProjectQuery'
+import MemberQuery from './MemberQuery'
 
-const Query = {
-	users(parent, args, { prisma }, info) {
-		return prisma.query.users(args, info)
-	},
-
-	user(parent, args, { prisma }, info) {
-		return prisma.query.user(args, info)
-	},
-
-	async me(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(request)
-		return prisma.query.user({
-			where: {
-				email
-			}
-		})
-	},
-
-	file(parent, { id }, { prisma }, info) {
-		return prisma.query.file({ where: { id } }, info)
-	},
-
-	files(parent, args, { prisma }, info) {
-		return prisma.query.files(args, info)
-	}
-}
+const Query = R.mergeAll([
+  UserQuery,
+  FileQuery,
+  ProjectQuery,
+  MemberQuery,
+])
 
 export { Query as default }

@@ -60,7 +60,7 @@ class ProfilePicture extends Component {
       canvas.toBlob(blob => {
         if (!blob) {
           //reject(new Error('Canvas is empty'))
-          logger('Canvas is empty')
+          logger.error('Canvas is empty')
           return
         }
         blob.name = fileName
@@ -127,12 +127,12 @@ class ProfilePicture extends Component {
         }
       })
       const { url } = fileUploadData.data.uploadFile
-      // logger('S3 url from upload', url)
+      // logger.info('S3 url from upload', url)
       
       // Update the User picture URL
       const updatedUserData = await startUpdateUser(client, email, { picture: url })
       const updatedUser = updatedUserData.data.updateUser
-      // logger('updatedUser', updatedUser)
+      // logger.info('updatedUser', updatedUser)
 
       this.setState(() => ({ imageUrl: url }))
 

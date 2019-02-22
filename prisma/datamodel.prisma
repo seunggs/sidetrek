@@ -9,9 +9,16 @@ type User {
   username: String @unique
   picture: String
   twitter: String
-  memberOf: [Member!]! @relation(name: "MemberToUser", onDelete: CASCADE)
-  createdProjects: [Project!]! @relation(name: "ProjectAuthorToUser", onDelete: CASCADE)
-  votedProjects: [Project!]! @relation(name: "ProjectVoteToUser", onDelete: CASCADE)
+  role: UserRole! @default(value: USER)
+  memberOf: [Member!] @relation(name: "MemberToUser", onDelete: CASCADE)
+  createdProjects: [Project!] @relation(name: "ProjectAuthorToUser", onDelete: CASCADE)
+  votedProjects: [Project!] @relation(name: "ProjectVoterToUser", onDelete: CASCADE)
+}
+
+enum UserRole {
+  ROOT,
+  ADMIN,
+  USER,
 }
 
 type File {
@@ -22,23 +29,25 @@ type File {
   mimetype: String!
   encoding: String!
   url: String! @unique
+  hero: Boolean
+  project: Project @relation(name: "ProjectToFile", onDelete: SET_NULL)
 }
 
 type Project {
   id: ID! @unique
   createdAt: DateTime!
   updatedAt: DateTime!
-  published: Boolean!
-  featured: Boolean
-  members: [Member!]! @relation(name: "MemberToProject", onDelete: CASCADE)
+  published: Boolean! @default(value: false)
+  featured: Boolean @default(value: false)
   name: String!
   url: String! @unique
   title: String!
   description: String!
   body: Json
   author: User! @relation(name: "ProjectAuthorToUser", onDelete: SET_NULL)
-  votes: [User!]! @relation(name: "ProjectVoteToUser", onDelete: SET_NULL)
-  images: [Image!]! @relation(name: "ProjectToImage", onDelete: CASCADE)
+  members: [Member!]! @relation(name: "MemberToProject", onDelete: CASCADE)
+  voters: [User!] @relation(name: "ProjectVoterToUser", onDelete: SET_NULL)
+  images: [File!] @relation(name: "ProjectToFile", onDelete: CASCADE)
 }
 
 type Member {
@@ -46,14 +55,13 @@ type Member {
   createdAt: DateTime!
   updatedAt: DateTime!
   user: User! @relation(name: "MemberToUser", onDelete: SET_NULL)
+  role: MemberRole! @default(value: USER)
   project: Project! @relation(name: "MemberToProject", onDelete: SET_NULL)
 }
 
-type Image {
-  id: ID! @unique
-  createdAt: DateTime!
-  updatedAt: DateTime!
-  url: String! @unique
-  hero: Boolean
-  project: Project @relation(name: "ProjectToImage", onDelete: SET_NULL)
+enum MemberRole {
+  ROOT,
+  ADMIN,
+  MODERATOR,
+  USER,
 }
