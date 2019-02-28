@@ -1,5 +1,3 @@
-import logger from '../../client/src/utils/logger'
-
 const MemberQuery = {
 	members(parent, args, { prisma }, info) {
 		return prisma.query.members(args, info)

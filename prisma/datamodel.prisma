@@ -13,6 +13,12 @@ type User {
   memberOf: [Member!] @relation(name: "MemberToUser", onDelete: CASCADE)
   createdProjects: [Project!] @relation(name: "ProjectAuthorToUser", onDelete: CASCADE)
   votedProjects: [Project!] @relation(name: "ProjectVoterToUser", onDelete: CASCADE)
+  favoriteProjects: [Project!] @relation(name: "ProjectFavoritedToUser", onDelete: CASCADE)
+  posts: [Post!] @relation(name: "PostAuthorToUser", onDelete: CASCADE)
+  votedPosts: [Post!] @relation(name: "PostVoterToUser", onDelete: CASCADE)
+  comments: [Comment!] @relation(name: "CommentAuthorToUser", onDelete: CASCADE)
+  reactions: [Reaction!] @relation(name: "ReactionAuthorToUser", onDelete: CASCADE)
+  createdMilestones: [Milestone] @relation(name: "MilestoneAuthorToUser", onDelete: CASCADE)
 }
 
 enum UserRole {
@@ -29,8 +35,7 @@ type File {
   mimetype: String!
   encoding: String!
   url: String! @unique
-  hero: Boolean
-  project: Project @relation(name: "ProjectToFile", onDelete: SET_NULL)
+  project: Project @relation(name: "FileToProject", onDelete: SET_NULL)
 }
 
 type Project {
@@ -47,7 +52,11 @@ type Project {
   author: User! @relation(name: "ProjectAuthorToUser", onDelete: SET_NULL)
   members: [Member!]! @relation(name: "MemberToProject", onDelete: CASCADE)
   voters: [User!] @relation(name: "ProjectVoterToUser", onDelete: SET_NULL)
-  images: [File!] @relation(name: "ProjectToFile", onDelete: CASCADE)
+  favoritedUsers: [User!] @relation(name: "ProjectFavoritedToUser", onDelete: SET_NULL)
+  files: [File!] @relation(name: "FileToProject", onDelete: CASCADE)
+  heroImageId: String
+  milestones: [Milestone!] @relation(name: "MilestoneToProject", onDelete: CASCADE)
+  posts: [Post!] @relation(name: "PostToProject", onDelete: CASCADE)
 }
 
 type Member {
@@ -57,6 +66,7 @@ type Member {
   user: User! @relation(name: "MemberToUser", onDelete: SET_NULL)
   role: MemberRole! @default(value: USER)
   project: Project! @relation(name: "MemberToProject", onDelete: SET_NULL)
+  milestonesAchieved: [Milestone!] @relation(name: "MilestoneAchievedToMember", onDelete: CASCADE)
 }
 
 enum MemberRole {
@@ -65,3 +75,59 @@ enum MemberRole {
   MODERATOR,
   USER,
 }
+
+type Post {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  body: String!
+  published: Boolean! @default(value: false)
+  author: User! @relation(name: "PostAuthorToUser", onDelete: SET_NULL)
+  comments: [Comment!] @relation(name: "PostToComment", onDelete: CASCADE)
+  voters: [User!] @relation(name: "PostVoterToUser", onDelete: SET_NULL)
+  project: Project @relation(name: "PostToProject", onDelete: SET_NULL)
+}
+
+type Comment {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  author: User! @relation(name: "CommentAuthorToUser", onDelete: SET_NULL)
+  reactions: [Reaction!] @relation(name: "CommentToReaction", onDelete: CASCADE)
+  body: String!
+  post: Post @relation(name: "PostToComment", onDelete: SET_NULL)
+  parentComment: Comment @relation(name: "ParentToChildComment", onDelete: SET_NULL)
+  childComments: [Comment!] @relation(name: "ParentToChildComment", onDelete: CASCADE)
+}
+
+type Reaction {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  author: User! @relation(name: "ReactionAuthorToUser", onDelete: SET_NULL)
+  emoji: String!
+  comment: Comment @relation(name: "CommentToReaction", onDelete: SET_NULL)
+  milestone: Milestone @relation(name: "MilestoneToReaction", onDelete: SET_NULL)
+}
+
+type Milestone {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  title: String!
+  description: String
+  author: User! @relation(name: "MilestoneAuthorToUser", onDelete: SET_NULL)
+  deadline: DateTime
+  project: Project! @relation(name: "MilestoneToProject", onDelete: SET_NULL)
+  reactions: [Reaction!] @relation(name: "MilestoneToReaction", onDelete: CASCADE)
+  achievedBy: [Member!] @relation(name: "MilestoneAchievedToMember", onDelete: SET_NULL)
+  order: Int
+}
+
+# type Tag {
+#   id: ID! @unique
+#   createdAt: DateTime!
+#   updatedAt: DateTime!
+#   text: String!
+# }

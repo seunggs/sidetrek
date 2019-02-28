@@ -1,20 +1,8 @@
-import React from 'react'
 import isHotkey from 'is-hotkey'
 import { checkHasBlock } from './utils'
 import { handleSetList } from './listPlugins'
 import { DEFAULT_NODE, DEFAULT_IMAGE_WIDTH } from '../../utils/constants'
-
-export const checkIsBackspaceHotkey = isHotkey('backspace')
-
-export const checkIsReturnHotkey = isHotkey('return')
-
-export const checkIsTabHotkey = isHotkey('tab')
-
-export const checkIsUntabHotkey = isHotkey('shift+tab')
-
-export const checkIsUpHotkey = isHotkey('up')
-
-export const checkIsDownHotkey = isHotkey('down')
+import getRenderElement from './getRenderElement'
 
 // Handles setting any block including lists
 export function handleSetBlock(event, editor, type) {
@@ -44,18 +32,20 @@ function createBlockPlugin(options) {
       const { children, node, attributes } = props
       
       switch (node.type) {
+        case 'paragraph':
+          return getRenderElement({ type: node.type, children, attributes })
         case 'block-quote':
-          return <blockquote {...attributes}>{children}</blockquote>
+          return getRenderElement({ type: node.type, children, attributes })
         case 'heading-one':
-          return <h1 className="f1 fw5" {...attributes}>{children}</h1>
+          return getRenderElement({ type: node.type, children, attributes })
         case 'heading-two':
-          return <h2 className="f2 fw5" {...attributes}>{children}</h2>
+          return getRenderElement({ type: node.type, children, attributes })
         case 'align-left':
-          return <div className="tl" {...attributes}>{children}</div>
+          return getRenderElement({ type: node.type, children, attributes })
         case 'align-center':
-          return <div className="tc" {...attributes}>{children}</div>
+          return getRenderElement({ type: node.type, children, attributes })
         case 'align-right':
-          return <div className="tr" {...attributes}>{children}</div>
+          return getRenderElement({ type: node.type, children, attributes })
         default:
           return next()
       }

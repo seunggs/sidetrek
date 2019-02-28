@@ -1,4 +1,6 @@
 import * as R from 'ramda'
+import imageExtensions from 'image-extensions'
+import { UPLOAD_FILE_OP, DELETE_FILE_OP } from '../../operations/upload'
 
 export const getBlocks = (value, type) => {
   return value.blocks.filter(node => node.type === type)
@@ -51,7 +53,7 @@ export const getMentionInput = (value) => {
   // In some cases, like if the node that was selected gets deleted,
   // `startText` can be null.
   if (!value.startText) { return null }
-  
+
   const startOffset = value.selection.start.offset
   const textBefore = value.startText.text.slice(0, startOffset)
   const result = /@(\S*)$/.exec(textBefore)
@@ -85,10 +87,10 @@ export const calcHoverPosition = (hoverElemRect, parentRect, selectionRect, { dr
   const gap = 10 // space between the hover elem and top of selection when hovering on top
 
   // Position of selectionRect relative to the parentRect
-  // NOTE: this is for absolute positioning - i.e. relativeRightPos of 10px means 10px from the right edge of parentRect
+  // NOTE: this is for absolute positioning - i.e. relativeRightPos of 10 means 10px from the right edge of parentRect
   const relativeTopPos = selectionRect.top - parentRect.top
   const relativeLeftPos = selectionRect.left - parentRect.left
-  const relativeBottomPos = parentRect.bottom - selectionRect.bottom
+  // const relativeBottomPos = parentRect.bottom - selectionRect.bottom
   const relativeRightPos = parentRect.right - selectionRect.right
 
   const hoverElemRelativeLeftPos = relativeLeftPos + (selectionRect.width / 2) - (hoverElemRect.width / 2)
@@ -99,12 +101,65 @@ export const calcHoverPosition = (hoverElemRect, parentRect, selectionRect, { dr
   const leftPos = hoverElemRelativeLeftPos
   const top = selectionRect.top <= (hoverElemRect.height + gap) ? (
     dropBottom ?
-      window.innerHeight - relativeBottomPos + gap :
+      relativeTopPos + selectionRect.height + gap :
       relativeTopPos + gap
   ) : topPos
   const right = hoverElemRelativeRightPos <= 0 ? 0 : rightPos
   const left = hoverElemRelativeLeftPos <= 0 ? 0 : leftPos
   const selectionInLeftHalf = selectionRect.left + (selectionRect.width / 2) < (window.innerWidth / 2)
-  
+
   return R.mergeAll([{ top }, selectionInLeftHalf ? { left } : {}, !selectionInLeftHalf ? { right } : {}])
+}
+
+// Position relative to editor element
+export const getRelativePosition = (elemRect) => {
+  const editor = window.document.getElementById('editor')
+  const editorRect = editor ? editor.getBoundingClientRect() : { top: 0, right: 0, bottom: 0, left: 0 }
+  return {
+    top: elemRect.top - editorRect.top,
+    left: elemRect.left - editorRect.left,
+    bottom: editorRect.bottom - elemRect.bottom,
+    right: editorRect.right - elemRect.right,
+  }
+}
+
+export const checkIsImage = url => {
+  const ext = R.compose(R.last, R.split('.'))(url)
+  return !!R.find(imageExt => ext === imageExt, imageExtensions)
+}
+
+export const uploadImage = async (editor, client, file) => {
+  const { imgFolder, projectId } = editor.props
+
+  let folder
+  if (projectId) {
+    folder = `images/projects/${projectId}`
+  } else {
+    folder = `images/${imgFolder}`
+  }
+
+  let variables = { folder, file }
+  if (projectId) {
+    variables = R.merge(variables, { projectId })
+  }
+
+  // First upload to S3
+  const fileUploadData = await client.mutate({
+    mutation: UPLOAD_FILE_OP,
+    variables
+  })
+  return fileUploadData.data.uploadFile
+}
+
+export const deleteImage = async (client, url) => {
+  // Remove the file from S3
+  const fileDeleteData = await client.mutate({
+    mutation: DELETE_FILE_OP,
+    variables: {
+      where: {
+        url
+      }
+    }
+  })
+  return fileDeleteData.data.deleteFile
 }

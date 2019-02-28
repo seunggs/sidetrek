@@ -1,0 +1,16 @@
+.ant-notification-notice-message {
+  color: inherit !important;
+  font-weight: 600;
+}
+.ant-notification-notice-description {
+  opacity: 0.8;
+}
+.ant-notification-notice-icon-success,
+.ant-notification-notice-icon-warning,
+.ant-notification-notice-icon-error {
+  color: inherit !important;
+}
+.ant-notification-notice {
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+}

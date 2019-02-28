@@ -13,6 +13,7 @@ import './styles/override/border-colors.css'
 import './styles/override/shadow.css'
 import './styles/override/typescale.css'
 import './styles/override/emoji.css'
+import './styles/override/antd.css'
 
 import App from './App'
 import * as serviceWorker from './serviceWorker'

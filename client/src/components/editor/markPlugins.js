@@ -1,5 +1,5 @@
-import React from 'react'
 import isHotkey from 'is-hotkey'
+import getRenderElement from './getRenderElement'
 
 const createHotkeyPlugin = options => {
   const { hotkey, type } = options
@@ -9,13 +9,13 @@ const createHotkeyPlugin = options => {
       const { children, mark, attributes} = props
       switch (mark.type) {
         case 'bold':
-          return <strong {...attributes}>{children}</strong>
+          return getRenderElement({ type: mark.type, children, attributes })
         case 'italic':
-          return <i {...attributes}>{children}</i>
+          return getRenderElement({ type: mark.type, children, attributes })
         case 'underline':
-          return <u {...attributes}>{children}</u>
+          return getRenderElement({ type: mark.type, children, attributes })
         case 'code':
-          return <code className="pa2 bg-near-white br3" {...attributes}>{children}</code>
+          return getRenderElement({ type: mark.type, children, attributes })
         default:
           return next()
       }

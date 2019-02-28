@@ -9,7 +9,7 @@ const CustomInputComponent = ({
   form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
   ...props
 }) => {
-  const errorClassName = 'f4 mt1 red'
+  const errorClassName = 'f6 mt1 red'
   const fieldTouched = touched[field.name]
   const fieldErrors = errors[field.name]
   const finalFieldErrors = R.is(Object, fieldErrors) ?

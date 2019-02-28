@@ -1,7 +1,7 @@
 import React from 'react'
 import * as R from 'ramda'
 
-const ButtonEditor = ({ children, size = 'default', theme = 'light', className, style, ...rest }) => {
+const ButtonEditor = ({ children, size = 'default', theme = 'light', className = '', style = {}, ...rest }) => {
   /**
    * theme: dark || light
    * size: default || large
@@ -28,7 +28,7 @@ const ButtonEditor = ({ children, size = 'default', theme = 'light', className, 
     borderColor: 'transparent',
   }, sizeStyle)
   return (
-    <button className={`o-50 glow ${className}`} style={R.merge(baseStyle, style)} {...rest}>{children}</button>
+    <button className={`${className} o-50 glow`} style={R.merge(baseStyle, style)} {...rest}>{children}</button>
   )
 }
 

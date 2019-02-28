@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
  * NOTE: Include 'id' in all queries and mutations so Apollo can match them for automatic cache update
  */
 
-const userOps = {
+export const userOps = {
   fragments: {
     userInfo: gql`
       fragment UserInfo on User {
@@ -23,18 +23,34 @@ const userOps = {
           role
         }
         createdProjects {
-          published
-          name
-          url
-          title
-          description
+          id
         }
         votedProjects {
-          published
-          name
-          url
-          title
-          description
+          id
+        }
+        favoriteProjects {
+          id
+        }
+        posts {
+          id
+        }
+        votedPosts {
+          id
+        }
+        comments {
+          id
+        }
+        reactions {
+          id
+          comment {
+            id
+          }
+          milestone {
+            id
+          }
+        }
+        createdMilestones {
+          id
         }
       }
     `

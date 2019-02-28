@@ -7,8 +7,8 @@ const Spinner = ({ page = false, width = 65, height = 65 }) => {
     </svg>
   )
   return page ? (
-    <div className="fixed top-0 right-0 bottom-0 left-0" style={{ backgroundColor: 'rgba(255,255,255,.6)' }}>
-      <div className="flex items-center justify-center z-5" style={{ height: '100%' }}>
+    <div className="fixed z-5 top-0 right-0 bottom-0 left-0" style={{ backgroundColor: 'rgba(255,255,255,.6)' }}>
+      <div className="flex items-center justify-center" style={{ height: '100%' }}>
         <Icon />
       </div>
     </div >

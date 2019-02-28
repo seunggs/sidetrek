@@ -1,24 +1,16 @@
-import React from 'react'
 import isHotkey from 'is-hotkey'
-import Emoji from '../common/Emoji'
-import { checkHasBlock } from './utils';
+import getRenderElement from './getRenderElement'
 
 export const checkIsEscapeHotkey = isHotkey('esc')
 
 const emojiPlugin = (options) => {
-  const { type } = options
-
   return {
     renderNode(props, editor, next) {
-      const { children, node, attributes } = props
+      const { node, attributes } = props
 
       switch (node.type) {
         case 'emoji':
-          return (
-            <Emoji className="dib relative" style={{ transform: 'scale(1.5)', marginLeft: '6px', marginRight: '2px' }} {...attributes}>
-              {node.data.get('emoji').native}
-            </Emoji>
-          )
+          return getRenderElement({ type: node.type, attributes, data: node.data })
         default:
           return next()
       }

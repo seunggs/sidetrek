@@ -1,9 +1,10 @@
-import React from 'react'
+import * as R from 'ramda'
+import logger from '../../utils/logger'
 import { getEventRange, getEventTransfer } from 'slate-react'
-import imageExtensions from 'image-extensions'
 import isUrl from 'is-url'
 import { DEFAULT_IMAGE_WIDTH } from '../../utils/constants'
-import { checkHasBlock } from './utils'
+import { checkIsImage, uploadImage } from './utils'
+import getRenderElement from './getRenderElement'
 
 const imagePlugin = (options) => {
   const { type } = options
@@ -11,19 +12,26 @@ const imagePlugin = (options) => {
   return {
     commands: {
       // width is an Int in percentage -> 100 is '100%'
-      insertImage(editor, src, width = DEFAULT_IMAGE_WIDTH) {
+      insertImage(editor, src, target, width = DEFAULT_IMAGE_WIDTH) {
+        if (target) {
+          editor.select(target)
+        }
+
         editor
           .insertBlock({
             type,
-            data: { src, width },
+            data: { src, width, align: 'left' },
           })
           .wrapBlock(`${type}Wrapper`)
-          .addMark(type)
-      },
-      checkIsImage(url) {
-        return !!imageExtensions.find(url.endsWith)
+          .focus()
+          .moveToStartOfNextText()
       },
       handleDropOrPaste(editor, event, next) {
+        const { data } = editor.value
+        const setState = data.get('setState')
+        const client = data.get('client')
+        const openNotification = data.get('openNotification')
+
         const target = getEventRange(event, editor)
         if (!target && event.type === 'drop') return next()
 
@@ -31,65 +39,67 @@ const imagePlugin = (options) => {
         const { type, text, files } = transfer
 
         if (type === 'files') {
-          for (const file of files) {
-            const reader = new FileReader()
-            const [mime] = file.type.split('/')
-            if (mime !== 'image') continue
+          setState({ imageLoading: true })
 
-            reader.addEventListener('load', () => {
-              editor.insertImage(reader.result, DEFAULT_IMAGE_WIDTH)
+          const uploadPromises = R.map(file => {
+            return uploadImage(editor, client, file)
+          })(files)
+
+          Promise.all(uploadPromises)
+            .then(responses => {
+              setState(() => ({ imageLoading: false }), () => {
+                R.forEach(({ url }) => {
+                  editor.insertImage(url, target)
+                })(responses)
+              })
+            })
+            .catch(err => {
+              logger.info('Something went wrong while uploading files', err)
+              setState({ imageLoading: false }, () => {
+                openNotification(
+                  'error',
+                  'Uploading image unsuccessful',
+                  'Something went wrong while uploading the image - please try again later'
+                )
+              })
             })
 
-            reader.readAsDataURL(file)
-          }
           return
         }
 
         if (type === 'text') {
           if (!isUrl(text)) return next()
-          if (!editor.checkIsImage(text)) return next()
-          editor.insertImage(text, DEFAULT_IMAGE_WIDTH)
+          if (!checkIsImage(text)) return next()
+
+          // Don't have to upload image because it's obviously already uploaded somewhere
+          editor.insertImage(text, target)
           return
         }
+
+        next()
       }
     },
     onDrop(event, editor, next) {
       if (type === 'image') {
-        console.log('onDrop')
         editor.handleDropOrPaste(event, next)
         return next()
       }
     },
     onPaste(event, editor, next) {
       if (type === 'image') {
-        console.log('onPaste')
         editor.handleDropOrPaste(event, next)
         return next()
       }
     },
     renderNode(props, editor, next) {
       const { children, attributes, node, isFocused } = props
+      const { data } = node
 
       switch (node.type) {
         case 'image':
-          const { data } = node
-          const src = data.get('src')
-          const width = data.get('width')
-          const imageClass = isFocused ? 'editor-image-focused' : ''
-          const id = isFocused ? 'image-hover-menu-context' : ''
-          return (
-            <div style={{ width: `${width}%` }} {...attributes}>
-              <img
-                id={id}
-                src={src}
-                className={imageClass}
-                style={{ width: '100%' }}
-                {...attributes}
-              />
-            </div>
-          )
+          return getRenderElement({ type: node.type, children, attributes, data, isFocused })
         case 'imageWrapper':
-          return <div className="flex" {...attributes}>{children}</div>
+          return getRenderElement({ type: node.type, children, attributes, data, isFocused })
         default:
           return next()
       }

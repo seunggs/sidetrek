@@ -8,7 +8,12 @@ const resolvers = {
 	Query,
 	Mutation,
 	// Subscription,
-	User
+	// User,
+	Node: {
+    __resolveType() {
+      return null
+    }
+  },
 }
 
 const fragmentReplacements = extractFragmentReplacements(resolvers)

@@ -1,5 +1,4 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react'
 import * as R from 'ramda'
 import Modal from 'antd/es/modal'
 import 'antd/es/modal/style/css'

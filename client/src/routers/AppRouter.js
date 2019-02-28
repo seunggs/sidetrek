@@ -13,6 +13,7 @@ import UsernamePage from '../components/UsernamePage'
 import ProfilePage from '../components/ProfilePage'
 import SettingsPage from '../components/SettingsPage'
 import NewProjectPage from '../components/project/NewProjectPage'
+import NewPostPage from '../components/post/NewPostPage'
 
 const handleAuth = (store, client, auth, nextState) => {
   console.log('Auth callback initiating...')
@@ -37,6 +38,7 @@ const AppRouter = ({ store, auth, client }) => (
         <PublicRoute path="/profile/:username" component={ProfilePage} />
         <PrivateRoute path="/settings" component={SettingsPage} />
         <PrivateRoute path="/project/new" component={NewProjectPage} />
+        <PrivateRoute path="/post/new" component={NewPostPage} />
         <PublicRoute path="/test" component={Test} />
         <PublicRoute component={NotFoundPage} />
       </Switch>

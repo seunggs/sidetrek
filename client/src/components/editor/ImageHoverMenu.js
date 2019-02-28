@@ -24,6 +24,7 @@ class ImageHoverMenu extends Component {
     
     const imageHoverMenuPos = this.imageHoverMenu.current.getBoundingClientRect()
     const anchor = window.document.getElementById(this.props.anchor)
+
     const anchorPos = anchor ? anchor.getBoundingClientRect() : 0
     const editorPos = window.document.getElementById('editor').getBoundingClientRect()
 
@@ -47,20 +48,17 @@ class ImageHoverMenu extends Component {
   }
 
   render() {
-    const { size = 'default', renderMarkButton, renderBlockButton } = this.props
+    const { size = 'default', renderBlockButton } = this.props
     const menuPosition = this.state.menuPosition
     const editorElem = document.getElementById('editor')
     const idToAttachPortal = editorElem ? 'editor' : 'root' 
 
     return createPortal(
-      <span ref={this.imageHoverMenu} className="absolute br3 dib ph3 pv3 bg-dark-gray transition-in" style={menuPosition}>
-        {renderMarkButton('bold', 'bold', size, 'dark')}
-        {renderMarkButton('italic', 'italic', size, 'dark')}
-        {renderMarkButton('underline', 'underline', size, 'dark')}
-        {renderMarkButton('code', 'code', size, 'dark')}
-        {renderBlockButton('unordered-list', 'bars', size, 'dark')}
-        {renderBlockButton('ordered-list', 'ordered-list', size, 'dark')}
-        {renderBlockButton('emoji', 'smile', size, 'dark')}
+      <span id="image-hover-menu" ref={this.imageHoverMenu} className="absolute br3 dib ph3 pv3 bg-dark-gray transition-in" style={menuPosition}>
+        {renderBlockButton('image-align-left', 'align-left', size, 'dark')}
+        {renderBlockButton('image-align-center', 'align-center', size, 'dark')}
+        {renderBlockButton('image-align-right', 'align-right', size, 'dark')}
+        {renderBlockButton('image-width', 'colum-height', size, 'dark')}
       </span>,
       document.getElementById(idToAttachPortal)
     )

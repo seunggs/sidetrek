@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Formik, Form } from 'formik'
 import Editor from './editor/Editor'
 import Field from './common/Field'
+import getEditorContentAsHTML from  './editor/getEditorContentAsHTML'
 
 class Test extends Component {
   constructor(props) {
@@ -11,6 +12,8 @@ class Test extends Component {
   }
 
   render() {
+    // console.log('content', window.localStorage.getItem('content'))
+    
     return (
       <div className="pa4">
       <div className="mb4">
@@ -21,6 +24,9 @@ class Test extends Component {
         </Formik>
         </div>
         <Editor tabIndex={0} style={{ minHeight: '80px' }} />
+
+        {/* show HTML being saved from the Editor */}
+        <div dangerouslySetInnerHTML={{__html: getEditorContentAsHTML(localStorage.getItem('content'))}} />
       </div>
     )
   }

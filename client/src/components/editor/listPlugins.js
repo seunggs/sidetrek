@@ -1,5 +1,5 @@
-import React from 'react'
 import * as R from 'ramda'
+import { Map } from 'immutable'
 import {
   getCurrentBlockText,
   checkIsList,
@@ -14,7 +14,8 @@ import {
   checkIsReturnHotkey,
   checkIsTabHotkey,
   checkIsUntabHotkey,
-} from './blockPlugins'
+} from './checkHotkey'
+import getRenderElement from './getRenderElement'
 
 const DEFAULT_NODE = 'paragraph'
 
@@ -91,8 +92,6 @@ function handleUntabListHotkey(event, editor, type) {
 export function handleSetList(editor, type) {
   const { value } = editor
 
-  console.log('Running')
-
   // Handle the extra wrapping required for list buttons
   if (checkIsList(value) && checkIsType(value, type)) {
     // If it's a list and is the same type (ordered or unordered) as the pressed list, then
@@ -115,18 +114,21 @@ export function handleSetList(editor, type) {
 
 function createListBlockPlugin(options) {
   const { type } = options
+  let orderedListNum = '1'
 
   return {
     renderNode(props, editor, next) {
       const { children, node, attributes } = props
-
+      
       switch (node.type) {
         case 'list-item':
-          return <li {...attributes}>{children}</li>
+          return getRenderElement({ type: node.type, children, attributes })
         case 'unordered-list':
-          return <ul {...attributes}>{children}</ul>
+          return getRenderElement({ type: node.type, children, attributes })
         case 'ordered-list':
-          return <ol {...attributes}>{children}</ol>
+          return getRenderElement({ type: node.type, children, attributes, data: Map({ orderedListNum }) })
+        case 'indent-list':
+          return getRenderElement({ type: node.type, children, attributes })
         default:
           return next()
       }
@@ -135,14 +137,14 @@ function createListBlockPlugin(options) {
       const { value } = editor
 
       // Handle lists since their hotkeys are unique
-      if (type === 'unordered-list' || type === 'ordered-list') {
+      if (type === 'unordered-list' || type === 'ordered-list' || type === 'indent-list') {
         if (
           type === 'unordered-list' &&
           checkIsUnorderedListHotkey(event, value) &&
           !checkIsList(value) && // if already a list, ignore the hotkey
           checkIsEmptyLeftToUnorderedListHotkey(event, value, type)
         ) {
-          // logger.info('unordered list hotkey pressed')
+          // console.log('unordered list hotkey pressed')
           handleUnorderedListHotkey(event, editor, type)
           return next()
         }
@@ -153,11 +155,11 @@ function createListBlockPlugin(options) {
           !checkIsList(value) &&
           checkIsEmptyLeftToOrderedListHotkey(event, value, type)
         ) {
-          // logger.info('ordered list hotkey pressed', type)
+          // console.log('ordered list hotkey pressed', type)
+          orderedListNum = getCurrentBlockText(event, value).replace('. ', '')
           handleOrderedListHotkey(event, editor, type)
           return next()
         }
-
         // Handle list delete hotkey
         if (
           checkIsListDeleteHotkey(event) &&
@@ -165,7 +167,7 @@ function createListBlockPlugin(options) {
           checkIsType(value, type) &&
           checkIsEmptyPriorToHotkeyPress(value)
         ) {
-          // logger.info('list delete hotkey pressed')
+          // console.log('list delete hotkey pressed')
           handleDeleteListHotkey(event, editor, type)
           return next()
         }
@@ -176,7 +178,7 @@ function createListBlockPlugin(options) {
           checkIsList(value) &&
           checkIsType(value, type)
         ) {
-          // logger.info('list tab hotkey pressed')
+          // console.log('list tab hotkey pressed')
           handleTabListHotkey(event, editor, type)
           return next()
         }
@@ -187,8 +189,18 @@ function createListBlockPlugin(options) {
           checkIsList(value) &&
           checkIsType(value, type)
         ) {
-          // logger.info('list untab hotkey pressed')
+          // console.log('list untab hotkey pressed')
           handleUntabListHotkey(event, editor, type)
+          return next()
+        }
+
+        // Handle indent list tab hotkey
+        if (
+          type === 'indent-list' &&
+          checkIsTabHotkey(event)
+        ) {
+          // console.log('list tab hotkey pressed')
+          handleTabListHotkey(event, editor, type)
           return next()
         }
       }
@@ -199,3 +211,4 @@ function createListBlockPlugin(options) {
 
 export const orderedListPlugin = createListBlockPlugin({ type: 'ordered-list' })
 export const unorderedListPlugin = createListBlockPlugin({ type: 'unordered-list' })
+export const indentListPlugin = createListBlockPlugin({ type: 'indent-list' })

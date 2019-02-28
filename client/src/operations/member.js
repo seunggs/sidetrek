@@ -11,8 +11,20 @@ const memberOps = {
         id
         createdAt
         updatedAt
-        user
-        project
+        user {
+          id
+          username
+        }
+        role
+        project {
+          id
+          title
+        }
+        milestonesAchieved {
+          id
+          title
+          deadline
+        }
       }
     `
   }

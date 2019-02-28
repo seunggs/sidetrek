@@ -82,7 +82,7 @@ class MentionMenu extends Component {
     const oldPosition = this.state.menuPosition
     const newPosition = anchor ? {
       top: anchorRect.bottom + 6,
-      left: anchorRect.left - 13,
+      left: anchorRect.left - 5,
     } : DEFAULT_POSITION
 
     if (R.equals(oldPosition, newPosition)) { return } // prevents infinite loop

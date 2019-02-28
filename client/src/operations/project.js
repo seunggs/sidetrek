@@ -19,19 +19,39 @@ const projectOps = {
         description
         body
         author {
+          id
           email
+          username
         }
         members {
           user {
+            id
             email
+            username
           }
         }
         voters {
+          id
           email
+          username
         }
-        images {
+        favoritedUsers {
+          id
+          email
+          username
+        }
+        files {
           url
-          hero
+          mimetype
+        }
+        heroImageId
+        milestones {
+          id
+          title
+        }
+        posts {
+          id
+          title
         }
       }
     `

@@ -6,8 +6,8 @@ import configureStore from './store/configureStore'
 import { ApolloProvider } from "react-apollo"
 import getClient from './utils/apollo'
 import auth from './utils/auth'
-import { setAuthCompleted } from './actions/auth';
-import logger from './utils/logger';
+import { setAuthCompleted } from './actions/auth'
+import logger from './utils/logger'
 
 // Setup Redux and Apollo Client
 const store = configureStore()

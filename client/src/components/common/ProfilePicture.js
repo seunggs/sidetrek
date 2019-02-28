@@ -2,12 +2,13 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ReactCrop from 'react-image-crop'
-import ReactModal from 'react-modal'
+import Modal from './Modal'
 import 'react-image-crop/dist/ReactCrop.css'
 import logger from '../../utils/logger'
 import { withApollo } from 'react-apollo'
 import { UPLOAD_FILE_OP } from '../../operations/upload'
 import ButtonPrimary from './ButtonPrimary'
+import Upload from './Upload'
 import { parseServerErrors } from '../../utils/errors'
 import { startUpdateUser } from '../../actions/user'
 
@@ -15,7 +16,7 @@ class ProfilePicture extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      showModal: false,
+      modalVisible: false,
       reader: null,
       src: null,
       crop: {
@@ -31,11 +32,11 @@ class ProfilePicture extends Component {
   }
 
   handleOpenModal = () => {
-    this.setState(() => ({ showModal: true }))
+    this.setState(() => ({ modalVisible: true }))
   }
 
   handleCloseModal = () => {
-    this.setState(() => ({ showModal: false }))
+    this.setState(() => ({ modalVisible: false }))
   }
 
   getCroppedImg = (image, pixelCrop, fileName) => {
@@ -128,11 +129,9 @@ class ProfilePicture extends Component {
       })
       const { url } = fileUploadData.data.uploadFile
       // logger.info('S3 url from upload', url)
-      
+
       // Update the User picture URL
-      const updatedUserData = await startUpdateUser(client, email, { picture: url })
-      const updatedUser = updatedUserData.data.updateUser
-      // logger.info('updatedUser', updatedUser)
+      await startUpdateUser(client, email, { picture: url })
 
       this.setState(() => ({ imageUrl: url }))
 
@@ -154,17 +153,18 @@ class ProfilePicture extends Component {
       isEditable = false,
       width = 160,
       height = 160,
+      user,
     } = this.props
     const { imageUrl, crop, croppedImage, src, isUploading, uploadError } = this.state
+    const { name } = user
 
     return (
       <Fragment>
-        <div><img src={imageUrl} style={{ width: `${width}px`, height: `${height}px` }} /></div>
+        <div><img src={imageUrl} alt={`Profile of ${name}`} style={{ width: `${width}px`, height: `${height}px` }} /></div>
         {isEditable && <ButtonPrimary onClick={this.handleOpenModal}>Update Image</ButtonPrimary>}
 
-        <ReactModal
-          isOpen={this.state.showModal}
-          contentLabel="Profile Picture Modal"
+        <Modal
+          visible={this.state.modalVisible}
         >
           {src && (
             <ReactCrop
@@ -175,15 +175,14 @@ class ProfilePicture extends Component {
               onChange={this.onCropChange}
             />
           )}
-          <div>
-            <label htmlFor="file" className="underline">Pick Image</label>
-            <input id="file" type="file" onChange={this.onSelectFile} style={{ display: 'none' }} />
-          </div>
+
+          <Upload onChange={this.onSelectFile}>Pick image</Upload>
+
           <ButtonPrimary onClick={e => this.handleUpdatePicture(croppedImage.file)} disabled={isUploading}>Done</ButtonPrimary>
           {isUploading && <span>Uploading...</span>}
           {uploadError}
           <ButtonPrimary onClick={this.handleCloseModal}>Cancel</ButtonPrimary>
-        </ReactModal>
+        </Modal>
       </Fragment>
     )
   }

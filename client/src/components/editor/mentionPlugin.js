@@ -1,4 +1,3 @@
-import React from 'react'
 import * as R from 'ramda'
 import search from '../../utils/search'
 import {
@@ -9,7 +8,8 @@ import {
   checkIsReturnHotkey,
   checkIsUpHotkey,
   checkIsDownHotkey,
-} from './blockPlugins'
+} from './checkHotkey'
+import getRenderElement from './getRenderElement'
 
 const mentionPlugin = (options) => {
   const { type } = options
@@ -22,6 +22,7 @@ const mentionPlugin = (options) => {
 
         const { value } = editor
         const inputValue = getMentionInput(value)
+        const text = `@${user.username}`
 
         // Delete the captured value, including the `@` symbol
         editor.deleteBackward(inputValue.length + 1)
@@ -35,13 +36,14 @@ const mentionPlugin = (options) => {
               id: user.id,
               username: user.username,
               picture: user.picture,
+              text
             },
             nodes: [
               {
                 object: 'text',
                 leaves: [
                   {
-                    text: `@${user.username}`,
+                    text
                   },
                 ],
               },
@@ -56,12 +58,14 @@ const mentionPlugin = (options) => {
         const data = editor.value.data
         const users = data.get('users')
         const setState = data.get('setState')
+        const client = data.get('client')
+        const openNotification = data.get('openNotification')
         const filteredUsers = search({
           data: users,
           id: 'id',
           fields: [{ name: 'username', boost: '2' }, { name: 'name' }]
         }, isWildCard ? searchTerm + '*' : searchTerm)
-        editor.setData({ setState, users, filteredUsers })
+        editor.setData({ setState, client, openNotification, users, filteredUsers })
       },
       checkHasValidAncestors(editor) {
         const { value } = editor
@@ -96,18 +100,23 @@ const mentionPlugin = (options) => {
     onKeyDown(event, editor, next) {
       if (type === 'userMention') {
         const { value } = editor
-        const setState = editor.value.data.get('setState')
+        const { data } = editor.value
+        const setState = data.get('setState')
+        const client = data.get('client')
         const inputValue = getMentionInput(value)
 
         if (!R.isNil(inputValue)) {
           const users = value.data.get('users')
           const filteredUsers = value.data.get('filteredUsers')
           const mentionDropdownId = value.data.get('mentionDropdownId') || 0
+          const openNotification = data.get('openNotification')
           if (checkIsDownHotkey(event)) {
             event.preventDefault()
             const maxCount = filteredUsers.length <= 5 ? filteredUsers.length : 5
             editor.setData({
               setState,
+              client,
+              openNotification,
               users,
               filteredUsers,
               mentionDropdownId: mentionDropdownId < maxCount ?
@@ -118,6 +127,8 @@ const mentionPlugin = (options) => {
             event.preventDefault()
             editor.setData({
               setState,
+              client,
+              openNotification,
               users,
               filteredUsers,
               mentionDropdownId: mentionDropdownId > 1 ?
@@ -171,16 +182,17 @@ const mentionPlugin = (options) => {
       const { children, mark, attributes } = props
       switch (mark.type) {
         case 'userMention':
-          return <span {...attributes} id="user-mention-context">{children}</span> // just used as an anchor for positioning
+          // just used as an anchor for positioning
+          return getRenderElement({ type: 'userMentionMark', children, attributes })
         default:
           return next()
       }
     },
     renderNode(props, editor, next) {
-      const { node, attributes } = props
+      const { children, node, attributes } = props
       switch (node.type) {
         case 'userMention':
-          return <span className="dib dark-blue link glow bg-lightest-blue o-80 br2 ph1" {...attributes}>{node.text}</span>
+          return getRenderElement({ type: node.type, children, attributes, data: node.data })
         default:
           return next()
       }

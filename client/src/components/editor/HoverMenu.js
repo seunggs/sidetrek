@@ -20,7 +20,7 @@ class HoverMenu extends Component {
   }
 
   setMenuPosition = () => {
-    const { visible = false, editor } = this.props
+    const { visible = false } = this.props
     const prevPosition = this.state.menuPosition
 
     const selection = window.getSelection()
