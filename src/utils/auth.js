@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 import jwks from 'jwks-rsa'
 import logger from '../../client/src/utils/logger'
 import { APP_URL, AUTH0_URL } from './constants'
-import { getQuery } from './query'
 
 const auth0 = new ManagementClient({
   domain: AUTH0_URL.replace('https://', ''),

@@ -59,7 +59,6 @@ class SettingsPage extends Component {
       }, 2000)
     } catch (errors) {
       const errorMessage = parseServerErrors(errors)
-      logger.error(errorMessage)
       this.setState(() => ({ deleteError: errorMessage }))
     }
     this.setState(() => ({ isDeleting: false }))
@@ -84,11 +83,10 @@ class SettingsPage extends Component {
             onSubmit={async ({ username: newUsername }, { setSubmitting, setFieldError }) => {
               try {
                 await startUpdateUser(client, email, { username: newUsername })
-                logger.info('Username successfully updated')
+                console.log('Username successfully updated')
                 setSubmitting(false)
               } catch (errors) {
                 const errorMessage = parseServerErrors(errors)
-                logger.error('Updating username failed')
                 setSubmitting(false)
                 this.setState(() => ({ usernameAvailable: null }))
                 setFieldError('username', errorMessage)
@@ -109,11 +107,10 @@ class SettingsPage extends Component {
             onSubmit={async ({ password: newPassword }, { setSubmitting, setFieldError }) => {
               try {
                 await startUpdateUser(client, email, { password: newPassword })
-                logger.info('Password successfully updated')
+                console.log('Password successfully updated')
                 setSubmitting(false)
               } catch (errors) {
                 const errorMessage = parseServerErrors(errors)
-                logger.error('Updating password failed')
                 setSubmitting(false)
                 setFieldError('password', errorMessage)
               }

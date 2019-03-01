@@ -1,7 +1,7 @@
 {
-  "name": "Sidetrek",
+  "name": "react-prisma-boilerplate",
   "version": "1.0.0",
-  "description": "Sidetrek Web App",
+  "description": "React Prisma Boilerplate",
   "main": "index.js",
   "engines": {
     "node": "11.9.0"
