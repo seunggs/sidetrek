@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Formik, Form } from 'formik'
 import Field from '../common/Field'
 import * as Yup from 'yup'
-import logger from '../../utils/logger'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { startLogin } from '../../actions/auth'
 import { parseServerErrors } from '../../utils/errors'
@@ -44,9 +43,7 @@ class LoginForm extends Component {
             try {
               await startLogin(email, password)
               setSubmitting(false)
-              logger.info('Login successful')
             } catch (errors) {
-              logger.error('Login failed')
               const errorMessage = parseServerErrors(errors)
               setSubmitting(false)
               setFieldError('form', errorMessage)

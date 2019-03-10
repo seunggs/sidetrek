@@ -6,9 +6,14 @@ const HomePage = () => {
   return (
     <div>
       <Header />
-      <div>I'm HomePage</div>
-      <div className="mt3"><Link to='/login'>Login</Link></div>
-      <div className="mt3"><Link to='/signup'>Sign Up</Link></div>
+
+      <div className="container-wide">
+        <div className="row">
+          <div className="col-xs-12">
+            
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

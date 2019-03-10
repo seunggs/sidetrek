@@ -4,7 +4,6 @@ import { Formik, Form } from 'formik'
 import Field from '../common/Field'
 import * as Yup from 'yup'
 import { ApolloConsumer } from 'react-apollo'
-import logger from '../../utils/logger'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { startLogin, startSignup } from '../../actions/auth'
 import { validateEmail } from '../../utils/validators'
@@ -74,17 +73,16 @@ class SignupForm extends Component {
               validateOnChange={false}
               validate={this.validateNameAndPassword}
               onSubmit={async ({ name, email, password }, { setSubmitting, setFieldError }) => {
-                logger.info('submitted')
+                console.log('submitted')
                 try {
                   await startSignup(email, password, { name })
                   setSubmitting(false)
-                  logger.info('Sign up successful')
+                  console.log('Sign up successful')
 
                   // Now login
                   await startLogin(email, password)
-                  logger.info('Login successful')
+                  console.log('Login successful')
                 } catch (errors) {
-                  logger.error('Sign up failed')
                   const errorMessage = parseServerErrors(errors)
                   setSubmitting(false)
                   setFieldError('form', errorMessage)

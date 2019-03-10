@@ -68,7 +68,7 @@ class ProfilePage extends Component {
     const { profileExists } = this.state
     const isEditable = viewingOwnProfile
     const profile = viewingOwnProfile ? authedUser : this.state.profile
-    logger.info(`profile${viewingOwnProfile ? ' (own)' : ''}`)
+    console.log(`profile${viewingOwnProfile ? ' (own)' : ''}`)
     const { email, name, username, twitter, picture, createdAt, hasPassword, hasSocialLogin } = profile
 
     const CheckingAvailabilityMsg = ({ content = 'Checking availability...' }) => <span>{content}</span>
@@ -89,12 +89,10 @@ class ProfilePage extends Component {
                 onSubmit={async ({ email: newEmail }, { setSubmitting, setFieldError }) => {
                   try {
                     await startUpdateUser(client, email, { email: newEmail })
-                    logger.info('Email successfully updated')
+                    console.log('Email successfully updated')
                     setSubmitting(false)
                   } catch (errors) {
                     const errorMessage = parseServerErrors(errors)
-                    logger.error('Updating email failed')
-                    logger.error(errorMessage)
                     setSubmitting(false)
                     this.setState(() => ({ emailAvailable: null }))
                     setFieldError('email', errorMessage)
@@ -114,11 +112,10 @@ class ProfilePage extends Component {
                 onSubmit={async ({ name: newName }, { setSubmitting, setFieldError }) => {
                   try {
                     await startUpdateUser(client, email, { name: newName })
-                    logger.info('Name successfully updated')
+                    console.log('Name successfully updated')
                     setSubmitting(false)
                   } catch (errors) {
                     const errorMessage = parseServerErrors(errors)
-                    logger.error('Updating name failed')
                     setSubmitting(false)
                     setFieldError('name', errorMessage)
                   }
@@ -135,11 +132,10 @@ class ProfilePage extends Component {
                 onSubmit={async ({ twitter: newTwitter }, { setSubmitting, setFieldError }) => {
                   try {
                     await startUpdateUser(client, email, { twitter: newTwitter })
-                    logger.info('Twitter handle successfully updated')
+                    console.log('Twitter handle successfully updated')
                     setSubmitting(false)
                   } catch (errors) {
                     const errorMessage = parseServerErrors(errors)
-                    logger.error('Updating Twitter handle failed')
                     setSubmitting(false)
                     setFieldError('twitter', errorMessage)
                   }

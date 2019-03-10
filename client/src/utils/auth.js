@@ -5,7 +5,6 @@ import * as R from 'ramda'
 import * as moment from 'moment'
 import { setAuth, setAuthCompleted, startLogout, clearTokenRenewalTimeout } from '../actions/auth'
 import { setUser } from '../actions/user'
-import logger from './logger';
 import { APP_URL } from './constants'
 import { GET_ME_OP, CREATE_USER_OP, UPDATE_USER_OP } from '../operations/user'
 
@@ -22,9 +21,9 @@ const auth = () => {
     // Check whether the current time is past the token expiry time
     return moment().unix() < expiresAt
   }
-  function handleUserInfo(store, client, authResult) {
+  function handleUserInfo(state, dispatch, client, authResult) {
     // First check Redux state
-    const { user } = store.getState()
+    const { user } = state
     if (user.email) { return Promise.resolve(user) } // do nothing
 
     const { accessToken } = authResult
@@ -48,7 +47,7 @@ const auth = () => {
 
           // If it's in DB, first check hasPassword - update DB if this is email-password signup and hasPassword is false
           // Update DB if this is social login and hasSocialLogin is false
-          // logger.info('isEmailPasswordSignup', isEmailPasswordSignup)
+          // console.log('isEmailPasswordSignup', isEmailPasswordSignup)
           if (isEmailPasswordSignup && !user.hasPassword) {
             try {
               const userData = await client.mutate({
@@ -60,9 +59,9 @@ const auth = () => {
                 },
                 mutation: UPDATE_USER_OP
               })
-              logger.info('Updated hasPassword: ', userData.data.updateUser)
+              console.log('Updated hasPassword: ', userData.data.updateUser)
             } catch (err) {
-              logger.info('Failed to update hasPassword')
+              console.log('Failed to update hasPassword')
             }
           } else if (!isEmailPasswordSignup && !user.hasSocialLogin) {
             try {
@@ -75,23 +74,23 @@ const auth = () => {
                 },
                 mutation: UPDATE_USER_OP
               })
-              logger.info('Updated hasSocialLogin: ', userData.data.updateUser)
+              console.log('Updated hasSocialLogin: ', userData.data.updateUser)
             } catch (err) {
-              logger.info('Failed to update hasSocialLogin')
+              console.log('Failed to update hasSocialLogin')
             }
           }
 
           // Set it in Redux state and exit
-          store.dispatch(setUser(user))
+          dispatch(setUser(user))
           return resolve(user)
         } catch (err) {
-          logger.info('User not in DB')
-          logger.info(err)
+          console.log('User not in DB')
+          console.log(err)
         }
 
         // If not in DB, create the user in DB and set it in Redux state
         try {
-          logger.info('Adding user to User DB...')
+          console.log('Adding user to User DB...')
           const userData = await client.mutate({
             variables: {
               data: {
@@ -108,18 +107,18 @@ const auth = () => {
 
           // Set it in Redux state and exit
           const user = userData.data.createUser
-          store.dispatch(setUser(user))
+          dispatch(setUser(user))
           return resolve(user)
         } catch (err) {
-          logger.error('Something went wrong while mutating User DB')
-          logger.error(err)
+          console.log('Something went wrong while mutating User DB')
+          console.log(err)
           reject(err)
         }
       })
     })
   }
-  async function setSession(store, client, authResult) {
-    logger.info('Setting auth session...')
+  async function setSession(state, dispatch, client, authResult) {
+    console.log('Setting auth session...')
     const { idToken, accessToken, expiresIn } = authResult
 
     // Set isLoggedIn flag in localStorage
@@ -129,10 +128,10 @@ const auth = () => {
     const expiresAt = moment().unix() + expiresIn
     
     // Set state
-    store.dispatch(setAuth({ isAuthenticated: true, expiresAt, idToken, accessToken }))
+    dispatch(setAuth({ isAuthenticated: true, expiresAt, idToken, accessToken }))
 
     // Schedule token renewal
-    scheduleRenewal(store, client, authResult)
+    scheduleRenewal(state, dispatch, client, authResult)
     
     // Set the header for all future calls
     setAuthHeader(accessToken)
@@ -142,20 +141,20 @@ const auth = () => {
     
     // Mark setAuthCompleted in Redux state so the Route can be mounted
     // NOTE: must fire after client.resetStore AND before the username redirect
-    store.dispatch(setAuthCompleted(true))
+    dispatch(setAuthCompleted(true))
 
     // Get user info from Auth0 and set it in state (if it doesn't exist already)
     try {
-      const userInfo = await handleUserInfo(store, client, authResult)
+      const userInfo = await handleUserInfo(state, dispatch, client, authResult)
       
-      // If username doesn't exist, send to /username      
+      // If username doesn't exist, send to /username
       if (R.isNil(userInfo.username)) { 
-        logger.info('Username doesn\'t exist: redirecting...')
+        console.log('Username doesn\'t exist: redirecting...')
         history.replace('/username') 
         return
       }
     } catch (err) {
-      logger.info(err)
+      console.log(err)
     }
     
     // navigate to the home route if in /callback but stay otherwise
@@ -163,42 +162,42 @@ const auth = () => {
       history.replace('/')
     }
   }
-  function handleAuth(store, client) {
+  function handleAuth(state, dispatch, client) {
     webAuth.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         // Set session
-        setSession(store, client, authResult)
+        setSession(state, dispatch, client, authResult)
       } else if (err) {
         console.log('handleAuth error:')
         console.log(err)
-        store.dispatch(setAuthCompleted(true))
+        dispatch(setAuthCompleted(true))
         history.replace('/')
       }
       
     })
   }
-  function renewSession(store, client) {
+  function renewSession(state, dispatch, client) {
     webAuth.checkSession({}, (err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
-        setSession(store, client, authResult)
+        setSession(state, dispatch, client, authResult)
       } else if (err) {
         console.log('renewSession error:')
         console.log(err)
-        store.dispatch(startLogout(history, client))
-        store.dispatch(setAuthCompleted(true))
+        dispatch(startLogout(history, client))
+        dispatch(setAuthCompleted(true))
       }
     })
   }
-  function scheduleRenewal(store, client, authResult) {
+  function scheduleRenewal(state, dispatch, client, authResult) {
     const timeout = authResult.expiresIn * 1000
     if (timeout > 0) {
       const tokenRenewalTimeoutHandler = setTimeout(() => {
         console.log('Renewing session from scheduled token renewal...')
-        renewSession(store, client)
+        renewSession(state, dispatch, client)
       }, timeout)
 
       // Save tokenRenewalTimeoutHandler to be called on log out
-      store.dispatch(clearTokenRenewalTimeout(tokenRenewalTimeoutHandler))
+      dispatch(clearTokenRenewalTimeout(tokenRenewalTimeoutHandler))
     }
   }
   return {

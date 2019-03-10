@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken'
 import jwks from 'jwks-rsa'
 import logger from '../../client/src/utils/logger'
 import { APP_URL, AUTH0_URL } from './constants'
-import { getQuery } from './query'
 
 const auth0 = new ManagementClient({
   domain: AUTH0_URL.replace('https://', ''),
@@ -158,4 +157,26 @@ export const getUserEmail = async (prisma, request, where) => {
 	
 	// only allow the user to update its own email if not ROOT
 	return me.role === 'ROOT' ? requestedUser.email : myEmail
+}
+
+export const checkIsAdmin = async (prisma, request) => {
+	const myEmail = await getMyEmail(request)
+	const userData = await prisma.query.user({
+		where: {
+			email: myEmail
+		}
+	})
+	const { role } = userData.user.data
+	return role === 'ADMIN' || role === 'ROOT'
+}
+
+export const checkIsRoot = async (prisma, request) => {
+	const myEmail = await getMyEmail(request)
+	const userData = await prisma.query.user({
+		where: {
+			email: myEmail
+		}
+	})
+	const { role } = userData.user.data
+	return role === 'ROOT'
 }

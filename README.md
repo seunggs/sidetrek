@@ -51,82 +51,120 @@ This is a boilerplate project for:
 
 1. Follow the setup instructions below before proceeding!
 2. To deploy and run dev: 
-  1. First make sure docker is running in /prisma: `cd prisma && docker-compose up -d & cd ..` (this runs the server at localhost:4466)
-  2. Prisma: `npm run deploy:prisma:dev`
-  3. Go back to the root folder and then run `npm run dev`
-  4. To run the Graphql Playground (localhost:4466/default/dev), set the Authorization header in the browser (obtain the token using `prisma token -e ../config/dev.env`)
+    1. First make sure docker is running in /prisma: `cd prisma && docker-compose up -d & cd ..` (this runs the server at localhost:4466)
+    2. Prisma: `npm run deploy:prisma:dev`
+    3. Go back to the root folder and then run `npm run dev`
+    4. To run the Graphql Playground (localhost:4466/default/dev), set the Authorization header in the browser (obtain the token using `prisma token -e ../config/dev.env`)
 3. To deploy test:
-  1. Prisma: `npm run deploy:prisma:test`
-5. To deploy to production:
-  1. Node: 
-    1. Make sure all ENV variables are set in Heroku: 
-      * Add server ENVs: /config/*.env
-      * Add client ENVs: /client/.env.development
-    2. Push everything to the staging server in git (make sure Heroku pipeline is set up):
-      1. `git commit -am "deploy"`
-      2. `git push`
-      3. Lastly, promote it to prod if staging looks good
-  2. Prisma: `npm run deploy:prisma:prod`
-  3. To run the Graphql Playground (see PRISMA_ENDPOINT in /config/prod.env), set the Authorization header in the browser (obtain the token using `prisma token -e ../config/prod.env`)
-6. To analyze the CRA bundle size:
-  1. Inside /client, run: `npm run build`
-  2. Open /build/bundle-stats.html
+    * Prisma: `npm run deploy:prisma:test`
+4. To deploy to production:
+    * Node: 
+      1. Make sure all ENV variables are set in Heroku: 
+          * Add server ENVs: /config/*.env
+          * Add client ENVs: /client/.env.development
+      2. Push everything to the staging server in git (make sure Heroku pipeline is set up):
+          1. `git commit -am "deploy"`
+          2. `git push`
+          3. Lastly, promote it to prod if staging looks good
+    * Prisma: `npm run deploy:prisma:prod`
+    * To run the Graphql Playground (see PRISMA_ENDPOINT in /config/prod.env), set the Authorization header in the browser (obtain the token using `prisma token -e ../config/prod.env`)
+5. To analyze the CRA bundle size:
+    1. Inside /client, run: `npm run build`
+    2. Open /build/bundle-stats.html
 
 
 ## 1) Prisma Dev Server Setup Instructions
 
 1. Clone the repository and create a new git repo.
-2. Run `yarn install` and then run `yarn upgrade`.
+2. Run `yarn install` and then run `yarn upgrade` in both in the root folder and /client.
 3. Create /config and create dev.env, test.env, and prod.env
-  * dev.env example: 
-    ```
-    PRISMA_ENDPOINT=http://localhost:4466/default/dev
-    PRISMA_SECRET=fijoasd89i3jrkek
-    JWT_SECRET=df9j28ifjs78ryoh
-    ```
-  * test.env example: 
-    ```
-    PRISMA_ENDPOINT=http://localhost:4466/default/test
-    PRISMA_SECRET=fijoasd89i3jrkek
-    JWT_SECRET=df9j28ifjs78ryoh
-    ```
-  * prod.env example: 
-    ```
-    PRISMA_ENDPOINT=[to be entered later once Prisma prod server is deployed]
-    PRISMA_SECRET=23iokfdjs0a9j13
-    JWT_SECRET=90iosfjgaishlok8
-    ```
-  * Note: dev.env and test.env can have same values for PRISMA_SECRET, JWT_SECRET
+    * dev.env example: 
+    
+      ```
+      PRISMA_ENDPOINT=http://localhost:4466/default/dev
+      PRISMA_SECRET=djfa89jpf2ijro
+      PRISMA_SERVER_HOST=localhost
+      JWT_SECRET=vkljxp89qpifkd7
+      ```
+    * test.env example: 
+
+      ```
+      PRISMA_ENDPOINT=http://localhost:4466/default/test
+      PRISMA_SECRET=djfa89jpf2ijro
+      PRISMA_SERVER_HOST=localhost
+      JWT_SECRET=vkljxp89qpifkd7
+      ```
+    * prod.env example: 
+
+      ```
+      PRISMA_ENDPOINT=[to be entered later once Prisma prod server is deployed]
+      PRISMA_SECRET=m9rdkas810dk389
+      PRISMA_SERVER_HOST=0.0.0.0
+      JWT_SECRET=gj8ape2jiflh89
+      ```
+    * Note: dev.env and test.env can have same values for PRISMA_SECRET, JWT_SECRET
+    * Add other env variables
+
+      ```
+      AUTH0_CLIENT_ID
+      AUTH0_CLIENT_SECRET
+      AUTH0_MANAGEMENT_API_CLIENT_ID
+      AUTH0_MANAGEMENT_API_CLIENT_SECRET
+      AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY
+      AWS_BUCKET
+      AWS_ENDPOINT
+      ```
 4. Setup Heroku server for "X-prisma-dev" and add an add-on called "Heroku Postgres".
 5. Download and open pgAdmin and create a new server for "X-prisma-dev". Fill out the server details from Heroku Postgres settings.
 6. Download and run Docker app.
 7. Run `npm i prisma -g` if Prisma doesn't exist globally already.
 8. Inside the root folder, run: `prisma init prisma`.
-  1. Select "Use existing database"
-  2. Postgres
-  3. No (empty db)
-  4. Fill out the connection info from Heroku Postgres (use SSL)
-  5. pick "Don’t generate" for language selection for prisma client
+    1. Select "Use existing database"
+    2. Postgres
+    3. No (empty db)
+    4. Fill out the connection info from Heroku Postgres (use SSL)
+    5. pick "Don’t generate" for language selection for prisma client
 9. Add `secret: ${env:PRISMA_SECRET}` to prisma.yml and update "endpoint" to `${env:PRISMA_ENDPOINT}`.
 10. Add `ssl: true` below `user` in docker-compose.yml.
 11. Follow the next steps as prompted with one exception (step 3):
-  1. `cd prisma`
-  2. `docker-compose up -d` (run the Prisma service locally)
-  3. `prisma deploy -e ../config/dev.env` (deploy the code to the Docker Prisma service)
-  * NOTE: If there's a connection issue (i.e. Could not connect to server at http://localhost:4466), try `docker-compose down -v --rmi all --remove-orphans` to completely remove the docker container and retry
+    1. `cd prisma`
+    2. `docker-compose up -d` (run the Prisma service locally)
+    3. `prisma deploy -e ../config/dev.env` (deploy the code to the Docker Prisma service)
+    * NOTE: If there's a connection issue (i.e. Could not connect to server at http://localhost:4466), try `docker-compose down -v --rmi all --remove-orphans` to completely remove the docker container and retry
 12. Check localhost:4466 (default port) to see if it's graphql playground is working properly. (if localhost doesn't work, try 127.0.0.1 after changing the endpoint in prisma.yml)
 13. Update the /prisma/datamodel.prisma to:
-  ```
-  type User {
-    id: ID! @unique
-    email: String! @unique
-    name: String
-    username: String @unique
-    picture: String
-    updatedAt: DateTime!
-    createdAt: DateTime!
-  }
-  ```
+
+    ```
+    type User {
+      id: ID! @unique
+      email: String! @unique
+      name: String
+      username: String @unique
+      picture: String
+      updatedAt: DateTime!
+      createdAt: DateTime!
+    }
+
+    enum UserRole {
+      ROOT,
+      ADMIN,
+      USER,
+    }
+
+    type File {
+      id: ID! @unique
+      createdAt: DateTime!
+      updatedAt: DateTime!
+      filename: String!
+      mimetype: String!
+      encoding: String!
+      url: String! @unique
+    }
+    ```
+14. Update /src/schema.graphql
+    * Copy 'type Query' and 'type Mutation' from /generated/prisma.graphql 
+15. Update /client/utils/constants.js and /src/utils/constants.js
 
 
 ## 2) Production Database & Prisma Docker Container (DB & Prisma Server) Setup Instructions
@@ -134,11 +172,14 @@ This is a boilerplate project for:
 1. Sign up for Prisma Cloud.
 2. Create servers (DB and Prisma Server) via Heroku by following the instructions.
 3. Create a service so we can deploy the datamodel to the server created above. 
-  1. Run `cd prisma` and then `prisma login`. Then click "Grant Permission".
-  2. Run `prisma deploy -e ../config/prod.env`
-  3. Move the "endpoint" filled out in prisma.yml to PRISMA_ENDPOINT in /config/prod.env and uncomment "endpoint" in prisma.yml.
-  4. Run `prisma deploy -e ../config/prod.env` again to check if all went well (you should see "Service is already up to date.").
-  5. Check Prisma Cloud to see if the Service has been created.
+    1. Run `cd prisma` and then `prisma login`. Then click "Grant Permission".
+    2. Run `prisma deploy -e ../config/prod.env`
+    3. Move the "endpoint" filled out in prisma.yml to PRISMA_ENDPOINT in /config/prod.env and uncomment "endpoint" in prisma.yml.
+    4. In /prisma/docker-compose.yml, uncomment managementApiSecret, set it to `${PRISMA_MANAGEMENT_API_SECRET}`
+    5. Add PRISMA_MANAGEMENT_API_SECRET to /config/prod.env, setting it to the value found in X-prisma-prd server -> config vars -> CONFIG -> managementApiSecret, which was set up via Prisma Heroku integration
+    6. Re-run `docker-compose up -d`
+    7. Run `prisma deploy -e ../config/prod.env` again to check if all went well (you should see "Service is already up to date.").
+    8. Check Prisma Cloud to see if the Service has been created.
 
 
 ## 3) Node Setup Instructions

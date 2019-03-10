@@ -3,14 +3,14 @@ import uuid from 'uuid/v4'
 import aws from 'aws-sdk'
 import logger from '../../client/src/utils/logger'
 
-const bucket = 'sidetrek'
+const bucket = process.env.AWS_BUCKET
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   params: {
     Bucket: bucket
   },
-  endpoint: new aws.Endpoint('https://s3.us-west-1.amazonaws.com')
+  endpoint: new aws.Endpoint(process.env.AWS_ENDPOINT)
 })
 
 export const uploadToS3 = async (prisma, folder, file, projectId) => {
@@ -47,9 +47,6 @@ export const uploadToS3 = async (prisma, folder, file, projectId) => {
   }) : baseData
 
   const fileInPrisma = await prisma.mutation.createFile({ data })
-
-  // logger.info('Saved prisma file:')
-  // logger.info(fileInPrisma)
 
   return fileInPrisma
 }

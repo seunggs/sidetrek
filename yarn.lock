@@ -2531,7 +2531,7 @@ express-request-proxy@^2.2.2:
     type-is "^1.6.16"
     url-join "4.0.0"
 
-express@^4.13.4, express@^4.16.3, express@^4.16.4:
+express@^4.16.3, express@^4.16.4:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.4.tgz#fddef61926109e24c515ea97fd2f1bdbf62df12e"
   integrity sha512-j12Uuyb4FMrd/qQAm6uCHAkPtO8FDTRJZBDd5D2KOL2eLaz1yUNdUB/NOIyq0iU4q4cFarsUCrnFDPBcnksuOg==
@@ -6729,13 +6729,6 @@ sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/sprintf-js/-/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
   integrity sha1-BOaSb2YolTVPPdAVIDYzuFcpfiw=
-
-sse-express@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/sse-express/-/sse-express-1.0.2.tgz#fd381f14890d4ac0d4363eb3356b1c338225f0de"
-  integrity sha1-/TgfFIkNSsDUNj6zNWscM4Il8N4=
-  dependencies:
-    express "^4.13.4"
 
 sshpk@^1.7.0:
   version "1.16.1"

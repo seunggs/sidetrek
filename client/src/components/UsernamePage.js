@@ -1,19 +1,34 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { withRouter } from 'react-router'
+import { connect } from 'react-redux'
 import Header from './Header'
 import UsernameForm from './auth/UsernameForm'
 
-const SetUsernamePage = () => {
-  return (
-    <div>
-      <Header />
+class UsernamePage extends Component {
+  componentDidMount() {
+    const { user, history } = this.props
+    if (user.username) {
+      history.replace('/')
+    }
+  }
 
-      <div>Set username</div>
-
+  render() {
+    return (
       <div>
-        <UsernameForm />
+        <Header />
+  
+        <div>Set username</div>
+  
+        <div>
+          <UsernameForm />
+        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
-export default SetUsernamePage
+const mapStateToProps = state => ({
+  user: state.user
+})
+
+export default withRouter(connect(mapStateToProps)(UsernamePage))

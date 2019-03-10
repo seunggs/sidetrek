@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import Field from '../common/Field'
 import { ApolloConsumer } from 'react-apollo'
-import logger from '../../utils/logger'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { validateUsername } from '../../utils/validators'
 import { startUpdateUser } from '../../actions/user'
@@ -54,10 +53,9 @@ class UsernameForm extends Component {
                 try {
                   await startUpdateUser(client, email, { username: newUsername })
                   setSubmitting(false)
-                  logger.info('Adding username successful')
+                  console.log('Adding username successful')
                   history.push(`/profile/${newUsername}`)
                 } catch (errors) {
-                  logger.error('Adding username failed')
                   const errorMessage = parseServerErrors(errors)
                   setSubmitting(false)
                   setFieldError('form', errorMessage)
