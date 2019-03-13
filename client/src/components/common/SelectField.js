@@ -9,7 +9,7 @@ import Label from './Label'
   <Select options={[1, 2, 3]} />
 */
 
-const CustomSelectComponent = ({
+const MySelectComponent = ({
   field, // { name, value, onChange, onBlur }
   form: { touched, errors, setFieldValue, setFieldTouched }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
   ...props
@@ -41,8 +41,8 @@ const CustomSelectComponent = ({
   )
 }
 
-const CustomSelectField = ({ ...rest }) => (
-  <Field {...rest} component={CustomSelectComponent} />
+const MySelectField = ({ ...rest }) => (
+  <Field {...rest} component={MySelectComponent} />
 )
 
-export default CustomSelectField
+export default MySelectField
