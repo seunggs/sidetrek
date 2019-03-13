@@ -102,7 +102,7 @@ const AboutPage = () => {
                     <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I immigrated to Canada alone when I was 24, starting everything from scratch</div>
                     <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I lost 30 lbs in 100 days via healthy eating and exercise</div>
                     <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I scored top 1% for important tests with intense 2-month study</div>
-                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I started to learn to code a year ago when I was 36 and built two production-ready apps and Sidetrek!</div>
+                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I started to learn to code a year ago and built two production-ready apps and Sidetrek!</div>
 
                     <p className="mt4">And the list goes on.</p>
                     <p>In my life, I struggled a lot as an immigrant and a multipotentialite. Sometimes I felt like a misfit in a society where specialization is considered the norm. When I changed my field of study or career, I felt anxious. But I also knew I was having so much fun, accumulating life experiences I would never have had otherwise.  I have deep empathy towards people around me because of these rich experiences and personal struggles. I learnt to embrace who I am.</p>
