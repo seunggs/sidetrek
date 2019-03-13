@@ -1,11 +1,8 @@
 import React from 'react'
+import Spinner from '../common/Spinner'
 
 const CallBack = () => {
-  return (
-    <div>
-      LOADING...
-    </div>
-  )
+  return <Spinner />
 }
 
 export default CallBack

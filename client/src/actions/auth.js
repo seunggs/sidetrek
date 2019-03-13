@@ -28,7 +28,6 @@ export const startLogin = (email, password) => dispatch => {
       email,
       password,
     }, (err, result) => {
-      console.log('CB for startLogin getting called')
       if (err) { reject(err) }
       resolve(result)
     })
