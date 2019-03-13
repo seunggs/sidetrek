@@ -30,9 +30,8 @@ const AboutPage = () => {
                 <span>Freedom of Career</span>
               </div>
               <div className="f3 gray mt3" style={{ paddingLeft: '4.5rem' }}>
-                We believe that everyone should have the means to switch careers later in life. People's lives shouldn't
-                be determined by which school they decide to go to when they're 17. We didn't know what we wanted
-                to do with our lives then and we don't think many do.
+                We believe that people should have the means to switch careers if they find true passion later in life. People's whole lives shouldn't
+                be determined by which school they attended or what major they decided to pursue when they're young. Indeed, many inspirational leaders, both historical and contemporary, held multiple careers with broad interest: Benjamin Franklin, Leonardo da Vinci, Elon Musk, Thomas Edison, etc.
               </div>
 
               <div className="f1 lh-title near-black mt5">

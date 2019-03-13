@@ -81,7 +81,7 @@ const HomePage = () => {
       icon: 'rocket',
       iconColor: '#f86288',
       title: 'Start a project',
-      text: <div>Join others who are trying to achieve the same thing and benefit from each other's knowledge, experience, and support</div>,
+      text: <div>Join others who are trying to achieve the same thing and benefit from each other's knowledge, experience, and support.</div>,
     },
     {
       icon: 'dashboard',
@@ -93,7 +93,7 @@ const HomePage = () => {
       icon: 'book',
       iconColor: '#6257f9',
       title: 'Not a course',
-      text: <div>Sidetrek is a community, not a class or course you take. But feel free to take courses anywhere else and discuss them freely here!</div>,
+      text: <div>Sidetrek is a community, not a class or course. People use various resources to learn the skills and finish the project. Feel free to take courses anywhere else and discuss them freely here!</div>,
     },
   ]
 

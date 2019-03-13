@@ -24,9 +24,10 @@ server.express.use(cors(corsOptions))
 if (process.env.NODE_ENV === 'production') {
 	// Set static folder
 	server.express.use(express.static(path.resolve(__dirname, '../client/build')))
+	
 	// Any routes that gets hit here(above), we're loading into react html file
 	server.express.get('*', (req, res) => {
-		res.send(path.resolve(__dirname, '../client/build', 'index.html'));
+		res.sendFile(path.resolve(__dirname, '../client/build', 'index.html'));
 	});
 }
 
