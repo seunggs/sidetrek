@@ -1,4 +1,3 @@
-import logger from '../../client/src/utils/logger'
 import * as R from 'ramda'
 import { getUserEmail, updateUserInAuth0, deleteUserInAuth0 } from '../utils/auth'
 
@@ -18,7 +17,6 @@ const UserMutation = {
 				await updateUserInAuth0(email, updates)
 			}
 		} catch (err) {
-			// logger.error(err.message)
 			throw new Error(err.message)
 		}
 
@@ -39,7 +37,6 @@ const UserMutation = {
 		try {
 			await deleteUserInAuth0(email)
 		} catch (err) {
-			// logger.error(err.message)
 			throw new Error(err.message)
 		}
 		

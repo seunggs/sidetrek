@@ -1,4 +1,3 @@
-import logger from '../../client/src/utils/logger'
 import { getUserEmail } from '../utils/auth'
 
 const ProjectMutation = {

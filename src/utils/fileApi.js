@@ -1,7 +1,6 @@
 import * as R from 'ramda'
 import uuid from 'uuid/v4'
 import aws from 'aws-sdk'
-import logger from '../../client/src/utils/logger'
 
 const bucket = process.env.AWS_BUCKET
 const s3 = new aws.S3({
@@ -15,7 +14,7 @@ const s3 = new aws.S3({
 
 export const uploadToS3 = async (prisma, folder, file, projectId) => {
   if (!file) { 
-    logger.error('ERROR: No file received.')
+    console.log('ERROR: No file received.')
     return
   }
 

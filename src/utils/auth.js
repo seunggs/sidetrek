@@ -2,7 +2,6 @@ import { ManagementClient } from 'auth0'
 import * as R from 'ramda'
 import jwt from 'jsonwebtoken'
 import jwks from 'jwks-rsa'
-import logger from '../../client/src/utils/logger'
 import { APP_URL, AUTH0_URL } from './constants'
 
 const auth0 = new ManagementClient({
