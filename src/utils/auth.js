@@ -52,7 +52,7 @@ export const updateUserInAuth0 = (email, updates) => {
 			return Promise.all(R.concat(passwordUpdatedUsers, updatedUsersPromises))
 		})
 		.then(updatedUsers => {
-			logger.info('Updating user successful!')
+			console.log('Updating user successful!')
 			return updatedUsers
 		})
 }
@@ -66,7 +66,7 @@ export const deleteUserInAuth0 = email => {
 	return Promise.all([auth0.getUsersByEmail(email), auth0.getUsersByEmail(allLowerCaseEmail)])
 		.then(([users1, users2]) => {
 			const users = R.uniqBy(R.prop('user_id'))(R.concat(users1, users2))
-			logger.info('users to be deleted in Auth0', users)
+			console.log('users to be deleted in Auth0', users)
 
 			const deletedUsersPromises = R.map(user => {
 				const { user_id } = user
@@ -75,7 +75,7 @@ export const deleteUserInAuth0 = email => {
 			return Promise.all(deletedUsersPromises)
 		})
 		.then(deletedUsers => {
-			logger.info('Deleting user successful!')
+			console.log('Deleting user successful!')
 			return deletedUsers
 		})
 }
@@ -98,7 +98,7 @@ const verifyJwt = (accessToken) => (new Promise((resolve, reject) => {
 			console.log(err)
 			reject('Authentication failed')
 		}
-		// logger.info('decoded', decoded)
+		// console.log('decoded', decoded)
 		const email = decoded[`${APP_URL}/email`]
 		resolve(email)
 	})
@@ -106,11 +106,11 @@ const verifyJwt = (accessToken) => (new Promise((resolve, reject) => {
 
 export const getMyEmail = async (request, { requireAuth = true } = {}) => {
 	const header = request.request ? request.request.headers.authorization : request.connection.context.Authorization
-	// logger.info('header', header)
+	// console.log('header', header)
 
 	if (header) {
 		const accessToken = header.replace('Bearer ', '')
-		// logger.info(accessToken)
+		// console.log(accessToken)
 
 		try {
 			return await verifyJwt(accessToken)
