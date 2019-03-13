@@ -1,15 +1,15 @@
 import * as R from 'ramda'
 import uuid from 'uuid/v4'
 import aws from 'aws-sdk'
+import { AWS_BUCKET, AWS_ENDPOINT } from './constants'
 
-const bucket = process.env.AWS_BUCKET
 const s3 = new aws.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   params: {
-    Bucket: bucket
+    Bucket: AWS_BUCKET
   },
-  endpoint: new aws.Endpoint(process.env.AWS_ENDPOINT)
+  endpoint: new aws.Endpoint(AWS_ENDPOINT)
 })
 
 export const uploadToS3 = async (prisma, folder, file, projectId) => {
@@ -56,7 +56,7 @@ export const deleteFromS3 = async (prisma, url) => {
 
   // Delete from S3
   const response = await s3.deleteObject({
-    Bucket: bucket,
+    Bucket: AWS_BUCKET,
     Key: key,
   }).promise()
 
