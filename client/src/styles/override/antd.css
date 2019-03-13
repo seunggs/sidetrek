@@ -1,6 +1,7 @@
 .ant-input-suffix {
   color: rgba(0,0,0,0.15) !important;
 }
+
 .ant-notification-notice-message {
   color: inherit !important;
   font-weight: 600;
@@ -16,4 +17,9 @@
 .ant-notification-notice {
   padding-left: 16px !important;
   padding-right: 16px !important;
+}
+
+.ant-btn-xlg {
+  padding: 0px 20px !important;
+  height: 46px !important;
 }

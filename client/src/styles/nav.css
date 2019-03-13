@@ -1,0 +1,16 @@
+.link--nav-item {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.65);
+  padding-top: 0.8rem;
+  padding-bottom: 0.8rem;
+  margin-left: 2.5rem;
+  margin-right: 2.5rem;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+
+.link--nav-item:hover {
+  color: rgba(0, 0, 0, 0.9);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.9);
+}

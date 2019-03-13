@@ -166,7 +166,7 @@ export const checkIsAdmin = async (prisma, request) => {
 			email: myEmail
 		}
 	})
-	const { role } = userData.user.data
+	const { role } = userData
 	return role === 'ADMIN' || role === 'ROOT'
 }
 
@@ -177,6 +177,6 @@ export const checkIsRoot = async (prisma, request) => {
 			email: myEmail
 		}
 	})
-	const { role } = userData.user.data
+	const { role } = userData
 	return role === 'ROOT'
 }

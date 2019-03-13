@@ -10,22 +10,24 @@
 .container-main,
 .container-wide,
 .container-narrow {
-  max-width: 180rem;
   margin-right: auto;
   margin-left: auto;
 }
 
 .container-main {
+  max-width: 120rem;
   padding-right: 2rem;
   padding-left: 2rem;
 }
 
 .container-wide {
+  max-width: 180rem;
   padding-right: 1.3rem;
   padding-left: 1.3rem;
 }
 
 .container-narrow {
+  max-width: 110rem;
   padding-right: 2rem;
   padding-left: 2rem;
 }

@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import logger from '../../utils/logger'
 
 class Template extends Component {
   constructor(props) {

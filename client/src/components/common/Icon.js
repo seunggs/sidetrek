@@ -1,8 +1,8 @@
 import React from 'react'
 import Icon from 'antd/es/icon'
 
-const CustomIcon = ({ theme = 'outlined', ...rest }) => (
+const MyIcon = ({ theme = 'outlined', ...rest }) => (
   <Icon theme={theme} {...rest} />
 )
 
-export default CustomIcon
+export default MyIcon

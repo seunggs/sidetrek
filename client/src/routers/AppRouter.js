@@ -7,6 +7,7 @@ import PrivateRoute from './PrivateRoute'
 import CallBack from '../components/auth/CallBack'
 import NotFoundPage from '../components/NotFoundPage'
 import HomePage from '../components/HomePage'
+import AboutPage from '../components/AboutPage'
 import LoginPage from '../components/LoginPage'
 import SignupPage from '../components/SignupPage'
 import UsernamePage from '../components/UsernamePage'
@@ -31,6 +32,7 @@ class AppRouter extends Component {
         <div>
           <Switch>
             <PublicRoute path="/" component={HomePage} exact={true} />
+            <PublicRoute path="/about" component={AboutPage} />
             <PublicRoute path="/login" component={LoginPage} />
             <PublicRoute path="/signup" component={SignupPage} />
             <Route path="/callback" render={props => {
