@@ -1,6 +1,8 @@
 import * as auth0 from 'auth0-js'
 import { REACT_APP_AUTH0_DOMAIN, REACT_APP_AUTH0_AUDIENCE } from './constants'
 
+console.log('Auth0 client id', process.env.REACT_APP_AUTH0_CLIENT_ID)
+
 const webAuth = new auth0.WebAuth({
   domain: REACT_APP_AUTH0_DOMAIN,
   clientID: process.env.REACT_APP_AUTH0_CLIENT_ID,
