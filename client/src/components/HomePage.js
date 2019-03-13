@@ -47,7 +47,6 @@ class Milestone extends Component {
         </div>
 
         <div className="mb4 pointer" onClick={this.toggle}>
-          {/* <Icon type="right" style={{ color: '#0271e3', transition: 'all 0.15s', transform: open ? 'rotate(90deg)' : 'rotate(0)' }} /> */}
           <div className="f4 fw5 cobalt-blue flex items-center">
             <div className="mr2">See {open ? 'less' : 'more'}</div>
             <div style={{ color: '#0271e3', transition: 'all 0.15s', transform: open ? 'rotate(-90deg)' : 'rotate(0deg)' }}>&rarr;</div>
