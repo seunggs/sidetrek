@@ -3,6 +3,7 @@ import server from './server'
 import express from 'express'
 import path from 'path'
 import cors from 'cors'
+import compression from 'compression'
 
 // Set up CORS
 const whitelist = [
@@ -18,6 +19,8 @@ const corsOptions = {
     }
   }
 }
+
+server.express.use(compression())
 server.express.use(cors(corsOptions))
 
 // Serve static assets if in production
