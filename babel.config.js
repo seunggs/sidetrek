@@ -3,6 +3,6 @@ module.exports = {
     "@babel/preset-env",
   ],
   "plugins": [
-    "@babel/transform-object-rest-spread"
+    "@babel/plugin-proposal-object-rest-spread"
   ]
 }
