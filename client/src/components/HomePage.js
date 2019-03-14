@@ -61,7 +61,6 @@ const Project = ({ image, color, title, description, openHeight, closedHeight, m
   return (
     <div className={`ba b--${color} overflow-hidden mt5`} style={{ borderWidth: '5px', borderRadius: '15px' }} {...rest}>
       <div className="pa5">
-        {/* <div className="mb4" style={{ background: `url(${image})`, backgroundSize: 'cover', height: '240px' }} /> */}
         <div className={`fw7 mb3 lh-title near-black`} style={{ fontSize: '2.8rem' }}>{title}</div>
         <div className="f4 mb4">{description}</div>
 
@@ -185,9 +184,7 @@ const HomePage = () => {
         <div className="row">
           <div className="col-xs-12">
             <div className="relative">
-              {/* <div><img src={`${IMG_URL}/illustrations/infinite-learner-2-mobile.svg`} style={{ width: '100%' }} /></div> */}
               <div className="f-subheadline f-headline-l fw7 lh-title lh-solid-ns near-black">
-                {/* <span>Are you an <i style={{ background: 'linear-gradient(0deg, #ffe19a 50%, transparent 50%)' }}>infinite learner</i>?</span> */}
                 <span>Are you an <i className="homepage-title">infinite learner</i>?</span>
               </div>
             </div>

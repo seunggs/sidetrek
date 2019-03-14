@@ -8,6 +8,7 @@ import { startLogout } from '../actions/auth'
 import ButtonPrimary from './common/ButtonPrimary'
 import ButtonOutline from './common/ButtonOutline'
 import NavItem from './nav/NavItem'
+import { ReactComponent as Logo } from '../images/logo/logo.svg'
 
 class Header extends Component {
   handleLogin = () => {
@@ -22,7 +23,7 @@ class Header extends Component {
     return (
       <div className="pa4 flex justify-between items-center">
         <div className="flex items-center">
-          <Link to="/"><img src={`${IMG_URL}/logo/logo.svg`} style={{ width: '200px' }} /></Link>
+          <Link to="/"><Logo style={{ width: '200px' }} /></Link>
           <span className="ba b--light-red f6 fw6 light-red ml3 br3 mt2" style={{ padding: '0px 4px' }}>Beta</span>
         </div>
         <div className="flex items-center">
