@@ -8,7 +8,7 @@ const AboutPage = () => {
     <div>
       <Header />
 
-      <div className="container-narrow pt5 pb3 pb4-ns">
+      <div className="container-narrow pt5 pb6">
         <div className="row">
           <div className="col-xs-12">
             <div className="relative">

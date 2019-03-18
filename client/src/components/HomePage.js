@@ -207,7 +207,7 @@ const HomePage = () => {
       {/* end: how it works */}
 
       {/* projects */}
-      <div className="container-main">
+      <div className="container-main pb6">
         <div className="row">
           {projects.map((project, i) => {
             const { image, color, title, description, milestones, openHeight, closedHeight } = project

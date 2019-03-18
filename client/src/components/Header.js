@@ -20,18 +20,24 @@ class Header extends Component {
   render() {
     const { auth } = this.props
     return (
-      <div className="pa4 flex justify-between items-center">
-        <div className="flex items-center">
-          <Link to="/"><Logo style={{ width: '200px' }} /></Link>
-          <span className="ba b--light-red f6 fw6 light-red ml3 br3 mt2" style={{ padding: '0px 4px' }}>Beta</span>
-        </div>
-        <div className="flex items-center">
-          <NavItem to="/about">About</NavItem>
-          <div>
-            {auth.isAuthenticated ? 
-              <ButtonOutline onClick={this.handleLogout}>Log out</ButtonOutline> :
-              <ButtonPrimary onClick={this.handleLogin}>Login</ButtonPrimary>
-            }
+      <div className="container-wide">
+        <div className="row">
+          <div className="col-xs-12">
+            <div className="pv4 flex justify-between items-center">
+              <div className="flex items-center">
+                <Link to="/"><Logo style={{ width: '200px' }} /></Link>
+                <span className="ba b--light-red f6 fw6 light-red ml3 br3 mt2" style={{ padding: '0px 4px' }}>Beta</span>
+              </div>
+              <div className="flex items-center">
+                <NavItem to="/about">About</NavItem>
+                <div>
+                  {auth.isAuthenticated ?
+                    <ButtonOutline onClick={this.handleLogout}>Log out</ButtonOutline> :
+                    <ButtonPrimary onClick={this.handleLogin}>Login</ButtonPrimary>
+                  }
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
