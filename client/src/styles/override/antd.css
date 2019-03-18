@@ -19,6 +19,17 @@
   padding-right: 16px !important;
 }
 
+.ant-btn.ant-btn-primary {
+  background-color: #0271E3;
+  border-color: #0271E3;
+  opacity: 1;
+}
+.ant-btn.ant-btn-primary:hover {
+  background-color: #0271E3;
+  border-color: #0271E3;
+  opacity: .8;
+  transition: opacity .1s ease-in;
+}
 .ant-btn-xlg {
   padding: 0px 20px !important;
   height: 46px !important;

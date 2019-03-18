@@ -7,14 +7,16 @@ import { ApolloConsumer } from 'react-apollo'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { startLogin, startSignup } from '../../actions/auth'
 import { validateEmail } from '../../utils/validators'
+import { toTitleCase } from '../../utils/common'
 import { parseServerErrors } from '../../utils/errors'
 import FormErrorMessage from '../common/FormErrorMessage'
+import CheckFieldAvailability from '../common/CheckFieldAvailability'
 
 class SignupForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isValidatingEmail: false,
+      validatingEmail: false,
       emailAvailable: null,
       submitErrors: '',
     }
@@ -22,7 +24,7 @@ class SignupForm extends Component {
 
   setValidatingEmail = value => {
     // Set loading status while async validating
-    this.setState(() => ({ isValidatingEmail: value }))
+    this.setState(() => ({ validatingEmail: value }))
   }
 
   validateEmail = (email, client) => {
@@ -89,7 +91,7 @@ class SignupForm extends Component {
                 }
               }}
             >
-              {({ isSubmitting, errors, touched }) => (
+              {({ values, isSubmitting }) => (
                 <Form noValidate>
                   <div>
                     <Field
@@ -105,7 +107,12 @@ class SignupForm extends Component {
                       placeholder="Email"
                       validate={email => this.validateEmail(email, client)}
                     />
-                    <span>{this.state.isValidatingEmail ? <CheckingAvailabilityMsg /> : null}</span>
+                    <CheckFieldAvailability
+                      fieldName={toTitleCase(values.email)}
+                      validatingField={this.state.validatingEmail}
+                      fieldAvailable={this.state.emailAvailable}
+                    />
+                    <span>{this.state.validatingEmail ? <CheckingAvailabilityMsg /> : null}</span>
                     <span>{this.state.emailAvailable ? 'Email is available!' : null}</span>
                   </div>
 

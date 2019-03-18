@@ -6,22 +6,24 @@ import Field from '../common/Field'
 import { ApolloConsumer } from 'react-apollo'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { validateUsername } from '../../utils/validators'
+import { toTitleCase } from '../../utils/common'
 import { startUpdateUser } from '../../actions/user'
 import { parseServerErrors } from '../../utils/errors'
 import FormErrorMessage from '../common/FormErrorMessage'
+import CheckFieldAvailability from '../common/CheckFieldAvailability'
 
 class UsernameForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isValidatingUsername: false,
+      validatingUsername: false,
       usernameAvailable: null,
     }
   }
 
   setValidatingUsername = value => {
     // Set loading status while async validating
-    this.setState(() => ({ isValidatingUsername: value }))
+    this.setState(() => ({ validatingUsername: value }))
   }
   validateUsername = (username, client) => {
     this.setState(() => ({ usernameAvailable: null }))
@@ -62,7 +64,7 @@ class UsernameForm extends Component {
                 }
               }}
             >
-              {({ isSubmitting }) => (
+              {({ values, isSubmitting }) => (
                 <Form noValidate>
                   <div>
                     <Field
@@ -70,8 +72,11 @@ class UsernameForm extends Component {
                       placeholder="Username"
                       validate={newUsername => this.validateUsername(newUsername, client)}
                     />
-                    <span>{this.state.isValidatingUsername ? <CheckingAvailabilityMsg /> : ''}</span>
-                    <span>{this.state.usernameAvailable ? 'Username is available!' : null}</span>
+                    <CheckFieldAvailability
+                      fieldName={toTitleCase(values.username)}
+                      validatingField={this.state.validatingUsername}
+                      fieldAvailable={this.state.usernameAvailable}
+                    />
                   </div>
 
                   <div>

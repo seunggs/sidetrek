@@ -8,10 +8,10 @@ const handleGoogleLoginClick = () => {
   })
 }
 
-const GoogleLogin = () => {
+const GoogleLogin = ({ ...rest }) => {
   return (
-    <ButtonGoogleLogin onClick={handleGoogleLoginClick}>
-      Google Login
+    <ButtonGoogleLogin onClick={handleGoogleLoginClick} {...rest}>
+      Login with Google
     </ButtonGoogleLogin>
   )
 }

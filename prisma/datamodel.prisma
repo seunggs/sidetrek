@@ -10,15 +10,15 @@ type User {
   picture: String
   twitter: String
   role: UserRole! @default(value: USER)
-  memberOf: [Member!] @relation(name: "MemberToUser", onDelete: CASCADE)
-  createdProjects: [Project!] @relation(name: "ProjectAuthorToUser", onDelete: CASCADE)
+  members: [Member!] @relation(name: "MemberToUser", onDelete: CASCADE)
+  projects: [Project!] @relation(name: "ProjectAuthorToUser", onDelete: CASCADE)
   votedProjects: [Project!] @relation(name: "ProjectVoterToUser", onDelete: CASCADE)
   favoriteProjects: [Project!] @relation(name: "ProjectFavoritedToUser", onDelete: CASCADE)
   posts: [Post!] @relation(name: "PostAuthorToUser", onDelete: CASCADE)
   votedPosts: [Post!] @relation(name: "PostVoterToUser", onDelete: CASCADE)
   comments: [Comment!] @relation(name: "CommentAuthorToUser", onDelete: CASCADE)
   reactions: [Reaction!] @relation(name: "ReactionAuthorToUser", onDelete: CASCADE)
-  createdMilestones: [Milestone] @relation(name: "MilestoneAuthorToUser", onDelete: CASCADE)
+  milestones: [Milestone] @relation(name: "MilestoneAuthorToUser", onDelete: CASCADE)
 }
 
 enum UserRole {
@@ -47,7 +47,7 @@ type Project {
   name: String!
   url: String! @unique
   title: String!
-  description: String!
+  description: String
   body: Json
   author: User! @relation(name: "ProjectAuthorToUser", onDelete: SET_NULL)
   members: [Member!]! @relation(name: "MemberToProject", onDelete: CASCADE)
@@ -66,7 +66,7 @@ type Member {
   user: User! @relation(name: "MemberToUser", onDelete: SET_NULL)
   role: MemberRole! @default(value: USER)
   project: Project! @relation(name: "MemberToProject", onDelete: SET_NULL)
-  milestonesAchieved: [Milestone!] @relation(name: "MilestoneAchievedToMember", onDelete: CASCADE)
+  milestones: [Milestone!] @relation(name: "MilestonesToMember", onDelete: CASCADE) # member created milestones
 }
 
 enum MemberRole {
@@ -121,7 +121,8 @@ type Milestone {
   deadline: DateTime
   project: Project! @relation(name: "MilestoneToProject", onDelete: SET_NULL)
   reactions: [Reaction!] @relation(name: "MilestoneToReaction", onDelete: CASCADE)
-  achievedBy: [Member!] @relation(name: "MilestoneAchievedToMember", onDelete: SET_NULL)
+  member: Member! @relation(name: "MilestonesToMember", onDelete: SET_NULL)
+  achieved: Boolean @default(value: false)
   order: Int
 }
 
@@ -131,3 +132,42 @@ type Milestone {
 #   updatedAt: DateTime!
 #   text: String!
 # }
+
+# Mapping Drip subscriber object
+type Subscriber {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  dripId: String
+  email: String! @unique
+  status: SubscriberStatus
+  visitorUuid: String
+  newEmail: String
+  userId: String
+  timeZone: String # in Olson format
+  utcOffset: String # in minutes
+  lifetimeValue: Int
+  ipAddress: String
+  userAgent: String
+  originalReferrer: String
+  landingUrl: String
+  customFields: Json
+  tags: [String!]
+  removeTags: [String!]
+  prospect: Boolean @default(value: true)
+  baseLeadScore: Int
+  leadScore: Int
+  euConsent: SubscriberEuConsent
+  euConsentMessage: String
+}
+
+enum SubscriberStatus {
+  ACTIVE,
+  UNSUBSCRIBED
+}
+
+enum SubscriberEuConsent {
+  GRANTED,
+  DENIED,
+  UNKNOWN
+}

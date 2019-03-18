@@ -2,23 +2,16 @@ import { getUserEmail } from '../utils/auth'
 
 const MemberMutation = {
   async createMember(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
+		await getUserEmail(prisma, request, args.where)
 
-		return await prisma.mutation.createMember({
-			data: {
-				...args.data,
-				user: {
-					connect: {
-						email
-					}
-				}
-			}
-		}, info)
+		const newMember = await prisma.mutation.createMember(args.data, info)
+
+		return newMember
 	},
 
-	async updateMember(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
-
+	async updateMember(parent, args, { prisma, request }, info) {		
+		const email = await getUserEmail(prisma, request)
+		
 		const memberExists = prisma.exists.Member({
 			...args.where,
 			user: {
@@ -32,8 +25,8 @@ const MemberMutation = {
 	},
 
   async deleteMember(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
-
+		const email = await getUserEmail(prisma, request)
+		
 		const memberExists = prisma.exists.Member({
 			...args.where,
 			user: {

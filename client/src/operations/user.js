@@ -18,11 +18,11 @@ export const userOps = {
         username
         picture
         role
-        memberOf {
+        members {
           id
           role
         }
-        createdProjects {
+        projects {
           id
         }
         votedProjects {
@@ -49,7 +49,7 @@ export const userOps = {
             id
           }
         }
-        createdMilestones {
+        milestones {
           id
         }
       }

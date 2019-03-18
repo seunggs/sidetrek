@@ -5,7 +5,7 @@ import 'antd/es/input/style/css'
 import { Field } from 'formik'
 import Label from './Label'
 
-const CustomInputComponent = ({
+const MyInputComponent = ({
   field, // { name, value, onChange, onBlur }
   form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
   ...props
@@ -21,15 +21,15 @@ const CustomInputComponent = ({
   return (
     <div className="mb3">
       <Label name={name}>{label}</Label>
-      <Input allowClear {...field} {...props} />
+      <Input allowClear size="large" {...field} {...props} />
       { fieldTouched &&
         fieldErrors && <Fragment>{finalFieldErrors}</Fragment>}
     </div>
   )
 }
 
-const CustomField = ({ ...rest }) => (
-  <Field {...rest} component={CustomInputComponent} />
+const MyField = ({ ...rest }) => (
+  <Field {...rest} component={MyInputComponent} />
 )
 
-export default CustomField
+export default MyField

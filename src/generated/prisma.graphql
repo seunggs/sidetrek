@@ -1,5 +1,5 @@
 # source: http://localhost:4466/default/dev
-# timestamp: Tue Mar 12 2019 20:54:46 GMT-0700 (Pacific Daylight Time)
+# timestamp: Sun Mar 17 2019 22:17:49 GMT-0700 (Pacific Daylight Time)
 
 type AggregateComment {
   count: Int!
@@ -26,6 +26,10 @@ type AggregateProject {
 }
 
 type AggregateReaction {
+  count: Int!
+}
+
+type AggregateSubscriber {
   count: Int!
 }
 
@@ -1349,7 +1353,7 @@ type Member implements Node {
   user: User!
   role: MemberRole!
   project: Project!
-  milestonesAchieved(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Milestone!]
+  milestones(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Milestone!]
 }
 
 """A connection to a list of items."""
@@ -1364,14 +1368,9 @@ type MemberConnection {
 
 input MemberCreateInput {
   role: MemberRole
-  user: UserCreateOneWithoutMemberOfInput!
+  user: UserCreateOneWithoutMembersInput!
   project: ProjectCreateOneWithoutMembersInput!
-  milestonesAchieved: MilestoneCreateManyWithoutAchievedByInput
-}
-
-input MemberCreateManyWithoutMilestonesAchievedInput {
-  create: [MemberCreateWithoutMilestonesAchievedInput!]
-  connect: [MemberWhereUniqueInput!]
+  milestones: MilestoneCreateManyWithoutMemberInput
 }
 
 input MemberCreateManyWithoutProjectInput {
@@ -1384,22 +1383,27 @@ input MemberCreateManyWithoutUserInput {
   connect: [MemberWhereUniqueInput!]
 }
 
-input MemberCreateWithoutMilestonesAchievedInput {
+input MemberCreateOneWithoutMilestonesInput {
+  create: MemberCreateWithoutMilestonesInput
+  connect: MemberWhereUniqueInput
+}
+
+input MemberCreateWithoutMilestonesInput {
   role: MemberRole
-  user: UserCreateOneWithoutMemberOfInput!
+  user: UserCreateOneWithoutMembersInput!
   project: ProjectCreateOneWithoutMembersInput!
 }
 
 input MemberCreateWithoutProjectInput {
   role: MemberRole
-  user: UserCreateOneWithoutMemberOfInput!
-  milestonesAchieved: MilestoneCreateManyWithoutAchievedByInput
+  user: UserCreateOneWithoutMembersInput!
+  milestones: MilestoneCreateManyWithoutMemberInput
 }
 
 input MemberCreateWithoutUserInput {
   role: MemberRole
   project: ProjectCreateOneWithoutMembersInput!
-  milestonesAchieved: MilestoneCreateManyWithoutAchievedByInput
+  milestones: MilestoneCreateManyWithoutMemberInput
 }
 
 """An edge in a connection."""
@@ -1582,9 +1586,9 @@ input MemberSubscriptionWhereInput {
 
 input MemberUpdateInput {
   role: MemberRole
-  user: UserUpdateOneRequiredWithoutMemberOfInput
+  user: UserUpdateOneRequiredWithoutMembersInput
   project: ProjectUpdateOneRequiredWithoutMembersInput
-  milestonesAchieved: MilestoneUpdateManyWithoutAchievedByInput
+  milestones: MilestoneUpdateManyWithoutMemberInput
 }
 
 input MemberUpdateManyDataInput {
@@ -1593,18 +1597,6 @@ input MemberUpdateManyDataInput {
 
 input MemberUpdateManyMutationInput {
   role: MemberRole
-}
-
-input MemberUpdateManyWithoutMilestonesAchievedInput {
-  create: [MemberCreateWithoutMilestonesAchievedInput!]
-  connect: [MemberWhereUniqueInput!]
-  set: [MemberWhereUniqueInput!]
-  disconnect: [MemberWhereUniqueInput!]
-  delete: [MemberWhereUniqueInput!]
-  update: [MemberUpdateWithWhereUniqueWithoutMilestonesAchievedInput!]
-  updateMany: [MemberUpdateManyWithWhereNestedInput!]
-  deleteMany: [MemberScalarWhereInput!]
-  upsert: [MemberUpsertWithWhereUniqueWithoutMilestonesAchievedInput!]
 }
 
 input MemberUpdateManyWithoutProjectInput {
@@ -1636,27 +1628,29 @@ input MemberUpdateManyWithWhereNestedInput {
   data: MemberUpdateManyDataInput!
 }
 
-input MemberUpdateWithoutMilestonesAchievedDataInput {
+input MemberUpdateOneRequiredWithoutMilestonesInput {
+  create: MemberCreateWithoutMilestonesInput
+  connect: MemberWhereUniqueInput
+  update: MemberUpdateWithoutMilestonesDataInput
+  upsert: MemberUpsertWithoutMilestonesInput
+}
+
+input MemberUpdateWithoutMilestonesDataInput {
   role: MemberRole
-  user: UserUpdateOneRequiredWithoutMemberOfInput
+  user: UserUpdateOneRequiredWithoutMembersInput
   project: ProjectUpdateOneRequiredWithoutMembersInput
 }
 
 input MemberUpdateWithoutProjectDataInput {
   role: MemberRole
-  user: UserUpdateOneRequiredWithoutMemberOfInput
-  milestonesAchieved: MilestoneUpdateManyWithoutAchievedByInput
+  user: UserUpdateOneRequiredWithoutMembersInput
+  milestones: MilestoneUpdateManyWithoutMemberInput
 }
 
 input MemberUpdateWithoutUserDataInput {
   role: MemberRole
   project: ProjectUpdateOneRequiredWithoutMembersInput
-  milestonesAchieved: MilestoneUpdateManyWithoutAchievedByInput
-}
-
-input MemberUpdateWithWhereUniqueWithoutMilestonesAchievedInput {
-  where: MemberWhereUniqueInput!
-  data: MemberUpdateWithoutMilestonesAchievedDataInput!
+  milestones: MilestoneUpdateManyWithoutMemberInput
 }
 
 input MemberUpdateWithWhereUniqueWithoutProjectInput {
@@ -1669,10 +1663,9 @@ input MemberUpdateWithWhereUniqueWithoutUserInput {
   data: MemberUpdateWithoutUserDataInput!
 }
 
-input MemberUpsertWithWhereUniqueWithoutMilestonesAchievedInput {
-  where: MemberWhereUniqueInput!
-  update: MemberUpdateWithoutMilestonesAchievedDataInput!
-  create: MemberCreateWithoutMilestonesAchievedInput!
+input MemberUpsertWithoutMilestonesInput {
+  update: MemberUpdateWithoutMilestonesDataInput!
+  create: MemberCreateWithoutMilestonesInput!
 }
 
 input MemberUpsertWithWhereUniqueWithoutProjectInput {
@@ -1792,9 +1785,9 @@ input MemberWhereInput {
   role_not_in: [MemberRole!]
   user: UserWhereInput
   project: ProjectWhereInput
-  milestonesAchieved_every: MilestoneWhereInput
-  milestonesAchieved_some: MilestoneWhereInput
-  milestonesAchieved_none: MilestoneWhereInput
+  milestones_every: MilestoneWhereInput
+  milestones_some: MilestoneWhereInput
+  milestones_none: MilestoneWhereInput
 }
 
 input MemberWhereUniqueInput {
@@ -1811,7 +1804,8 @@ type Milestone implements Node {
   deadline: DateTime
   project: Project!
   reactions(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Reaction!]
-  achievedBy(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  member: Member!
+  achieved: Boolean
   order: Int
 }
 
@@ -1829,20 +1823,21 @@ input MilestoneCreateInput {
   title: String!
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
-  author: UserCreateOneWithoutCreatedMilestonesInput!
+  author: UserCreateOneWithoutMilestonesInput!
   project: ProjectCreateOneWithoutMilestonesInput!
   reactions: ReactionCreateManyWithoutMilestoneInput
-  achievedBy: MemberCreateManyWithoutMilestonesAchievedInput
-}
-
-input MilestoneCreateManyWithoutAchievedByInput {
-  create: [MilestoneCreateWithoutAchievedByInput!]
-  connect: [MilestoneWhereUniqueInput!]
+  member: MemberCreateOneWithoutMilestonesInput!
 }
 
 input MilestoneCreateManyWithoutAuthorInput {
   create: [MilestoneCreateWithoutAuthorInput!]
+  connect: [MilestoneWhereUniqueInput!]
+}
+
+input MilestoneCreateManyWithoutMemberInput {
+  create: [MilestoneCreateWithoutMemberInput!]
   connect: [MilestoneWhereUniqueInput!]
 }
 
@@ -1856,44 +1851,48 @@ input MilestoneCreateOneWithoutReactionsInput {
   connect: MilestoneWhereUniqueInput
 }
 
-input MilestoneCreateWithoutAchievedByInput {
-  title: String!
-  description: String
-  deadline: DateTime
-  order: Int
-  author: UserCreateOneWithoutCreatedMilestonesInput!
-  project: ProjectCreateOneWithoutMilestonesInput!
-  reactions: ReactionCreateManyWithoutMilestoneInput
-}
-
 input MilestoneCreateWithoutAuthorInput {
   title: String!
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
   project: ProjectCreateOneWithoutMilestonesInput!
   reactions: ReactionCreateManyWithoutMilestoneInput
-  achievedBy: MemberCreateManyWithoutMilestonesAchievedInput
+  member: MemberCreateOneWithoutMilestonesInput!
+}
+
+input MilestoneCreateWithoutMemberInput {
+  title: String!
+  description: String
+  deadline: DateTime
+  achieved: Boolean
+  order: Int
+  author: UserCreateOneWithoutMilestonesInput!
+  project: ProjectCreateOneWithoutMilestonesInput!
+  reactions: ReactionCreateManyWithoutMilestoneInput
 }
 
 input MilestoneCreateWithoutProjectInput {
   title: String!
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
-  author: UserCreateOneWithoutCreatedMilestonesInput!
+  author: UserCreateOneWithoutMilestonesInput!
   reactions: ReactionCreateManyWithoutMilestoneInput
-  achievedBy: MemberCreateManyWithoutMilestonesAchievedInput
+  member: MemberCreateOneWithoutMilestonesInput!
 }
 
 input MilestoneCreateWithoutReactionsInput {
   title: String!
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
-  author: UserCreateOneWithoutCreatedMilestonesInput!
+  author: UserCreateOneWithoutMilestonesInput!
   project: ProjectCreateOneWithoutMilestonesInput!
-  achievedBy: MemberCreateManyWithoutMilestonesAchievedInput
+  member: MemberCreateOneWithoutMilestonesInput!
 }
 
 """An edge in a connection."""
@@ -1918,6 +1917,8 @@ enum MilestoneOrderByInput {
   description_DESC
   deadline_ASC
   deadline_DESC
+  achieved_ASC
+  achieved_DESC
   order_ASC
   order_DESC
 }
@@ -1929,6 +1930,7 @@ type MilestonePreviousValues {
   title: String!
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
 }
 
@@ -2127,6 +2129,10 @@ input MilestoneScalarWhereInput {
 
   """All values greater than or equal the given value."""
   deadline_gte: DateTime
+  achieved: Boolean
+
+  """All values that are not equal to given value."""
+  achieved_not: Boolean
   order: Int
 
   """All values that are not equal to given value."""
@@ -2194,17 +2200,19 @@ input MilestoneUpdateInput {
   title: String
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
-  author: UserUpdateOneRequiredWithoutCreatedMilestonesInput
+  author: UserUpdateOneRequiredWithoutMilestonesInput
   project: ProjectUpdateOneRequiredWithoutMilestonesInput
   reactions: ReactionUpdateManyWithoutMilestoneInput
-  achievedBy: MemberUpdateManyWithoutMilestonesAchievedInput
+  member: MemberUpdateOneRequiredWithoutMilestonesInput
 }
 
 input MilestoneUpdateManyDataInput {
   title: String
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
 }
 
@@ -2212,19 +2220,8 @@ input MilestoneUpdateManyMutationInput {
   title: String
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
-}
-
-input MilestoneUpdateManyWithoutAchievedByInput {
-  create: [MilestoneCreateWithoutAchievedByInput!]
-  connect: [MilestoneWhereUniqueInput!]
-  set: [MilestoneWhereUniqueInput!]
-  disconnect: [MilestoneWhereUniqueInput!]
-  delete: [MilestoneWhereUniqueInput!]
-  update: [MilestoneUpdateWithWhereUniqueWithoutAchievedByInput!]
-  updateMany: [MilestoneUpdateManyWithWhereNestedInput!]
-  deleteMany: [MilestoneScalarWhereInput!]
-  upsert: [MilestoneUpsertWithWhereUniqueWithoutAchievedByInput!]
 }
 
 input MilestoneUpdateManyWithoutAuthorInput {
@@ -2237,6 +2234,18 @@ input MilestoneUpdateManyWithoutAuthorInput {
   updateMany: [MilestoneUpdateManyWithWhereNestedInput!]
   deleteMany: [MilestoneScalarWhereInput!]
   upsert: [MilestoneUpsertWithWhereUniqueWithoutAuthorInput!]
+}
+
+input MilestoneUpdateManyWithoutMemberInput {
+  create: [MilestoneCreateWithoutMemberInput!]
+  connect: [MilestoneWhereUniqueInput!]
+  set: [MilestoneWhereUniqueInput!]
+  disconnect: [MilestoneWhereUniqueInput!]
+  delete: [MilestoneWhereUniqueInput!]
+  update: [MilestoneUpdateWithWhereUniqueWithoutMemberInput!]
+  updateMany: [MilestoneUpdateManyWithWhereNestedInput!]
+  deleteMany: [MilestoneScalarWhereInput!]
+  upsert: [MilestoneUpsertWithWhereUniqueWithoutMemberInput!]
 }
 
 input MilestoneUpdateManyWithoutProjectInput {
@@ -2265,54 +2274,58 @@ input MilestoneUpdateOneWithoutReactionsInput {
   upsert: MilestoneUpsertWithoutReactionsInput
 }
 
-input MilestoneUpdateWithoutAchievedByDataInput {
-  title: String
-  description: String
-  deadline: DateTime
-  order: Int
-  author: UserUpdateOneRequiredWithoutCreatedMilestonesInput
-  project: ProjectUpdateOneRequiredWithoutMilestonesInput
-  reactions: ReactionUpdateManyWithoutMilestoneInput
-}
-
 input MilestoneUpdateWithoutAuthorDataInput {
   title: String
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
   project: ProjectUpdateOneRequiredWithoutMilestonesInput
   reactions: ReactionUpdateManyWithoutMilestoneInput
-  achievedBy: MemberUpdateManyWithoutMilestonesAchievedInput
+  member: MemberUpdateOneRequiredWithoutMilestonesInput
+}
+
+input MilestoneUpdateWithoutMemberDataInput {
+  title: String
+  description: String
+  deadline: DateTime
+  achieved: Boolean
+  order: Int
+  author: UserUpdateOneRequiredWithoutMilestonesInput
+  project: ProjectUpdateOneRequiredWithoutMilestonesInput
+  reactions: ReactionUpdateManyWithoutMilestoneInput
 }
 
 input MilestoneUpdateWithoutProjectDataInput {
   title: String
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
-  author: UserUpdateOneRequiredWithoutCreatedMilestonesInput
+  author: UserUpdateOneRequiredWithoutMilestonesInput
   reactions: ReactionUpdateManyWithoutMilestoneInput
-  achievedBy: MemberUpdateManyWithoutMilestonesAchievedInput
+  member: MemberUpdateOneRequiredWithoutMilestonesInput
 }
 
 input MilestoneUpdateWithoutReactionsDataInput {
   title: String
   description: String
   deadline: DateTime
+  achieved: Boolean
   order: Int
-  author: UserUpdateOneRequiredWithoutCreatedMilestonesInput
+  author: UserUpdateOneRequiredWithoutMilestonesInput
   project: ProjectUpdateOneRequiredWithoutMilestonesInput
-  achievedBy: MemberUpdateManyWithoutMilestonesAchievedInput
-}
-
-input MilestoneUpdateWithWhereUniqueWithoutAchievedByInput {
-  where: MilestoneWhereUniqueInput!
-  data: MilestoneUpdateWithoutAchievedByDataInput!
+  member: MemberUpdateOneRequiredWithoutMilestonesInput
 }
 
 input MilestoneUpdateWithWhereUniqueWithoutAuthorInput {
   where: MilestoneWhereUniqueInput!
   data: MilestoneUpdateWithoutAuthorDataInput!
+}
+
+input MilestoneUpdateWithWhereUniqueWithoutMemberInput {
+  where: MilestoneWhereUniqueInput!
+  data: MilestoneUpdateWithoutMemberDataInput!
 }
 
 input MilestoneUpdateWithWhereUniqueWithoutProjectInput {
@@ -2325,16 +2338,16 @@ input MilestoneUpsertWithoutReactionsInput {
   create: MilestoneCreateWithoutReactionsInput!
 }
 
-input MilestoneUpsertWithWhereUniqueWithoutAchievedByInput {
-  where: MilestoneWhereUniqueInput!
-  update: MilestoneUpdateWithoutAchievedByDataInput!
-  create: MilestoneCreateWithoutAchievedByInput!
-}
-
 input MilestoneUpsertWithWhereUniqueWithoutAuthorInput {
   where: MilestoneWhereUniqueInput!
   update: MilestoneUpdateWithoutAuthorDataInput!
   create: MilestoneCreateWithoutAuthorInput!
+}
+
+input MilestoneUpsertWithWhereUniqueWithoutMemberInput {
+  where: MilestoneWhereUniqueInput!
+  update: MilestoneUpdateWithoutMemberDataInput!
+  create: MilestoneCreateWithoutMemberInput!
 }
 
 input MilestoneUpsertWithWhereUniqueWithoutProjectInput {
@@ -2538,6 +2551,10 @@ input MilestoneWhereInput {
 
   """All values greater than or equal the given value."""
   deadline_gte: DateTime
+  achieved: Boolean
+
+  """All values that are not equal to given value."""
+  achieved_not: Boolean
   order: Int
 
   """All values that are not equal to given value."""
@@ -2565,9 +2582,7 @@ input MilestoneWhereInput {
   reactions_every: ReactionWhereInput
   reactions_some: ReactionWhereInput
   reactions_none: ReactionWhereInput
-  achievedBy_every: MemberWhereInput
-  achievedBy_some: MemberWhereInput
-  achievedBy_none: MemberWhereInput
+  member: MemberWhereInput
 }
 
 input MilestoneWhereUniqueInput {
@@ -2583,6 +2598,7 @@ type Mutation {
   createComment(data: CommentCreateInput!): Comment!
   createReaction(data: ReactionCreateInput!): Reaction!
   createMilestone(data: MilestoneCreateInput!): Milestone!
+  createSubscriber(data: SubscriberCreateInput!): Subscriber!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateProject(data: ProjectUpdateInput!, where: ProjectWhereUniqueInput!): Project
@@ -2591,6 +2607,7 @@ type Mutation {
   updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
   updateReaction(data: ReactionUpdateInput!, where: ReactionWhereUniqueInput!): Reaction
   updateMilestone(data: MilestoneUpdateInput!, where: MilestoneWhereUniqueInput!): Milestone
+  updateSubscriber(data: SubscriberUpdateInput!, where: SubscriberWhereUniqueInput!): Subscriber
   deleteUser(where: UserWhereUniqueInput!): User
   deleteFile(where: FileWhereUniqueInput!): File
   deleteProject(where: ProjectWhereUniqueInput!): Project
@@ -2599,6 +2616,7 @@ type Mutation {
   deleteComment(where: CommentWhereUniqueInput!): Comment
   deleteReaction(where: ReactionWhereUniqueInput!): Reaction
   deleteMilestone(where: MilestoneWhereUniqueInput!): Milestone
+  deleteSubscriber(where: SubscriberWhereUniqueInput!): Subscriber
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertProject(where: ProjectWhereUniqueInput!, create: ProjectCreateInput!, update: ProjectUpdateInput!): Project!
@@ -2607,6 +2625,7 @@ type Mutation {
   upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
   upsertReaction(where: ReactionWhereUniqueInput!, create: ReactionCreateInput!, update: ReactionUpdateInput!): Reaction!
   upsertMilestone(where: MilestoneWhereUniqueInput!, create: MilestoneCreateInput!, update: MilestoneUpdateInput!): Milestone!
+  upsertSubscriber(where: SubscriberWhereUniqueInput!, create: SubscriberCreateInput!, update: SubscriberUpdateInput!): Subscriber!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManyProjects(data: ProjectUpdateManyMutationInput!, where: ProjectWhereInput): BatchPayload!
@@ -2615,6 +2634,7 @@ type Mutation {
   updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
   updateManyReactions(data: ReactionUpdateManyMutationInput!, where: ReactionWhereInput): BatchPayload!
   updateManyMilestones(data: MilestoneUpdateManyMutationInput!, where: MilestoneWhereInput): BatchPayload!
+  updateManySubscribers(data: SubscriberUpdateManyMutationInput!, where: SubscriberWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManyProjects(where: ProjectWhereInput): BatchPayload!
@@ -2623,6 +2643,7 @@ type Mutation {
   deleteManyComments(where: CommentWhereInput): BatchPayload!
   deleteManyReactions(where: ReactionWhereInput): BatchPayload!
   deleteManyMilestones(where: MilestoneWhereInput): BatchPayload!
+  deleteManySubscribers(where: SubscriberWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -3343,7 +3364,7 @@ type Project implements Node {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   author: User!
   members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
@@ -3371,10 +3392,10 @@ input ProjectCreateInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
-  author: UserCreateOneWithoutCreatedProjectsInput!
+  author: UserCreateOneWithoutProjectsInput!
   members: MemberCreateManyWithoutProjectInput
   voters: UserCreateManyWithoutVotedProjectsInput
   favoritedUsers: UserCreateManyWithoutFavoriteProjectsInput
@@ -3424,7 +3445,7 @@ input ProjectCreateWithoutAuthorInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
   members: MemberCreateManyWithoutProjectInput
@@ -3441,10 +3462,10 @@ input ProjectCreateWithoutFavoritedUsersInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
-  author: UserCreateOneWithoutCreatedProjectsInput!
+  author: UserCreateOneWithoutProjectsInput!
   members: MemberCreateManyWithoutProjectInput
   voters: UserCreateManyWithoutVotedProjectsInput
   files: FileCreateManyWithoutProjectInput
@@ -3458,10 +3479,10 @@ input ProjectCreateWithoutFilesInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
-  author: UserCreateOneWithoutCreatedProjectsInput!
+  author: UserCreateOneWithoutProjectsInput!
   members: MemberCreateManyWithoutProjectInput
   voters: UserCreateManyWithoutVotedProjectsInput
   favoritedUsers: UserCreateManyWithoutFavoriteProjectsInput
@@ -3475,10 +3496,10 @@ input ProjectCreateWithoutMembersInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
-  author: UserCreateOneWithoutCreatedProjectsInput!
+  author: UserCreateOneWithoutProjectsInput!
   voters: UserCreateManyWithoutVotedProjectsInput
   favoritedUsers: UserCreateManyWithoutFavoriteProjectsInput
   files: FileCreateManyWithoutProjectInput
@@ -3492,10 +3513,10 @@ input ProjectCreateWithoutMilestonesInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
-  author: UserCreateOneWithoutCreatedProjectsInput!
+  author: UserCreateOneWithoutProjectsInput!
   members: MemberCreateManyWithoutProjectInput
   voters: UserCreateManyWithoutVotedProjectsInput
   favoritedUsers: UserCreateManyWithoutFavoriteProjectsInput
@@ -3509,10 +3530,10 @@ input ProjectCreateWithoutPostsInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
-  author: UserCreateOneWithoutCreatedProjectsInput!
+  author: UserCreateOneWithoutProjectsInput!
   members: MemberCreateManyWithoutProjectInput
   voters: UserCreateManyWithoutVotedProjectsInput
   favoritedUsers: UserCreateManyWithoutFavoriteProjectsInput
@@ -3526,10 +3547,10 @@ input ProjectCreateWithoutVotersInput {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
-  author: UserCreateOneWithoutCreatedProjectsInput!
+  author: UserCreateOneWithoutProjectsInput!
   members: MemberCreateManyWithoutProjectInput
   favoritedUsers: UserCreateManyWithoutFavoriteProjectsInput
   files: FileCreateManyWithoutProjectInput
@@ -3580,7 +3601,7 @@ type ProjectPreviousValues {
   name: String!
   url: String!
   title: String!
-  description: String!
+  description: String
   body: Json
   heroImageId: String
 }
@@ -3936,7 +3957,7 @@ input ProjectUpdateInput {
   description: String
   body: Json
   heroImageId: String
-  author: UserUpdateOneRequiredWithoutCreatedProjectsInput
+  author: UserUpdateOneRequiredWithoutProjectsInput
   members: MemberUpdateManyWithoutProjectInput
   voters: UserUpdateManyWithoutVotedProjectsInput
   favoritedUsers: UserUpdateManyWithoutFavoriteProjectsInput
@@ -4066,7 +4087,7 @@ input ProjectUpdateWithoutFavoritedUsersDataInput {
   description: String
   body: Json
   heroImageId: String
-  author: UserUpdateOneRequiredWithoutCreatedProjectsInput
+  author: UserUpdateOneRequiredWithoutProjectsInput
   members: MemberUpdateManyWithoutProjectInput
   voters: UserUpdateManyWithoutVotedProjectsInput
   files: FileUpdateManyWithoutProjectInput
@@ -4083,7 +4104,7 @@ input ProjectUpdateWithoutFilesDataInput {
   description: String
   body: Json
   heroImageId: String
-  author: UserUpdateOneRequiredWithoutCreatedProjectsInput
+  author: UserUpdateOneRequiredWithoutProjectsInput
   members: MemberUpdateManyWithoutProjectInput
   voters: UserUpdateManyWithoutVotedProjectsInput
   favoritedUsers: UserUpdateManyWithoutFavoriteProjectsInput
@@ -4100,7 +4121,7 @@ input ProjectUpdateWithoutMembersDataInput {
   description: String
   body: Json
   heroImageId: String
-  author: UserUpdateOneRequiredWithoutCreatedProjectsInput
+  author: UserUpdateOneRequiredWithoutProjectsInput
   voters: UserUpdateManyWithoutVotedProjectsInput
   favoritedUsers: UserUpdateManyWithoutFavoriteProjectsInput
   files: FileUpdateManyWithoutProjectInput
@@ -4117,7 +4138,7 @@ input ProjectUpdateWithoutMilestonesDataInput {
   description: String
   body: Json
   heroImageId: String
-  author: UserUpdateOneRequiredWithoutCreatedProjectsInput
+  author: UserUpdateOneRequiredWithoutProjectsInput
   members: MemberUpdateManyWithoutProjectInput
   voters: UserUpdateManyWithoutVotedProjectsInput
   favoritedUsers: UserUpdateManyWithoutFavoriteProjectsInput
@@ -4134,7 +4155,7 @@ input ProjectUpdateWithoutPostsDataInput {
   description: String
   body: Json
   heroImageId: String
-  author: UserUpdateOneRequiredWithoutCreatedProjectsInput
+  author: UserUpdateOneRequiredWithoutProjectsInput
   members: MemberUpdateManyWithoutProjectInput
   voters: UserUpdateManyWithoutVotedProjectsInput
   favoritedUsers: UserUpdateManyWithoutFavoriteProjectsInput
@@ -4151,7 +4172,7 @@ input ProjectUpdateWithoutVotersDataInput {
   description: String
   body: Json
   heroImageId: String
-  author: UserUpdateOneRequiredWithoutCreatedProjectsInput
+  author: UserUpdateOneRequiredWithoutProjectsInput
   members: MemberUpdateManyWithoutProjectInput
   favoritedUsers: UserUpdateManyWithoutFavoriteProjectsInput
   files: FileUpdateManyWithoutProjectInput
@@ -4548,6 +4569,7 @@ type Query {
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
   reactions(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Reaction]!
   milestones(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Milestone]!
+  subscribers(where: SubscriberWhereInput, orderBy: SubscriberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Subscriber]!
   user(where: UserWhereUniqueInput!): User
   file(where: FileWhereUniqueInput!): File
   project(where: ProjectWhereUniqueInput!): Project
@@ -4556,6 +4578,7 @@ type Query {
   comment(where: CommentWhereUniqueInput!): Comment
   reaction(where: ReactionWhereUniqueInput!): Reaction
   milestone(where: MilestoneWhereUniqueInput!): Milestone
+  subscriber(where: SubscriberWhereUniqueInput!): Subscriber
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   projectsConnection(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProjectConnection!
@@ -4564,6 +4587,7 @@ type Query {
   commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
   reactionsConnection(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReactionConnection!
   milestonesConnection(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MilestoneConnection!
+  subscribersConnection(where: SubscriberWhereInput, orderBy: SubscriberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubscriberConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -5082,6 +5106,934 @@ input ReactionWhereUniqueInput {
   id: ID
 }
 
+type Subscriber implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  dripId: String
+  email: String!
+  status: SubscriberStatus
+  visitorUuid: String
+  newEmail: String
+  userId: String
+  timeZone: String
+  utcOffset: String
+  lifetimeValue: Int
+  ipAddress: String
+  userAgent: String
+  originalReferrer: String
+  landingUrl: String
+  customFields: Json
+  tags: [String!]!
+  removeTags: [String!]!
+  prospect: Boolean
+  baseLeadScore: Int
+  leadScore: Int
+  euConsent: SubscriberEuConsent
+  euConsentMessage: String
+}
+
+"""A connection to a list of items."""
+type SubscriberConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [SubscriberEdge]!
+  aggregate: AggregateSubscriber!
+}
+
+input SubscriberCreateInput {
+  dripId: String
+  email: String!
+  status: SubscriberStatus
+  visitorUuid: String
+  newEmail: String
+  userId: String
+  timeZone: String
+  utcOffset: String
+  lifetimeValue: Int
+  ipAddress: String
+  userAgent: String
+  originalReferrer: String
+  landingUrl: String
+  customFields: Json
+  prospect: Boolean
+  baseLeadScore: Int
+  leadScore: Int
+  euConsent: SubscriberEuConsent
+  euConsentMessage: String
+  tags: SubscriberCreatetagsInput
+  removeTags: SubscriberCreateremoveTagsInput
+}
+
+input SubscriberCreateremoveTagsInput {
+  set: [String!]
+}
+
+input SubscriberCreatetagsInput {
+  set: [String!]
+}
+
+"""An edge in a connection."""
+type SubscriberEdge {
+  """The item at the end of the edge."""
+  node: Subscriber!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum SubscriberEuConsent {
+  GRANTED
+  DENIED
+  UNKNOWN
+}
+
+enum SubscriberOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  dripId_ASC
+  dripId_DESC
+  email_ASC
+  email_DESC
+  status_ASC
+  status_DESC
+  visitorUuid_ASC
+  visitorUuid_DESC
+  newEmail_ASC
+  newEmail_DESC
+  userId_ASC
+  userId_DESC
+  timeZone_ASC
+  timeZone_DESC
+  utcOffset_ASC
+  utcOffset_DESC
+  lifetimeValue_ASC
+  lifetimeValue_DESC
+  ipAddress_ASC
+  ipAddress_DESC
+  userAgent_ASC
+  userAgent_DESC
+  originalReferrer_ASC
+  originalReferrer_DESC
+  landingUrl_ASC
+  landingUrl_DESC
+  customFields_ASC
+  customFields_DESC
+  prospect_ASC
+  prospect_DESC
+  baseLeadScore_ASC
+  baseLeadScore_DESC
+  leadScore_ASC
+  leadScore_DESC
+  euConsent_ASC
+  euConsent_DESC
+  euConsentMessage_ASC
+  euConsentMessage_DESC
+}
+
+type SubscriberPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  dripId: String
+  email: String!
+  status: SubscriberStatus
+  visitorUuid: String
+  newEmail: String
+  userId: String
+  timeZone: String
+  utcOffset: String
+  lifetimeValue: Int
+  ipAddress: String
+  userAgent: String
+  originalReferrer: String
+  landingUrl: String
+  customFields: Json
+  tags: [String!]!
+  removeTags: [String!]!
+  prospect: Boolean
+  baseLeadScore: Int
+  leadScore: Int
+  euConsent: SubscriberEuConsent
+  euConsentMessage: String
+}
+
+enum SubscriberStatus {
+  ACTIVE
+  UNSUBSCRIBED
+}
+
+type SubscriberSubscriptionPayload {
+  mutation: MutationType!
+  node: Subscriber
+  updatedFields: [String!]
+  previousValues: SubscriberPreviousValues
+}
+
+input SubscriberSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SubscriberSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SubscriberSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SubscriberSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: SubscriberWhereInput
+}
+
+input SubscriberUpdateInput {
+  dripId: String
+  email: String
+  status: SubscriberStatus
+  visitorUuid: String
+  newEmail: String
+  userId: String
+  timeZone: String
+  utcOffset: String
+  lifetimeValue: Int
+  ipAddress: String
+  userAgent: String
+  originalReferrer: String
+  landingUrl: String
+  customFields: Json
+  prospect: Boolean
+  baseLeadScore: Int
+  leadScore: Int
+  euConsent: SubscriberEuConsent
+  euConsentMessage: String
+  tags: SubscriberUpdatetagsInput
+  removeTags: SubscriberUpdateremoveTagsInput
+}
+
+input SubscriberUpdateManyMutationInput {
+  dripId: String
+  email: String
+  status: SubscriberStatus
+  visitorUuid: String
+  newEmail: String
+  userId: String
+  timeZone: String
+  utcOffset: String
+  lifetimeValue: Int
+  ipAddress: String
+  userAgent: String
+  originalReferrer: String
+  landingUrl: String
+  customFields: Json
+  prospect: Boolean
+  baseLeadScore: Int
+  leadScore: Int
+  euConsent: SubscriberEuConsent
+  euConsentMessage: String
+  tags: SubscriberUpdatetagsInput
+  removeTags: SubscriberUpdateremoveTagsInput
+}
+
+input SubscriberUpdateremoveTagsInput {
+  set: [String!]
+}
+
+input SubscriberUpdatetagsInput {
+  set: [String!]
+}
+
+input SubscriberWhereInput {
+  """Logical AND on all given filters."""
+  AND: [SubscriberWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [SubscriberWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [SubscriberWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  dripId: String
+
+  """All values that are not equal to given value."""
+  dripId_not: String
+
+  """All values that are contained in given list."""
+  dripId_in: [String!]
+
+  """All values that are not contained in given list."""
+  dripId_not_in: [String!]
+
+  """All values less than the given value."""
+  dripId_lt: String
+
+  """All values less than or equal the given value."""
+  dripId_lte: String
+
+  """All values greater than the given value."""
+  dripId_gt: String
+
+  """All values greater than or equal the given value."""
+  dripId_gte: String
+
+  """All values containing the given string."""
+  dripId_contains: String
+
+  """All values not containing the given string."""
+  dripId_not_contains: String
+
+  """All values starting with the given string."""
+  dripId_starts_with: String
+
+  """All values not starting with the given string."""
+  dripId_not_starts_with: String
+
+  """All values ending with the given string."""
+  dripId_ends_with: String
+
+  """All values not ending with the given string."""
+  dripId_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  status: SubscriberStatus
+
+  """All values that are not equal to given value."""
+  status_not: SubscriberStatus
+
+  """All values that are contained in given list."""
+  status_in: [SubscriberStatus!]
+
+  """All values that are not contained in given list."""
+  status_not_in: [SubscriberStatus!]
+  visitorUuid: String
+
+  """All values that are not equal to given value."""
+  visitorUuid_not: String
+
+  """All values that are contained in given list."""
+  visitorUuid_in: [String!]
+
+  """All values that are not contained in given list."""
+  visitorUuid_not_in: [String!]
+
+  """All values less than the given value."""
+  visitorUuid_lt: String
+
+  """All values less than or equal the given value."""
+  visitorUuid_lte: String
+
+  """All values greater than the given value."""
+  visitorUuid_gt: String
+
+  """All values greater than or equal the given value."""
+  visitorUuid_gte: String
+
+  """All values containing the given string."""
+  visitorUuid_contains: String
+
+  """All values not containing the given string."""
+  visitorUuid_not_contains: String
+
+  """All values starting with the given string."""
+  visitorUuid_starts_with: String
+
+  """All values not starting with the given string."""
+  visitorUuid_not_starts_with: String
+
+  """All values ending with the given string."""
+  visitorUuid_ends_with: String
+
+  """All values not ending with the given string."""
+  visitorUuid_not_ends_with: String
+  newEmail: String
+
+  """All values that are not equal to given value."""
+  newEmail_not: String
+
+  """All values that are contained in given list."""
+  newEmail_in: [String!]
+
+  """All values that are not contained in given list."""
+  newEmail_not_in: [String!]
+
+  """All values less than the given value."""
+  newEmail_lt: String
+
+  """All values less than or equal the given value."""
+  newEmail_lte: String
+
+  """All values greater than the given value."""
+  newEmail_gt: String
+
+  """All values greater than or equal the given value."""
+  newEmail_gte: String
+
+  """All values containing the given string."""
+  newEmail_contains: String
+
+  """All values not containing the given string."""
+  newEmail_not_contains: String
+
+  """All values starting with the given string."""
+  newEmail_starts_with: String
+
+  """All values not starting with the given string."""
+  newEmail_not_starts_with: String
+
+  """All values ending with the given string."""
+  newEmail_ends_with: String
+
+  """All values not ending with the given string."""
+  newEmail_not_ends_with: String
+  userId: String
+
+  """All values that are not equal to given value."""
+  userId_not: String
+
+  """All values that are contained in given list."""
+  userId_in: [String!]
+
+  """All values that are not contained in given list."""
+  userId_not_in: [String!]
+
+  """All values less than the given value."""
+  userId_lt: String
+
+  """All values less than or equal the given value."""
+  userId_lte: String
+
+  """All values greater than the given value."""
+  userId_gt: String
+
+  """All values greater than or equal the given value."""
+  userId_gte: String
+
+  """All values containing the given string."""
+  userId_contains: String
+
+  """All values not containing the given string."""
+  userId_not_contains: String
+
+  """All values starting with the given string."""
+  userId_starts_with: String
+
+  """All values not starting with the given string."""
+  userId_not_starts_with: String
+
+  """All values ending with the given string."""
+  userId_ends_with: String
+
+  """All values not ending with the given string."""
+  userId_not_ends_with: String
+  timeZone: String
+
+  """All values that are not equal to given value."""
+  timeZone_not: String
+
+  """All values that are contained in given list."""
+  timeZone_in: [String!]
+
+  """All values that are not contained in given list."""
+  timeZone_not_in: [String!]
+
+  """All values less than the given value."""
+  timeZone_lt: String
+
+  """All values less than or equal the given value."""
+  timeZone_lte: String
+
+  """All values greater than the given value."""
+  timeZone_gt: String
+
+  """All values greater than or equal the given value."""
+  timeZone_gte: String
+
+  """All values containing the given string."""
+  timeZone_contains: String
+
+  """All values not containing the given string."""
+  timeZone_not_contains: String
+
+  """All values starting with the given string."""
+  timeZone_starts_with: String
+
+  """All values not starting with the given string."""
+  timeZone_not_starts_with: String
+
+  """All values ending with the given string."""
+  timeZone_ends_with: String
+
+  """All values not ending with the given string."""
+  timeZone_not_ends_with: String
+  utcOffset: String
+
+  """All values that are not equal to given value."""
+  utcOffset_not: String
+
+  """All values that are contained in given list."""
+  utcOffset_in: [String!]
+
+  """All values that are not contained in given list."""
+  utcOffset_not_in: [String!]
+
+  """All values less than the given value."""
+  utcOffset_lt: String
+
+  """All values less than or equal the given value."""
+  utcOffset_lte: String
+
+  """All values greater than the given value."""
+  utcOffset_gt: String
+
+  """All values greater than or equal the given value."""
+  utcOffset_gte: String
+
+  """All values containing the given string."""
+  utcOffset_contains: String
+
+  """All values not containing the given string."""
+  utcOffset_not_contains: String
+
+  """All values starting with the given string."""
+  utcOffset_starts_with: String
+
+  """All values not starting with the given string."""
+  utcOffset_not_starts_with: String
+
+  """All values ending with the given string."""
+  utcOffset_ends_with: String
+
+  """All values not ending with the given string."""
+  utcOffset_not_ends_with: String
+  lifetimeValue: Int
+
+  """All values that are not equal to given value."""
+  lifetimeValue_not: Int
+
+  """All values that are contained in given list."""
+  lifetimeValue_in: [Int!]
+
+  """All values that are not contained in given list."""
+  lifetimeValue_not_in: [Int!]
+
+  """All values less than the given value."""
+  lifetimeValue_lt: Int
+
+  """All values less than or equal the given value."""
+  lifetimeValue_lte: Int
+
+  """All values greater than the given value."""
+  lifetimeValue_gt: Int
+
+  """All values greater than or equal the given value."""
+  lifetimeValue_gte: Int
+  ipAddress: String
+
+  """All values that are not equal to given value."""
+  ipAddress_not: String
+
+  """All values that are contained in given list."""
+  ipAddress_in: [String!]
+
+  """All values that are not contained in given list."""
+  ipAddress_not_in: [String!]
+
+  """All values less than the given value."""
+  ipAddress_lt: String
+
+  """All values less than or equal the given value."""
+  ipAddress_lte: String
+
+  """All values greater than the given value."""
+  ipAddress_gt: String
+
+  """All values greater than or equal the given value."""
+  ipAddress_gte: String
+
+  """All values containing the given string."""
+  ipAddress_contains: String
+
+  """All values not containing the given string."""
+  ipAddress_not_contains: String
+
+  """All values starting with the given string."""
+  ipAddress_starts_with: String
+
+  """All values not starting with the given string."""
+  ipAddress_not_starts_with: String
+
+  """All values ending with the given string."""
+  ipAddress_ends_with: String
+
+  """All values not ending with the given string."""
+  ipAddress_not_ends_with: String
+  userAgent: String
+
+  """All values that are not equal to given value."""
+  userAgent_not: String
+
+  """All values that are contained in given list."""
+  userAgent_in: [String!]
+
+  """All values that are not contained in given list."""
+  userAgent_not_in: [String!]
+
+  """All values less than the given value."""
+  userAgent_lt: String
+
+  """All values less than or equal the given value."""
+  userAgent_lte: String
+
+  """All values greater than the given value."""
+  userAgent_gt: String
+
+  """All values greater than or equal the given value."""
+  userAgent_gte: String
+
+  """All values containing the given string."""
+  userAgent_contains: String
+
+  """All values not containing the given string."""
+  userAgent_not_contains: String
+
+  """All values starting with the given string."""
+  userAgent_starts_with: String
+
+  """All values not starting with the given string."""
+  userAgent_not_starts_with: String
+
+  """All values ending with the given string."""
+  userAgent_ends_with: String
+
+  """All values not ending with the given string."""
+  userAgent_not_ends_with: String
+  originalReferrer: String
+
+  """All values that are not equal to given value."""
+  originalReferrer_not: String
+
+  """All values that are contained in given list."""
+  originalReferrer_in: [String!]
+
+  """All values that are not contained in given list."""
+  originalReferrer_not_in: [String!]
+
+  """All values less than the given value."""
+  originalReferrer_lt: String
+
+  """All values less than or equal the given value."""
+  originalReferrer_lte: String
+
+  """All values greater than the given value."""
+  originalReferrer_gt: String
+
+  """All values greater than or equal the given value."""
+  originalReferrer_gte: String
+
+  """All values containing the given string."""
+  originalReferrer_contains: String
+
+  """All values not containing the given string."""
+  originalReferrer_not_contains: String
+
+  """All values starting with the given string."""
+  originalReferrer_starts_with: String
+
+  """All values not starting with the given string."""
+  originalReferrer_not_starts_with: String
+
+  """All values ending with the given string."""
+  originalReferrer_ends_with: String
+
+  """All values not ending with the given string."""
+  originalReferrer_not_ends_with: String
+  landingUrl: String
+
+  """All values that are not equal to given value."""
+  landingUrl_not: String
+
+  """All values that are contained in given list."""
+  landingUrl_in: [String!]
+
+  """All values that are not contained in given list."""
+  landingUrl_not_in: [String!]
+
+  """All values less than the given value."""
+  landingUrl_lt: String
+
+  """All values less than or equal the given value."""
+  landingUrl_lte: String
+
+  """All values greater than the given value."""
+  landingUrl_gt: String
+
+  """All values greater than or equal the given value."""
+  landingUrl_gte: String
+
+  """All values containing the given string."""
+  landingUrl_contains: String
+
+  """All values not containing the given string."""
+  landingUrl_not_contains: String
+
+  """All values starting with the given string."""
+  landingUrl_starts_with: String
+
+  """All values not starting with the given string."""
+  landingUrl_not_starts_with: String
+
+  """All values ending with the given string."""
+  landingUrl_ends_with: String
+
+  """All values not ending with the given string."""
+  landingUrl_not_ends_with: String
+  prospect: Boolean
+
+  """All values that are not equal to given value."""
+  prospect_not: Boolean
+  baseLeadScore: Int
+
+  """All values that are not equal to given value."""
+  baseLeadScore_not: Int
+
+  """All values that are contained in given list."""
+  baseLeadScore_in: [Int!]
+
+  """All values that are not contained in given list."""
+  baseLeadScore_not_in: [Int!]
+
+  """All values less than the given value."""
+  baseLeadScore_lt: Int
+
+  """All values less than or equal the given value."""
+  baseLeadScore_lte: Int
+
+  """All values greater than the given value."""
+  baseLeadScore_gt: Int
+
+  """All values greater than or equal the given value."""
+  baseLeadScore_gte: Int
+  leadScore: Int
+
+  """All values that are not equal to given value."""
+  leadScore_not: Int
+
+  """All values that are contained in given list."""
+  leadScore_in: [Int!]
+
+  """All values that are not contained in given list."""
+  leadScore_not_in: [Int!]
+
+  """All values less than the given value."""
+  leadScore_lt: Int
+
+  """All values less than or equal the given value."""
+  leadScore_lte: Int
+
+  """All values greater than the given value."""
+  leadScore_gt: Int
+
+  """All values greater than or equal the given value."""
+  leadScore_gte: Int
+  euConsent: SubscriberEuConsent
+
+  """All values that are not equal to given value."""
+  euConsent_not: SubscriberEuConsent
+
+  """All values that are contained in given list."""
+  euConsent_in: [SubscriberEuConsent!]
+
+  """All values that are not contained in given list."""
+  euConsent_not_in: [SubscriberEuConsent!]
+  euConsentMessage: String
+
+  """All values that are not equal to given value."""
+  euConsentMessage_not: String
+
+  """All values that are contained in given list."""
+  euConsentMessage_in: [String!]
+
+  """All values that are not contained in given list."""
+  euConsentMessage_not_in: [String!]
+
+  """All values less than the given value."""
+  euConsentMessage_lt: String
+
+  """All values less than or equal the given value."""
+  euConsentMessage_lte: String
+
+  """All values greater than the given value."""
+  euConsentMessage_gt: String
+
+  """All values greater than or equal the given value."""
+  euConsentMessage_gte: String
+
+  """All values containing the given string."""
+  euConsentMessage_contains: String
+
+  """All values not containing the given string."""
+  euConsentMessage_not_contains: String
+
+  """All values starting with the given string."""
+  euConsentMessage_starts_with: String
+
+  """All values not starting with the given string."""
+  euConsentMessage_not_starts_with: String
+
+  """All values ending with the given string."""
+  euConsentMessage_ends_with: String
+
+  """All values not ending with the given string."""
+  euConsentMessage_not_ends_with: String
+}
+
+input SubscriberWhereUniqueInput {
+  id: ID
+  email: String
+}
+
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
   file(where: FileSubscriptionWhereInput): FileSubscriptionPayload
@@ -5091,6 +6043,7 @@ type Subscription {
   comment(where: CommentSubscriptionWhereInput): CommentSubscriptionPayload
   reaction(where: ReactionSubscriptionWhereInput): ReactionSubscriptionPayload
   milestone(where: MilestoneSubscriptionWhereInput): MilestoneSubscriptionPayload
+  subscriber(where: SubscriberSubscriptionWhereInput): SubscriberSubscriptionPayload
 }
 
 type User implements Node {
@@ -5105,15 +6058,15 @@ type User implements Node {
   picture: String
   twitter: String
   role: UserRole!
-  memberOf(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
-  createdProjects(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Project!]
+  members(where: MemberWhereInput, orderBy: MemberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Member!]
+  projects(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Project!]
   votedProjects(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Project!]
   favoriteProjects(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Project!]
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
   votedPosts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
   reactions(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Reaction!]
-  createdMilestones(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Milestone!]
+  milestones(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Milestone!]
 }
 
 """A connection to a list of items."""
@@ -5135,15 +6088,15 @@ input UserCreateInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
   votedProjects: ProjectCreateManyWithoutVotersInput
   favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
   posts: PostCreateManyWithoutAuthorInput
   votedPosts: PostCreateManyWithoutVotersInput
   comments: CommentCreateManyWithoutAuthorInput
   reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
 }
 
 input UserCreateManyWithoutFavoriteProjectsInput {
@@ -5166,23 +6119,23 @@ input UserCreateOneWithoutCommentsInput {
   connect: UserWhereUniqueInput
 }
 
-input UserCreateOneWithoutCreatedMilestonesInput {
-  create: UserCreateWithoutCreatedMilestonesInput
+input UserCreateOneWithoutMembersInput {
+  create: UserCreateWithoutMembersInput
   connect: UserWhereUniqueInput
 }
 
-input UserCreateOneWithoutCreatedProjectsInput {
-  create: UserCreateWithoutCreatedProjectsInput
-  connect: UserWhereUniqueInput
-}
-
-input UserCreateOneWithoutMemberOfInput {
-  create: UserCreateWithoutMemberOfInput
+input UserCreateOneWithoutMilestonesInput {
+  create: UserCreateWithoutMilestonesInput
   connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutPostsInput {
   create: UserCreateWithoutPostsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutProjectsInput {
+  create: UserCreateWithoutProjectsInput
   connect: UserWhereUniqueInput
 }
 
@@ -5200,52 +6153,14 @@ input UserCreateWithoutCommentsInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
   votedProjects: ProjectCreateManyWithoutVotersInput
   favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
   posts: PostCreateManyWithoutAuthorInput
   votedPosts: PostCreateManyWithoutVotersInput
   reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
-}
-
-input UserCreateWithoutCreatedMilestonesInput {
-  email: String!
-  hasPassword: Boolean
-  hasSocialLogin: Boolean
-  name: String
-  username: String
-  picture: String
-  twitter: String
-  role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
-  votedProjects: ProjectCreateManyWithoutVotersInput
-  favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
-  posts: PostCreateManyWithoutAuthorInput
-  votedPosts: PostCreateManyWithoutVotersInput
-  comments: CommentCreateManyWithoutAuthorInput
-  reactions: ReactionCreateManyWithoutAuthorInput
-}
-
-input UserCreateWithoutCreatedProjectsInput {
-  email: String!
-  hasPassword: Boolean
-  hasSocialLogin: Boolean
-  name: String
-  username: String
-  picture: String
-  twitter: String
-  role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  votedProjects: ProjectCreateManyWithoutVotersInput
-  favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
-  posts: PostCreateManyWithoutAuthorInput
-  votedPosts: PostCreateManyWithoutVotersInput
-  comments: CommentCreateManyWithoutAuthorInput
-  reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutFavoriteProjectsInput {
@@ -5257,17 +6172,17 @@ input UserCreateWithoutFavoriteProjectsInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
   votedProjects: ProjectCreateManyWithoutVotersInput
   posts: PostCreateManyWithoutAuthorInput
   votedPosts: PostCreateManyWithoutVotersInput
   comments: CommentCreateManyWithoutAuthorInput
   reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
 }
 
-input UserCreateWithoutMemberOfInput {
+input UserCreateWithoutMembersInput {
   email: String!
   hasPassword: Boolean
   hasSocialLogin: Boolean
@@ -5276,14 +6191,33 @@ input UserCreateWithoutMemberOfInput {
   picture: String
   twitter: String
   role: UserRole
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  projects: ProjectCreateManyWithoutAuthorInput
   votedProjects: ProjectCreateManyWithoutVotersInput
   favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
   posts: PostCreateManyWithoutAuthorInput
   votedPosts: PostCreateManyWithoutVotersInput
   comments: CommentCreateManyWithoutAuthorInput
   reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutMilestonesInput {
+  email: String!
+  hasPassword: Boolean
+  hasSocialLogin: Boolean
+  name: String
+  username: String
+  picture: String
+  twitter: String
+  role: UserRole
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
+  votedProjects: ProjectCreateManyWithoutVotersInput
+  favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
+  posts: PostCreateManyWithoutAuthorInput
+  votedPosts: PostCreateManyWithoutVotersInput
+  comments: CommentCreateManyWithoutAuthorInput
+  reactions: ReactionCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutPostsInput {
@@ -5295,14 +6229,33 @@ input UserCreateWithoutPostsInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
   votedProjects: ProjectCreateManyWithoutVotersInput
   favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
   votedPosts: PostCreateManyWithoutVotersInput
   comments: CommentCreateManyWithoutAuthorInput
   reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
+}
+
+input UserCreateWithoutProjectsInput {
+  email: String!
+  hasPassword: Boolean
+  hasSocialLogin: Boolean
+  name: String
+  username: String
+  picture: String
+  twitter: String
+  role: UserRole
+  members: MemberCreateManyWithoutUserInput
+  votedProjects: ProjectCreateManyWithoutVotersInput
+  favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
+  posts: PostCreateManyWithoutAuthorInput
+  votedPosts: PostCreateManyWithoutVotersInput
+  comments: CommentCreateManyWithoutAuthorInput
+  reactions: ReactionCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutReactionsInput {
@@ -5314,14 +6267,14 @@ input UserCreateWithoutReactionsInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
   votedProjects: ProjectCreateManyWithoutVotersInput
   favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
   posts: PostCreateManyWithoutAuthorInput
   votedPosts: PostCreateManyWithoutVotersInput
   comments: CommentCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutVotedPostsInput {
@@ -5333,14 +6286,14 @@ input UserCreateWithoutVotedPostsInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
   votedProjects: ProjectCreateManyWithoutVotersInput
   favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
   posts: PostCreateManyWithoutAuthorInput
   comments: CommentCreateManyWithoutAuthorInput
   reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutVotedProjectsInput {
@@ -5352,14 +6305,14 @@ input UserCreateWithoutVotedProjectsInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberCreateManyWithoutUserInput
-  createdProjects: ProjectCreateManyWithoutAuthorInput
+  members: MemberCreateManyWithoutUserInput
+  projects: ProjectCreateManyWithoutAuthorInput
   favoriteProjects: ProjectCreateManyWithoutFavoritedUsersInput
   posts: PostCreateManyWithoutAuthorInput
   votedPosts: PostCreateManyWithoutVotersInput
   comments: CommentCreateManyWithoutAuthorInput
   reactions: ReactionCreateManyWithoutAuthorInput
-  createdMilestones: MilestoneCreateManyWithoutAuthorInput
+  milestones: MilestoneCreateManyWithoutAuthorInput
 }
 
 """An edge in a connection."""
@@ -5777,15 +6730,15 @@ input UserUpdateInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   votedProjects: ProjectUpdateManyWithoutVotersInput
   favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
   posts: PostUpdateManyWithoutAuthorInput
   votedPosts: PostUpdateManyWithoutVotersInput
   comments: CommentUpdateManyWithoutAuthorInput
   reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateManyDataInput {
@@ -5858,25 +6811,18 @@ input UserUpdateOneRequiredWithoutCommentsInput {
   upsert: UserUpsertWithoutCommentsInput
 }
 
-input UserUpdateOneRequiredWithoutCreatedMilestonesInput {
-  create: UserCreateWithoutCreatedMilestonesInput
+input UserUpdateOneRequiredWithoutMembersInput {
+  create: UserCreateWithoutMembersInput
   connect: UserWhereUniqueInput
-  update: UserUpdateWithoutCreatedMilestonesDataInput
-  upsert: UserUpsertWithoutCreatedMilestonesInput
+  update: UserUpdateWithoutMembersDataInput
+  upsert: UserUpsertWithoutMembersInput
 }
 
-input UserUpdateOneRequiredWithoutCreatedProjectsInput {
-  create: UserCreateWithoutCreatedProjectsInput
+input UserUpdateOneRequiredWithoutMilestonesInput {
+  create: UserCreateWithoutMilestonesInput
   connect: UserWhereUniqueInput
-  update: UserUpdateWithoutCreatedProjectsDataInput
-  upsert: UserUpsertWithoutCreatedProjectsInput
-}
-
-input UserUpdateOneRequiredWithoutMemberOfInput {
-  create: UserCreateWithoutMemberOfInput
-  connect: UserWhereUniqueInput
-  update: UserUpdateWithoutMemberOfDataInput
-  upsert: UserUpsertWithoutMemberOfInput
+  update: UserUpdateWithoutMilestonesDataInput
+  upsert: UserUpsertWithoutMilestonesInput
 }
 
 input UserUpdateOneRequiredWithoutPostsInput {
@@ -5884,6 +6830,13 @@ input UserUpdateOneRequiredWithoutPostsInput {
   connect: UserWhereUniqueInput
   update: UserUpdateWithoutPostsDataInput
   upsert: UserUpsertWithoutPostsInput
+}
+
+input UserUpdateOneRequiredWithoutProjectsInput {
+  create: UserCreateWithoutProjectsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutProjectsDataInput
+  upsert: UserUpsertWithoutProjectsInput
 }
 
 input UserUpdateOneRequiredWithoutReactionsInput {
@@ -5902,52 +6855,14 @@ input UserUpdateWithoutCommentsDataInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   votedProjects: ProjectUpdateManyWithoutVotersInput
   favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
   posts: PostUpdateManyWithoutAuthorInput
   votedPosts: PostUpdateManyWithoutVotersInput
   reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
-}
-
-input UserUpdateWithoutCreatedMilestonesDataInput {
-  email: String
-  hasPassword: Boolean
-  hasSocialLogin: Boolean
-  name: String
-  username: String
-  picture: String
-  twitter: String
-  role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
-  votedProjects: ProjectUpdateManyWithoutVotersInput
-  favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
-  posts: PostUpdateManyWithoutAuthorInput
-  votedPosts: PostUpdateManyWithoutVotersInput
-  comments: CommentUpdateManyWithoutAuthorInput
-  reactions: ReactionUpdateManyWithoutAuthorInput
-}
-
-input UserUpdateWithoutCreatedProjectsDataInput {
-  email: String
-  hasPassword: Boolean
-  hasSocialLogin: Boolean
-  name: String
-  username: String
-  picture: String
-  twitter: String
-  role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  votedProjects: ProjectUpdateManyWithoutVotersInput
-  favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
-  posts: PostUpdateManyWithoutAuthorInput
-  votedPosts: PostUpdateManyWithoutVotersInput
-  comments: CommentUpdateManyWithoutAuthorInput
-  reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutFavoriteProjectsDataInput {
@@ -5959,17 +6874,17 @@ input UserUpdateWithoutFavoriteProjectsDataInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   votedProjects: ProjectUpdateManyWithoutVotersInput
   posts: PostUpdateManyWithoutAuthorInput
   votedPosts: PostUpdateManyWithoutVotersInput
   comments: CommentUpdateManyWithoutAuthorInput
   reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
 }
 
-input UserUpdateWithoutMemberOfDataInput {
+input UserUpdateWithoutMembersDataInput {
   email: String
   hasPassword: Boolean
   hasSocialLogin: Boolean
@@ -5978,14 +6893,33 @@ input UserUpdateWithoutMemberOfDataInput {
   picture: String
   twitter: String
   role: UserRole
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   votedProjects: ProjectUpdateManyWithoutVotersInput
   favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
   posts: PostUpdateManyWithoutAuthorInput
   votedPosts: PostUpdateManyWithoutVotersInput
   comments: CommentUpdateManyWithoutAuthorInput
   reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateWithoutMilestonesDataInput {
+  email: String
+  hasPassword: Boolean
+  hasSocialLogin: Boolean
+  name: String
+  username: String
+  picture: String
+  twitter: String
+  role: UserRole
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
+  votedProjects: ProjectUpdateManyWithoutVotersInput
+  favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
+  posts: PostUpdateManyWithoutAuthorInput
+  votedPosts: PostUpdateManyWithoutVotersInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  reactions: ReactionUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutPostsDataInput {
@@ -5997,14 +6931,33 @@ input UserUpdateWithoutPostsDataInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   votedProjects: ProjectUpdateManyWithoutVotersInput
   favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
   votedPosts: PostUpdateManyWithoutVotersInput
   comments: CommentUpdateManyWithoutAuthorInput
   reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateWithoutProjectsDataInput {
+  email: String
+  hasPassword: Boolean
+  hasSocialLogin: Boolean
+  name: String
+  username: String
+  picture: String
+  twitter: String
+  role: UserRole
+  members: MemberUpdateManyWithoutUserInput
+  votedProjects: ProjectUpdateManyWithoutVotersInput
+  favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
+  posts: PostUpdateManyWithoutAuthorInput
+  votedPosts: PostUpdateManyWithoutVotersInput
+  comments: CommentUpdateManyWithoutAuthorInput
+  reactions: ReactionUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutReactionsDataInput {
@@ -6016,14 +6969,14 @@ input UserUpdateWithoutReactionsDataInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   votedProjects: ProjectUpdateManyWithoutVotersInput
   favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
   posts: PostUpdateManyWithoutAuthorInput
   votedPosts: PostUpdateManyWithoutVotersInput
   comments: CommentUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutVotedPostsDataInput {
@@ -6035,14 +6988,14 @@ input UserUpdateWithoutVotedPostsDataInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   votedProjects: ProjectUpdateManyWithoutVotersInput
   favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
   posts: PostUpdateManyWithoutAuthorInput
   comments: CommentUpdateManyWithoutAuthorInput
   reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutVotedProjectsDataInput {
@@ -6054,14 +7007,14 @@ input UserUpdateWithoutVotedProjectsDataInput {
   picture: String
   twitter: String
   role: UserRole
-  memberOf: MemberUpdateManyWithoutUserInput
-  createdProjects: ProjectUpdateManyWithoutAuthorInput
+  members: MemberUpdateManyWithoutUserInput
+  projects: ProjectUpdateManyWithoutAuthorInput
   favoriteProjects: ProjectUpdateManyWithoutFavoritedUsersInput
   posts: PostUpdateManyWithoutAuthorInput
   votedPosts: PostUpdateManyWithoutVotersInput
   comments: CommentUpdateManyWithoutAuthorInput
   reactions: ReactionUpdateManyWithoutAuthorInput
-  createdMilestones: MilestoneUpdateManyWithoutAuthorInput
+  milestones: MilestoneUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithWhereUniqueWithoutFavoriteProjectsInput {
@@ -6084,24 +7037,24 @@ input UserUpsertWithoutCommentsInput {
   create: UserCreateWithoutCommentsInput!
 }
 
-input UserUpsertWithoutCreatedMilestonesInput {
-  update: UserUpdateWithoutCreatedMilestonesDataInput!
-  create: UserCreateWithoutCreatedMilestonesInput!
+input UserUpsertWithoutMembersInput {
+  update: UserUpdateWithoutMembersDataInput!
+  create: UserCreateWithoutMembersInput!
 }
 
-input UserUpsertWithoutCreatedProjectsInput {
-  update: UserUpdateWithoutCreatedProjectsDataInput!
-  create: UserCreateWithoutCreatedProjectsInput!
-}
-
-input UserUpsertWithoutMemberOfInput {
-  update: UserUpdateWithoutMemberOfDataInput!
-  create: UserCreateWithoutMemberOfInput!
+input UserUpsertWithoutMilestonesInput {
+  update: UserUpdateWithoutMilestonesDataInput!
+  create: UserCreateWithoutMilestonesInput!
 }
 
 input UserUpsertWithoutPostsInput {
   update: UserUpdateWithoutPostsDataInput!
   create: UserCreateWithoutPostsInput!
+}
+
+input UserUpsertWithoutProjectsInput {
+  update: UserUpdateWithoutProjectsDataInput!
+  create: UserCreateWithoutProjectsInput!
 }
 
 input UserUpsertWithoutReactionsInput {
@@ -6438,12 +7391,12 @@ input UserWhereInput {
 
   """All values that are not contained in given list."""
   role_not_in: [UserRole!]
-  memberOf_every: MemberWhereInput
-  memberOf_some: MemberWhereInput
-  memberOf_none: MemberWhereInput
-  createdProjects_every: ProjectWhereInput
-  createdProjects_some: ProjectWhereInput
-  createdProjects_none: ProjectWhereInput
+  members_every: MemberWhereInput
+  members_some: MemberWhereInput
+  members_none: MemberWhereInput
+  projects_every: ProjectWhereInput
+  projects_some: ProjectWhereInput
+  projects_none: ProjectWhereInput
   votedProjects_every: ProjectWhereInput
   votedProjects_some: ProjectWhereInput
   votedProjects_none: ProjectWhereInput
@@ -6462,9 +7415,9 @@ input UserWhereInput {
   reactions_every: ReactionWhereInput
   reactions_some: ReactionWhereInput
   reactions_none: ReactionWhereInput
-  createdMilestones_every: MilestoneWhereInput
-  createdMilestones_some: MilestoneWhereInput
-  createdMilestones_none: MilestoneWhereInput
+  milestones_every: MilestoneWhereInput
+  milestones_some: MilestoneWhereInput
+  milestones_none: MilestoneWhereInput
 }
 
 input UserWhereUniqueInput {

@@ -40,6 +40,7 @@ class LoginForm extends Component {
           validationSchema={LoginSchema}
           validateOnChange={false}
           onSubmit={async ({ email, password }, { setSubmitting, setFieldError }) => {
+            console.log('Logging in...')
             try {
               await startLogin(email, password)
               setSubmitting(false)
@@ -61,7 +62,7 @@ class LoginForm extends Component {
               </div>
 
               <div>
-                <ButtonPrimary type="submit" loading={isSubmitting}>Login</ButtonPrimary>
+                <ButtonPrimary type="submit" loading={isSubmitting} block>Login</ButtonPrimary>
               </div>
               <FormErrorMessage />
             </Form>

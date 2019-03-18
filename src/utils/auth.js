@@ -166,7 +166,9 @@ export const checkIsAdmin = async (prisma, request) => {
 		}
 	})
 	const { role } = userData
-	return role === 'ADMIN' || role === 'ROOT'
+	const isAmdin = role === 'ADMIN' || role === 'ROOT'
+	if (!isAmdin) { throw new Error('Action not authorized - lack of role permission.') }
+	return true
 }
 
 export const checkIsRoot = async (prisma, request) => {
@@ -177,5 +179,7 @@ export const checkIsRoot = async (prisma, request) => {
 		}
 	})
 	const { role } = userData
-	return role === 'ROOT'
+	const isAmdin = role === 'ROOT'
+	if (!isAmdin) { throw new Error('Action not authorized - lack of role permission.') }
+	return true
 }

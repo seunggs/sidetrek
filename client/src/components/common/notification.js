@@ -1,7 +1,7 @@
 import notification from 'antd/es/notification'
 import 'antd/es/notification/style/css'
 
-const customNotification = {
+const myNotification = {
   open: ({ type, ...config }) => {
     let style
     switch (type) {
@@ -27,4 +27,4 @@ const customNotification = {
   },
 }
 
-export default customNotification
+export default myNotification

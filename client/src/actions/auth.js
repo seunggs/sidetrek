@@ -27,9 +27,9 @@ export const startLogin = (email, password) => dispatch => {
       realm: 'Username-Password-Authentication',
       email,
       password,
-    }, (err, result) => {
+    }, err => {
       if (err) { reject(err) }
-      resolve(result)
+      resolve()
     })
   })
 }

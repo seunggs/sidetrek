@@ -2,23 +2,16 @@ import { getUserEmail } from '../utils/auth'
 
 const MilestoneMutation = {
   async createMilestone(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
+		await getUserEmail(prisma, request, args.where)
 
-		return await prisma.mutation.createMilestone({
-			data: {
-				...args.data,
-				author: {
-					connect: {
-						email
-					}
-				}
-			}
-		}, info)
+		const newMilestone = await prisma.mutation.createMilestone(args.data, info)
+
+		return newMilestone
 	},
 
 	async updateMilestone(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
-
+		await getUserEmail(prisma, request)
+		
 		const milestoneExists = prisma.exists.Milestone({
 			...args.where,
 			author: {

@@ -9,7 +9,7 @@ const ButtonSecondary = ({ children, type, icon, style = {}, ...rest }) => (
     icon={icon}
     size="large"
     htmlType={type}
-    className="dim ant-btn-xlg"
+    className="ant-btn-xlg"
     style={R.merge({ fontWeight: '500' }, style)}
     {...rest}
   >{children}</Button>

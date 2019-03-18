@@ -30,8 +30,8 @@ const AboutPage = () => {
                 <span>Freedom of Career</span>
               </div>
               <div className="f3 gray mt3" style={{ paddingLeft: '4.5rem' }}>
-                We believe that people should have the means to switch careers if they find true passion later in life. People's whole lives shouldn't
-                be determined by which school they attended or what major they decided to pursue when they're young. Indeed, many inspirational leaders, both historical and contemporary, held multiple careers with broad interest: Benjamin Franklin, Leonardo da Vinci, Elon Musk, Thomas Edison, etc.
+                We believe that you should have the means to switch careers if you find true passion later in life. Your life shouldn't
+                be determined by which school you attended or what major you decided to pursue when you were young. Indeed, many inspirational leaders, both historical and contemporary, held multiple careers with broad interest: Benjamin Franklin, Leonardo da Vinci, Thomas Edison, Elon Musk, etc.
               </div>
 
               <div className="f1 lh-title near-black mt5">
@@ -70,8 +70,8 @@ const AboutPage = () => {
                     <p className="fw5 mt4" style={{ fontSize: '2.3rem' }}>Hi, I’m Nami.</p>
                     <p>Welcome to Sidetrek! I want to share my personal story with you and what Sidetrek means to me.</p>
 
-                    <p>For a long time, the thought that I don’t have one true calling bothered me. Many around me seemed to know exactly what they wanted, following that path no matter what. I had some big changes over the years both in my studies and in career as I couldn’t keep my interest in just one area.</p>
-                    <p className="fw6">What’s wrong with me? Am I always going to start from scratch while everyone else becomes successful in one chosen path?</p>
+                    <p>For a long time, the thought that I don’t have one true calling bothered me. Many around me seemed to know exactly what they wanted, following that path no matter what. I had some big changes over the years both in my studies and in career as my interest expanded and my worldview broadened.</p>
+                    <p className="fw6">What’s wrong with me? Am I always going to start from scratch while everyone else becomes successful in their chosen path?</p>
                   </div>
                 </div>
               </div>
@@ -98,13 +98,14 @@ const AboutPage = () => {
                   <div className="pr2 mt3" style={{ fontSize: '1.75rem', lineHeight: '1.6' }}>
                     <p>Looking back, being this way helped me achieve many things: </p>
 
-                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I immigrated to Canada alone when I was 24, starting everything from scratch</div>
-                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I lost 30 lbs in 100 days via healthy eating and exercise</div>
-                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I scored top 1% for important tests with intense 2-month study</div>
-                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I started to learn to code a year ago and built two production-ready apps and Sidetrek!</div>
+                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I immigrated to Canada alone when I was 24, starting everything from scratch.</div>
+                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I left my successful Finance career at Starbucks to explore a new path in tech and startups.</div>
+                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I started to learn to code a year ago and built three production-ready apps including Sidetrek!</div>
+                    <div className="ml3 flex items-start"><Icon type="caret-right" className="mt2 mr3 purple-blue" />I even lost 30 lbs in 100 days via healthy eating and exercise to gain my health back.</div>
 
                     <p className="mt4">And the list goes on.</p>
-                    <p>In my life, I struggled a lot as an immigrant and a multipotentialite. Sometimes I felt like a misfit in a society where specialization is considered the norm. When I changed my field of study or career, I felt anxious. But I also knew I was having so much fun, accumulating life experiences I would never have had otherwise.  I have deep empathy towards people around me because of these rich experiences and personal struggles. I learnt to embrace who I am.</p>
+                    <p>In my life, I struggled a lot as an immigrant and a multipotentialite. When I first immigrated to Canada, I stumbled and failed many times adjusting to a completely new environment. As a multipontentialite, I often felt like a misfit in a society where specialization is considered the norm. When I changed my field of study or career, I felt anxious. But I also knew I was having so much fun, accumulating life experiences I would never have had otherwise.  I developed a deep empathy towards people around me because of these rich experiences and personal struggles.</p>
+                    <p>I learnt to embrace who I am.</p>
                     <p>If my story resonates with you, Sidetrek is a perfect place for you - we value diversity, creativity, and authenticity here. Find your new passion, achieve new learning goals, and explore new paths.</p>
                     <p className="fw6">Being sidetracked (or sidetreked 😉) is not a distraction. It's the beginning of a new journey and a door to endless possibilities!</p>
                     <p>With <Icon type="heart" theme="twoTone" twoToneColor="#FF4136" />,</p>

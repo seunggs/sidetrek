@@ -13,7 +13,7 @@ import * as R from 'ramda'
 const FormErrorMessage = ({ formik }) => {
   const errors = formik.errors.form
   return (
-    <div style={{ display: R.isEmpty(errors) ? 'none' : 'block' }}>{errors}</div>
+    <div className="f6 mt1 red" style={{ display: R.isEmpty(errors) ? 'none' : 'block' }}>{errors}</div>
   )
 }
 

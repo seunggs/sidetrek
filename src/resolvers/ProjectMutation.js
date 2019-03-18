@@ -1,50 +1,20 @@
 import { getUserEmail } from '../utils/auth'
+import { checkMemberIsAdmin } from '../utils/member'
 
 const ProjectMutation = {
   async createProject(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
+		await getUserEmail(prisma, request, args.where)
 
-		const newProject = await prisma.mutation.createProject({
-			data: {
-				...args.data,
-				author: {
-					connect: {
-						email
-					}
-				},
-				members: [],
-			},
-		})
-
-		const { id } = newProject
-		const newMember = await prisma.mutation.createMember({
-			data: {
-				user: {
-					connect: {
-						email
-					}
-				},
-				role: 'ADMIN',
-				project: {
-					connect: {
-						id
-					}
-				}
-			}
-		})
+		const newProject = await prisma.mutation.createProject(args.data, info)
 
 		return newProject
 	},
 
 	async updateProject(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
-
-		const projectExists = prisma.exists.Project({
-			...args.where,
-			author: {
-				email
-			}
-		})
+		const projectId = getProjectId(prisma, args.where)
+		checkMemberIsAdmin(prisma, request, projectId)
+		
+		const projectExists = prisma.exists.Project(args.where)
 
 		if (!projectExists) { throw new Error('Unable to update project.') }
 
@@ -52,14 +22,10 @@ const ProjectMutation = {
 	},
 
   async deleteProject(parent, args, { prisma, request }, info) {
-		const email = await getUserEmail(prisma, request, args.where)
+		const projectId = getProjectId(prisma, args.where)
+		checkMemberIsAdmin(prisma, request, projectId)
 
-		const projectExists = prisma.exists.Project({
-			...args.where,
-			author: {
-				email
-			}
-		})
+		const projectExists = prisma.exists.Project(args.where)
 
 		if (!projectExists) { throw new Error('Unable to delete project.') }
 

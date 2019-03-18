@@ -6,6 +6,7 @@ import MemberMutation from './MemberMutation'
 import PostMutation from './MemberMutation'
 import CommentMutation from './CommentMutation'
 import MilestoneMutation from './MilestoneMutation'
+import SubscriberMutation from './SubscriberMutation'
 
 const Mutation = R.mergeAll([
   UserMutation,
@@ -15,6 +16,7 @@ const Mutation = R.mergeAll([
   PostMutation,
   CommentMutation,
   MilestoneMutation,
+  SubscriberMutation,
 ])
 
 export { Mutation as default }

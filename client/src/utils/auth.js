@@ -123,22 +123,22 @@ const auth = () => {
 
     // Set isLoggedIn flag in localStorage
     localStorage.setItem('isLoggedIn', 'true')
-    
+
     // Set the time that the access token will expire at
     const expiresAt = moment().unix() + expiresIn
-    
+
     // Set state
     dispatch(setAuth({ isAuthenticated: true, expiresAt, idToken, accessToken }))
 
     // Schedule token renewal
     scheduleRenewal(state, dispatch, client, authResult)
-    
+
     // Set the header for all future calls
     setAuthHeader(accessToken)
-    
+
     // Reset Apollo client store to trigger refetching of queries
     await client.resetStore()
-    
+
     // Mark setAuthCompleted in Redux state so the Route can be mounted
     // NOTE: must fire after client.resetStore AND before the username redirect
     dispatch(setAuthCompleted(true))
@@ -146,23 +146,27 @@ const auth = () => {
     // Get user info from Auth0 and set it in state (if it doesn't exist already)
     try {
       const userInfo = await handleUserInfo(state, dispatch, client, authResult)
-      
+
       // If username doesn't exist, send to /username
-      if (R.isNil(userInfo.username)) { 
+      if (R.isNil(userInfo.username)) {
         console.log('Username doesn\'t exist: redirecting...')
-        history.replace('/username') 
+        history.replace('/username')
         return
       }
     } catch (err) {
       console.log(err)
     }
-    
+
     // navigate to the home route if in /callback but stay otherwise
     if (history.location.pathname === '/callback') {
       history.replace('/')
     }
   }
   function handleAuth(state, dispatch, client) {
+    // Prevents handleAuth being called multiple times due to state update during setSession
+    // If it's called mulptile times, Auth0 will throw the 'state does not match' error
+    if (localStorage.getItem('isLoggedIn') === 'true') { return }
+
     webAuth.parseHash((err, authResult) => {
       if (authResult && authResult.accessToken && authResult.idToken) {
         // Set session
@@ -173,7 +177,7 @@ const auth = () => {
         dispatch(setAuthCompleted(true))
         history.replace('/')
       }
-      
+
     })
   }
   function renewSession(state, dispatch, client) {

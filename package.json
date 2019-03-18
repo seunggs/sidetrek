@@ -35,6 +35,7 @@
     "concurrently": "^4.1.0",
     "cors": "^2.8.5",
     "cross-fetch": "^2.2.2",
+    "drip-nodejs": "^2.1.2",
     "env-cmd": "^8.0.2",
     "express": "^4.16.4",
     "graphql": "^0.13.2",

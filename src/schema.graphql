@@ -7,7 +7,7 @@ type Query {
   # Custom
   me: User!
 
-  # Copy from generated schema
+  # Copy from generated schema on every prisma deploy
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
   files(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [File]!
   projects(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Project]!
@@ -40,7 +40,7 @@ type Mutation {
   uploadFiles(folder: String, files: [Upload!]!, projectId: String): [File!]!
   renameFile(id: ID!, name: String!): File
 
-  # Copy from generated schema
+  # Copy from generated schema on every prisma deploy
   createUser(data: UserCreateInput!): User!
   createFile(data: FileCreateInput!): File!
   createProject(data: ProjectCreateInput!): Project!
