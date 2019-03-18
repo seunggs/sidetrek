@@ -4,7 +4,7 @@ const drip = require('drip-nodejs')({ token: process.env.DRIP_API_KEY, accountId
 
 const SubscriberQuery = {
 	subscribers(parent, args, { prisma }, info) {
-		return drip.listSubscribers
+		return prisma.query.subscribers(args, info)
 	},
 
 	subscriber(parent, args, { prisma }, info) {
