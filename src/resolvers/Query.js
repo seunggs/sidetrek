@@ -16,7 +16,7 @@ const Query = R.mergeAll([
   PostQuery,
   CommentQuery,
   MilestoneQuery,
-  SubscriberQuery,
+  // SubscriberQuery,
 ])
 
 export { Query as default }
