@@ -28,7 +28,7 @@ const ButtonEditor = ({ children, size = 'default', theme = 'light', className =
   }, sizeStyle)
   return (
     <button className={`${className} o-50 glow`} style={R.merge(baseStyle, style)} {...rest}>
-      <span style={{ marginTop: '4px' }}>{children}</span>
+      <span>{children}</span>
     </button>
   )
 }

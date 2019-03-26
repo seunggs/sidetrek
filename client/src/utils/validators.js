@@ -4,7 +4,7 @@ import * as Yup from 'yup'
 import * as R from 'ramda'
 import logger from './logger'
 import { GET_USERS_OP } from '../operations/user'
-import { GET_PROJECTS_OP } from '../operations/project'
+// import { GET_PROJECTS_OP } from '../operations/project'
 
 /*
   These are field level validators for Formik <Field validate={} />
@@ -92,41 +92,41 @@ export const validateUsername = ({ username, client, setValidatingUsername }) =>
     })
 }
 
-export const validateProjectName = ({ name, client, setValidatingName }) => {
-  // Sync validation
-  if (!Yup.string().required().isValidSync(name)) {
-    throw 'Project name is required.'
-  }
-  if (!Yup.string().min(2).isValidSync(name)) {
-    throw 'Project name should be at least 2 characters.'
-  }
-  if (!Yup.string().matches(/^\w+$/).isValidSync(name)) {
-    // Allows only alphanumeric characters including _: [a-zA-Z_0-9]
-    throw 'Project name cannot contain special characters.'
-  }
+// export const validateProjectName = ({ name, client, setValidatingName }) => {
+//   // Sync validation
+//   if (!Yup.string().required().isValidSync(name)) {
+//     throw 'Project name is required.'
+//   }
+//   if (!Yup.string().min(2).isValidSync(name)) {
+//     throw 'Project name should be at least 2 characters.'
+//   }
+//   if (!Yup.string().matches(/^\w+$/).isValidSync(name)) {
+//     // Allows only alphanumeric characters including _: [a-zA-Z_0-9]
+//     throw 'Project name cannot contain special characters.'
+//   }
 
-  // Async validation
-  setValidatingName(true)
-  return client.query({
-    variables: { where: { name } },
-    query: GET_PROJECTS_OP,
-  })
-    .then(projectsData => {
-      const projects = projectsData.data.projects
-      setValidatingName(false)
+//   // Async validation
+//   setValidatingName(true)
+//   return client.query({
+//     variables: { where: { name } },
+//     query: GET_PROJECTS_OP,
+//   })
+//     .then(projectsData => {
+//       const projects = projectsData.data.projects
+//       setValidatingName(false)
 
-      // If user exists
-      if (!R.isEmpty(projects)) {
-        return Promise.reject({ error: 'project_exists', message: 'Sorry, this project name is not available.' })
-      }
-    })
-    .catch(err => {
-      setValidatingName(false)
-      if (err.error === 'project_exists') {
-        throw err.message
-      } else {
-        logger.error(err)
-        throw 'Something went wrong on our end - please try again later.'
-      }
-    })
-}
+//       // If user exists
+//       if (!R.isEmpty(projects)) {
+//         return Promise.reject({ error: 'project_exists', message: 'Sorry, this project name is not available.' })
+//       }
+//     })
+//     .catch(err => {
+//       setValidatingName(false)
+//       if (err.error === 'project_exists') {
+//         throw err.message
+//       } else {
+//         logger.error(err)
+//         throw 'Something went wrong on our end - please try again later.'
+//       }
+//     })
+// }

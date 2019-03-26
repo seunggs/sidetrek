@@ -1,5 +1,5 @@
 # source: http://localhost:4466/default/dev
-# timestamp: Mon Mar 18 2019 18:13:21 GMT-0700 (Pacific Daylight Time)
+# timestamp: Tue Mar 26 2019 09:10:26 GMT-0700 (Pacific Daylight Time)
 
 type AggregateComment {
   count: Int!
@@ -2275,7 +2275,6 @@ type Milestone implements Node {
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
-  description: String
   author: User!
   deadline: DateTime
   project: Project!
@@ -2297,7 +2296,6 @@ type MilestoneConnection {
 
 input MilestoneCreateInput {
   title: String!
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2329,7 +2327,6 @@ input MilestoneCreateOneWithoutReactionsInput {
 
 input MilestoneCreateWithoutAuthorInput {
   title: String!
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2340,7 +2337,6 @@ input MilestoneCreateWithoutAuthorInput {
 
 input MilestoneCreateWithoutMemberInput {
   title: String!
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2351,7 +2347,6 @@ input MilestoneCreateWithoutMemberInput {
 
 input MilestoneCreateWithoutProjectInput {
   title: String!
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2362,7 +2357,6 @@ input MilestoneCreateWithoutProjectInput {
 
 input MilestoneCreateWithoutReactionsInput {
   title: String!
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2389,8 +2383,6 @@ enum MilestoneOrderByInput {
   updatedAt_DESC
   title_ASC
   title_DESC
-  description_ASC
-  description_DESC
   deadline_ASC
   deadline_DESC
   achieved_ASC
@@ -2404,7 +2396,6 @@ type MilestonePreviousValues {
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2543,46 +2534,6 @@ input MilestoneScalarWhereInput {
 
   """All values not ending with the given string."""
   title_not_ends_with: String
-  description: String
-
-  """All values that are not equal to given value."""
-  description_not: String
-
-  """All values that are contained in given list."""
-  description_in: [String!]
-
-  """All values that are not contained in given list."""
-  description_not_in: [String!]
-
-  """All values less than the given value."""
-  description_lt: String
-
-  """All values less than or equal the given value."""
-  description_lte: String
-
-  """All values greater than the given value."""
-  description_gt: String
-
-  """All values greater than or equal the given value."""
-  description_gte: String
-
-  """All values containing the given string."""
-  description_contains: String
-
-  """All values not containing the given string."""
-  description_not_contains: String
-
-  """All values starting with the given string."""
-  description_starts_with: String
-
-  """All values not starting with the given string."""
-  description_not_starts_with: String
-
-  """All values ending with the given string."""
-  description_ends_with: String
-
-  """All values not ending with the given string."""
-  description_not_ends_with: String
   deadline: DateTime
 
   """All values that are not equal to given value."""
@@ -2674,7 +2625,6 @@ input MilestoneSubscriptionWhereInput {
 
 input MilestoneUpdateInput {
   title: String
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2686,7 +2636,6 @@ input MilestoneUpdateInput {
 
 input MilestoneUpdateManyDataInput {
   title: String
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2694,7 +2643,6 @@ input MilestoneUpdateManyDataInput {
 
 input MilestoneUpdateManyMutationInput {
   title: String
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2752,7 +2700,6 @@ input MilestoneUpdateOneWithoutReactionsInput {
 
 input MilestoneUpdateWithoutAuthorDataInput {
   title: String
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2763,7 +2710,6 @@ input MilestoneUpdateWithoutAuthorDataInput {
 
 input MilestoneUpdateWithoutMemberDataInput {
   title: String
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2774,7 +2720,6 @@ input MilestoneUpdateWithoutMemberDataInput {
 
 input MilestoneUpdateWithoutProjectDataInput {
   title: String
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2785,7 +2730,6 @@ input MilestoneUpdateWithoutProjectDataInput {
 
 input MilestoneUpdateWithoutReactionsDataInput {
   title: String
-  description: String
   deadline: DateTime
   achieved: Boolean
   order: Int
@@ -2965,46 +2909,6 @@ input MilestoneWhereInput {
 
   """All values not ending with the given string."""
   title_not_ends_with: String
-  description: String
-
-  """All values that are not equal to given value."""
-  description_not: String
-
-  """All values that are contained in given list."""
-  description_in: [String!]
-
-  """All values that are not contained in given list."""
-  description_not_in: [String!]
-
-  """All values less than the given value."""
-  description_lt: String
-
-  """All values less than or equal the given value."""
-  description_lte: String
-
-  """All values greater than the given value."""
-  description_gt: String
-
-  """All values greater than or equal the given value."""
-  description_gte: String
-
-  """All values containing the given string."""
-  description_contains: String
-
-  """All values not containing the given string."""
-  description_not_contains: String
-
-  """All values starting with the given string."""
-  description_starts_with: String
-
-  """All values not starting with the given string."""
-  description_not_starts_with: String
-
-  """All values ending with the given string."""
-  description_ends_with: String
-
-  """All values not ending with the given string."""
-  description_not_ends_with: String
   deadline: DateTime
 
   """All values that are not equal to given value."""
@@ -3843,8 +3747,6 @@ type Project implements Node {
   updatedAt: DateTime!
   published: Boolean!
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -3871,8 +3773,6 @@ type ProjectConnection {
 input ProjectCreateInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -3924,8 +3824,6 @@ input ProjectCreateOneWithoutPostsInput {
 input ProjectCreateWithoutAuthorInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -3941,8 +3839,6 @@ input ProjectCreateWithoutAuthorInput {
 input ProjectCreateWithoutFavoritedUsersInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -3958,8 +3854,6 @@ input ProjectCreateWithoutFavoritedUsersInput {
 input ProjectCreateWithoutFilesInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -3975,8 +3869,6 @@ input ProjectCreateWithoutFilesInput {
 input ProjectCreateWithoutMembersInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -3992,8 +3884,6 @@ input ProjectCreateWithoutMembersInput {
 input ProjectCreateWithoutMilestonesInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -4009,8 +3899,6 @@ input ProjectCreateWithoutMilestonesInput {
 input ProjectCreateWithoutPostsInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -4026,8 +3914,6 @@ input ProjectCreateWithoutPostsInput {
 input ProjectCreateWithoutVotersInput {
   published: Boolean
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -4060,10 +3946,6 @@ enum ProjectOrderByInput {
   published_DESC
   featured_ASC
   featured_DESC
-  name_ASC
-  name_DESC
-  url_ASC
-  url_DESC
   title_ASC
   title_DESC
   description_ASC
@@ -4080,8 +3962,6 @@ type ProjectPreviousValues {
   updatedAt: DateTime!
   published: Boolean!
   featured: Boolean
-  name: String!
-  url: String!
   title: String!
   description: String
   body: Json
@@ -4189,86 +4069,6 @@ input ProjectScalarWhereInput {
 
   """All values that are not equal to given value."""
   featured_not: Boolean
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  url: String
-
-  """All values that are not equal to given value."""
-  url_not: String
-
-  """All values that are contained in given list."""
-  url_in: [String!]
-
-  """All values that are not contained in given list."""
-  url_not_in: [String!]
-
-  """All values less than the given value."""
-  url_lt: String
-
-  """All values less than or equal the given value."""
-  url_lte: String
-
-  """All values greater than the given value."""
-  url_gt: String
-
-  """All values greater than or equal the given value."""
-  url_gte: String
-
-  """All values containing the given string."""
-  url_contains: String
-
-  """All values not containing the given string."""
-  url_not_contains: String
-
-  """All values starting with the given string."""
-  url_starts_with: String
-
-  """All values not starting with the given string."""
-  url_not_starts_with: String
-
-  """All values ending with the given string."""
-  url_ends_with: String
-
-  """All values not ending with the given string."""
-  url_not_ends_with: String
   title: String
 
   """All values that are not equal to given value."""
@@ -4433,8 +4233,6 @@ input ProjectSubscriptionWhereInput {
 input ProjectUpdateInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4451,8 +4249,6 @@ input ProjectUpdateInput {
 input ProjectUpdateManyDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4462,8 +4258,6 @@ input ProjectUpdateManyDataInput {
 input ProjectUpdateManyMutationInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4546,8 +4340,6 @@ input ProjectUpdateOneWithoutPostsInput {
 input ProjectUpdateWithoutAuthorDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4563,8 +4355,6 @@ input ProjectUpdateWithoutAuthorDataInput {
 input ProjectUpdateWithoutFavoritedUsersDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4580,8 +4370,6 @@ input ProjectUpdateWithoutFavoritedUsersDataInput {
 input ProjectUpdateWithoutFilesDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4597,8 +4385,6 @@ input ProjectUpdateWithoutFilesDataInput {
 input ProjectUpdateWithoutMembersDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4614,8 +4400,6 @@ input ProjectUpdateWithoutMembersDataInput {
 input ProjectUpdateWithoutMilestonesDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4631,8 +4415,6 @@ input ProjectUpdateWithoutMilestonesDataInput {
 input ProjectUpdateWithoutPostsDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4648,8 +4430,6 @@ input ProjectUpdateWithoutPostsDataInput {
 input ProjectUpdateWithoutVotersDataInput {
   published: Boolean
   featured: Boolean
-  name: String
-  url: String
   title: String
   description: String
   body: Json
@@ -4816,86 +4596,6 @@ input ProjectWhereInput {
 
   """All values that are not equal to given value."""
   featured_not: Boolean
-  name: String
-
-  """All values that are not equal to given value."""
-  name_not: String
-
-  """All values that are contained in given list."""
-  name_in: [String!]
-
-  """All values that are not contained in given list."""
-  name_not_in: [String!]
-
-  """All values less than the given value."""
-  name_lt: String
-
-  """All values less than or equal the given value."""
-  name_lte: String
-
-  """All values greater than the given value."""
-  name_gt: String
-
-  """All values greater than or equal the given value."""
-  name_gte: String
-
-  """All values containing the given string."""
-  name_contains: String
-
-  """All values not containing the given string."""
-  name_not_contains: String
-
-  """All values starting with the given string."""
-  name_starts_with: String
-
-  """All values not starting with the given string."""
-  name_not_starts_with: String
-
-  """All values ending with the given string."""
-  name_ends_with: String
-
-  """All values not ending with the given string."""
-  name_not_ends_with: String
-  url: String
-
-  """All values that are not equal to given value."""
-  url_not: String
-
-  """All values that are contained in given list."""
-  url_in: [String!]
-
-  """All values that are not contained in given list."""
-  url_not_in: [String!]
-
-  """All values less than the given value."""
-  url_lt: String
-
-  """All values less than or equal the given value."""
-  url_lte: String
-
-  """All values greater than the given value."""
-  url_gt: String
-
-  """All values greater than or equal the given value."""
-  url_gte: String
-
-  """All values containing the given string."""
-  url_contains: String
-
-  """All values not containing the given string."""
-  url_not_contains: String
-
-  """All values starting with the given string."""
-  url_starts_with: String
-
-  """All values not starting with the given string."""
-  url_not_starts_with: String
-
-  """All values ending with the given string."""
-  url_ends_with: String
-
-  """All values not ending with the given string."""
-  url_not_ends_with: String
   title: String
 
   """All values that are not equal to given value."""
@@ -5039,7 +4739,6 @@ input ProjectWhereInput {
 
 input ProjectWhereUniqueInput {
   id: ID
-  url: String
 }
 
 type Query {

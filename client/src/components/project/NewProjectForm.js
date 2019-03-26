@@ -7,11 +7,8 @@ import * as Yup from 'yup'
 import { ApolloConsumer } from 'react-apollo'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { parseServerErrors } from '../../utils/errors'
-import { validateProjectName } from '../../utils/validators'
-import { createPermalink } from '../../utils/common'
 import { startCreateProject } from '../../actions/project'
 import FormErrorMessage from '../common/FormErrorMessage'
-import CheckFieldAvailability from '../common/CheckFieldAvailability'
 
 const NewProjectSchema = Yup
   .object()
@@ -28,21 +25,8 @@ class NewProjectForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      validatingName: false,
-      nameAvailable: null,
       submitErrors: '',
     }
-  }
-
-  setValidatingName = value => {
-    // Set loading status while async validating
-    this.setState(() => ({ validatingName: value }))
-  }
-
-  validateName = (name, client) => {
-    this.setState(() => ({ nameAvailable: null }))
-    return validateProjectName({ name, client, setValidatingName: this.setValidatingName })
-      .then(() => this.setState(() => ({ nameAvailable: true })))
   }
 
   render() {
@@ -60,10 +44,7 @@ class NewProjectForm extends Component {
               validateOnChange={false}
               validationSchema={NewProjectSchema} // handles sync validations
               onSubmit={async ({ title, description }, { setSubmitting, setFieldError }) => {
-                const name = createPermalink(title)
                 const projectData = {
-                  name,
-                  url: name,
                   title,
                   description,
                   author: {
@@ -102,13 +83,7 @@ class NewProjectForm extends Component {
                       <div>
                         <Field
                           name="title"
-                          validate={title => this.validateName(createPermalink(title), client)}
                           placeholder="Project title"
-                        />
-                        <CheckFieldAvailability
-                          fieldName={createPermalink(values.title)}
-                          validatingField={this.state.validatingName}
-                          fieldAvailable={this.state.nameAvailable}
                         />
                       </div>
 

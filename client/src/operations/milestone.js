@@ -12,7 +12,6 @@ const milestoneOps = {
         createdAt
         updatedAt
         title
-        description
         author {
           id
           username
@@ -29,13 +28,7 @@ const milestoneOps = {
           }
           emoji
         }
-        achievedBy {
-          id
-          user {
-            id
-            username
-          }
-        }
+        achieved
         order
       }
     `

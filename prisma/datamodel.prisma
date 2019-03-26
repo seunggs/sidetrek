@@ -44,8 +44,6 @@ type Project {
   updatedAt: DateTime!
   published: Boolean! @default(value: false)
   featured: Boolean @default(value: false)
-  name: String!
-  url: String! @unique
   title: String!
   description: String
   body: Json
@@ -116,7 +114,6 @@ type Milestone {
   createdAt: DateTime!
   updatedAt: DateTime!
   title: String!
-  description: String
   author: User! @relation(name: "MilestoneAuthorToUser", onDelete: SET_NULL)
   deadline: DateTime
   project: Project! @relation(name: "MilestoneToProject", onDelete: SET_NULL)

@@ -48,7 +48,7 @@ class Header extends Component {
               <div className="pv4 flex justify-between items-center">
                 <div className="flex items-center justify-between w-100">
                   <div className="flex items-center">
-                    <Link to="/"><Logo style={{ width: '160px' }} /></Link>
+                    <Link to="/"><Logo style={{ width: '140px' }} /></Link>
                     <span className="ba b--light-red f6 fw4 light-red ml3 br3" style={{ padding: '0px 4px' }}>Beta</span>
                   </div>
                   <div className="flex items-center">

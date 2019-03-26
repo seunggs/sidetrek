@@ -11,7 +11,7 @@ const ButtonPrimary = ({ children, type, style = {}, ...rest }) => (
     style={R.merge({}, style)}
     {...rest}
   >
-    <span style={{ marginTop: '4px' }}>{children}</span>
+    <span>{children}</span>
   </Button>
 )
 

@@ -13,8 +13,6 @@ const projectOps = {
         updatedAt
         published
         featured
-        name
-        url
         title
         description
         body

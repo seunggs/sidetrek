@@ -3,11 +3,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Formik, Form } from 'formik'
 import Field from '../common/Field'
+import DatePicker from '../common/DatePicker'
 import * as Yup from 'yup'
 import { ApolloConsumer } from 'react-apollo'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { parseServerErrors } from '../../utils/errors'
-import { createPermalink } from '../../utils/common'
 import { startCreateMilestone } from '../../actions/milestone'
 import FormErrorMessage from '../common/FormErrorMessage'
 
@@ -31,7 +31,7 @@ class NewMilestoneForm extends Component {
   }
 
   render() {
-    const { user, startCreateMilestone, history } = this.props
+    const { index, user, startCreateMilestone, history } = this.props
 
     return (
       <Fragment>
@@ -40,39 +40,32 @@ class NewMilestoneForm extends Component {
             <Formik
               initialValues={{
                 title: '',
-                description: '',
+                deadline: '',
               }}
               validateOnChange={false}
               validationSchema={NewMilestoneSchema} // handles sync validations
-              onSubmit={async ({ title, description }, { setSubmitting, setFieldError }) => {
-                const name = createPermalink(title)
+              onSubmit={async ({ title, deadline }, { setSubmitting, setFieldError }) => {
                 const milestoneData = {
-                  name,
-                  url: name,
                   title,
-                  description,
+                  deadline,
                   author: {
                     connect: {
                       email: user.email
                     }
                   },
-                  members: {
-                    create: [{
-                      user: {
-                        connect: {
-                          email: user.email
-                        }
-                      },
-                      role: 'ADMIN',
-                    }]
-                  },
+                  // project: {
+                  //   connect: {
+                  //     id: project.id
+                  //   }
+                  // },
+                  order: parseInt(index)
                 }
+                console.log('milestoneData', milestoneData)
 
                 try {
-                  const newMilestone = await startCreateMilestone(client, milestoneData)
-                  console.log('newMilestone', newMilestone)
+                  // const newMilestone = await startCreateMilestone(client, milestoneData)
+                  // console.log('newMilestone', newMilestone)
                   setSubmitting(false)
-                  history.replace('/')
                 } catch (errors) {
                   const errorMessage = parseServerErrors(errors)
                   setSubmitting(false)
@@ -82,12 +75,12 @@ class NewMilestoneForm extends Component {
               {({ isSubmitting }) => (
                 <div className="row pv5">
                   <div className="col-xs-12 col-md-6 col-md-offset-3">
-                    <div className="f3 fw4 mb3">Create a new milestone</div>
+                    <div className="f3 fw4 mb4">Create a new milestone</div>
                     
                     {/* heading */}
-                    <div className="row">
-                        <div className="col-xs-12 col-md-4"><span className="fw4">Title</span></div>
-                        <div className="col-xs-12 col-md-4"><span className="fw4">Deadline</span></div>
+                    <div className="row mb1">
+                        <div className="col-xs-12 col-md-4"><span>Title</span></div>
+                        <div className="col-xs-12 col-md-4"><span>Deadline</span></div>
                     </div>
                     {/* end: heading */}
 
@@ -100,7 +93,7 @@ class NewMilestoneForm extends Component {
                           />
                         </div>
                         <div className="col-xs-12 col-md-4">
-                          <Field
+                          <DatePicker
                             name="deadline"
                             placeholder="Milestone deadline"
                           />
