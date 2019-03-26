@@ -6,6 +6,8 @@ import PublicRoute from './PublicRoute'
 import PrivateRoute from './PrivateRoute'
 import CallBack from '../components/auth/CallBack'
 import NotFoundPage from '../components/NotFoundPage'
+import PrivacyPage from '../components/PrivacyPage'
+import TermsOfUsePage from '../components/TermsOfUsePage'
 import HomePage from '../components/HomePage'
 import AboutPage from '../components/AboutPage'
 import LoginPage from '../components/LoginPage'
@@ -47,6 +49,8 @@ class AppRouter extends Component {
               return <CallBack {...props} />
             }} />
             <PublicRoute path="/" component={HomePage} exact={true} />
+            <PublicRoute path="/privacy" component={PrivacyPage} />
+            <PublicRoute path="/terms-of-use" component={TermsOfUsePage} />
             <PublicRoute path="/about" component={AboutPage} />
             <PublicRoute path="/login" component={LoginPage} />
             <PublicRoute path="/signup" component={SignupPage} />

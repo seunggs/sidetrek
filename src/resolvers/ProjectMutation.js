@@ -14,7 +14,7 @@ const ProjectMutation = {
 		const projectId = getProjectId(prisma, args.where)
 		checkMemberIsAdmin(prisma, request, projectId)
 		
-		const projectExists = prisma.exists.Project(args.where)
+		const projectExists = await prisma.exists.Project(args.where)
 
 		if (!projectExists) { throw new Error('Unable to update project.') }
 
@@ -25,7 +25,7 @@ const ProjectMutation = {
 		const projectId = getProjectId(prisma, args.where)
 		checkMemberIsAdmin(prisma, request, projectId)
 
-		const projectExists = prisma.exists.Project(args.where)
+		const projectExists = await prisma.exists.Project(args.where)
 
 		if (!projectExists) { throw new Error('Unable to delete project.') }
 

@@ -19,7 +19,7 @@ const CommentMutation = {
 	async updateComment(parent, args, { prisma, request }, info) {
 		const email = await getUserEmail(prisma, request, args.where)
 
-		const commentExists = prisma.exists.Comment({
+		const commentExists = await prisma.exists.Comment({
 			...args.where,
 			author: {
 				email
@@ -34,7 +34,7 @@ const CommentMutation = {
   async deleteComment(parent, args, { prisma, request }, info) {
 		const email = await getUserEmail(prisma, request, args.where)
 
-		const commentExists = prisma.exists.Comment({
+		const commentExists = await prisma.exists.Comment({
 			...args.where,
 			author: {
 				email

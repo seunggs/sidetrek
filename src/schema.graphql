@@ -16,6 +16,8 @@ type Query {
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment]!
   reactions(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Reaction]!
   milestones(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Milestone]!
+  subscribers(where: SubscriberWhereInput, orderBy: SubscriberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Subscriber]!
+  mails(where: MailWhereInput, orderBy: MailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Mail]!
   user(where: UserWhereUniqueInput!): User
   file(where: FileWhereUniqueInput!): File
   project(where: ProjectWhereUniqueInput!): Project
@@ -24,6 +26,8 @@ type Query {
   comment(where: CommentWhereUniqueInput!): Comment
   reaction(where: ReactionWhereUniqueInput!): Reaction
   milestone(where: MilestoneWhereUniqueInput!): Milestone
+  subscriber(where: SubscriberWhereUniqueInput!): Subscriber
+  mail(where: MailWhereUniqueInput!): Mail
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   projectsConnection(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProjectConnection!
@@ -32,6 +36,8 @@ type Query {
   commentsConnection(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommentConnection!
   reactionsConnection(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReactionConnection!
   milestonesConnection(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MilestoneConnection!
+  subscribersConnection(where: SubscriberWhereInput, orderBy: SubscriberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubscriberConnection!
+  mailsConnection(where: MailWhereInput, orderBy: MailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MailConnection!
 }
 
 type Mutation {
@@ -39,6 +45,7 @@ type Mutation {
   uploadFile(folder: String, file: Upload!, projectId: String, hero: Boolean): File!
   uploadFiles(folder: String, files: [Upload!]!, projectId: String): [File!]!
   renameFile(id: ID!, name: String!): File
+  sendMail(data: MailCreateInput!): Mail!
 
   # Copy from generated schema on every prisma deploy
   createUser(data: UserCreateInput!): User!
@@ -49,6 +56,8 @@ type Mutation {
   createComment(data: CommentCreateInput!): Comment!
   createReaction(data: ReactionCreateInput!): Reaction!
   createMilestone(data: MilestoneCreateInput!): Milestone!
+  createSubscriber(data: SubscriberCreateInput!): Subscriber!
+  createMail(data: MailCreateInput!): Mail!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateProject(data: ProjectUpdateInput!, where: ProjectWhereUniqueInput!): Project
@@ -57,6 +66,8 @@ type Mutation {
   updateComment(data: CommentUpdateInput!, where: CommentWhereUniqueInput!): Comment
   updateReaction(data: ReactionUpdateInput!, where: ReactionWhereUniqueInput!): Reaction
   updateMilestone(data: MilestoneUpdateInput!, where: MilestoneWhereUniqueInput!): Milestone
+  updateSubscriber(data: SubscriberUpdateInput!, where: SubscriberWhereUniqueInput!): Subscriber
+  updateMail(data: MailUpdateInput!, where: MailWhereUniqueInput!): Mail
   deleteUser(where: UserWhereUniqueInput!): User
   deleteFile(where: FileWhereUniqueInput!): File
   deleteProject(where: ProjectWhereUniqueInput!): Project
@@ -65,6 +76,8 @@ type Mutation {
   deleteComment(where: CommentWhereUniqueInput!): Comment
   deleteReaction(where: ReactionWhereUniqueInput!): Reaction
   deleteMilestone(where: MilestoneWhereUniqueInput!): Milestone
+  deleteSubscriber(where: SubscriberWhereUniqueInput!): Subscriber
+  deleteMail(where: MailWhereUniqueInput!): Mail
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertProject(where: ProjectWhereUniqueInput!, create: ProjectCreateInput!, update: ProjectUpdateInput!): Project!
@@ -73,6 +86,8 @@ type Mutation {
   upsertComment(where: CommentWhereUniqueInput!, create: CommentCreateInput!, update: CommentUpdateInput!): Comment!
   upsertReaction(where: ReactionWhereUniqueInput!, create: ReactionCreateInput!, update: ReactionUpdateInput!): Reaction!
   upsertMilestone(where: MilestoneWhereUniqueInput!, create: MilestoneCreateInput!, update: MilestoneUpdateInput!): Milestone!
+  upsertSubscriber(where: SubscriberWhereUniqueInput!, create: SubscriberCreateInput!, update: SubscriberUpdateInput!): Subscriber!
+  upsertMail(where: MailWhereUniqueInput!, create: MailCreateInput!, update: MailUpdateInput!): Mail!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManyProjects(data: ProjectUpdateManyMutationInput!, where: ProjectWhereInput): BatchPayload!
@@ -81,6 +96,8 @@ type Mutation {
   updateManyComments(data: CommentUpdateManyMutationInput!, where: CommentWhereInput): BatchPayload!
   updateManyReactions(data: ReactionUpdateManyMutationInput!, where: ReactionWhereInput): BatchPayload!
   updateManyMilestones(data: MilestoneUpdateManyMutationInput!, where: MilestoneWhereInput): BatchPayload!
+  updateManySubscribers(data: SubscriberUpdateManyMutationInput!, where: SubscriberWhereInput): BatchPayload!
+  updateManyMails(data: MailUpdateManyMutationInput!, where: MailWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManyProjects(where: ProjectWhereInput): BatchPayload!
@@ -89,5 +106,7 @@ type Mutation {
   deleteManyComments(where: CommentWhereInput): BatchPayload!
   deleteManyReactions(where: ReactionWhereInput): BatchPayload!
   deleteManyMilestones(where: MilestoneWhereInput): BatchPayload!
+  deleteManySubscribers(where: SubscriberWhereInput): BatchPayload!
+  deleteManyMails(where: MailWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }

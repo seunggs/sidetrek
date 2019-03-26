@@ -1,15 +1,19 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { Route } from 'react-router-dom'
+import Footer from '../components/Footer'
 
 const PublicRoute = ({
   component: Component,
-  ...rest 
+  ...rest
 }) => (
-  <Route {...rest} component={(props) => {
-    return (
-      <Component {...props} />
-    )
-  }} />
-)
+    <Route {...rest} component={(props) => {
+      return (
+        <Fragment>
+          <Component {...props} />
+          <Footer />
+        </Fragment>
+      )
+    }} />
+  )
 
 export default PublicRoute

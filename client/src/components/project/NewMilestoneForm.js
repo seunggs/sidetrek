@@ -7,9 +7,8 @@ import * as Yup from 'yup'
 import { ApolloConsumer } from 'react-apollo'
 import ButtonPrimary from '../common/ButtonPrimary'
 import { parseServerErrors } from '../../utils/errors'
-import { validateProjectName } from '../../utils/validators'
 import { createPermalink } from '../../utils/common'
-import { startCreateProject } from '../../actions/project'
+import { startCreateMilestone } from '../../actions/milestone'
 import FormErrorMessage from '../common/FormErrorMessage'
 
 const NewMilestoneSchema = Yup
@@ -18,34 +17,21 @@ const NewMilestoneSchema = Yup
     title: Yup
       .string()
       .required('Title is required'),
-    description: Yup
+    deadline: Yup
       .string()
-      .required('Description is required'),
+      .required('Deadline is required'),
   })
 
 class NewMilestoneForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isValidatingName: false,
-      nameAvailable: null,
       submitErrors: '',
     }
   }
 
-  setValidatingName = value => {
-    // Set loading status while async validating
-    this.setState(() => ({ isValidatingName: value }))
-  }
-
-  validateName = (name, client) => {
-    this.setState(() => ({ nameAvailable: null }))
-    return validateProjectName({ name, client, setValidatingName: this.setValidatingName })
-      .then(() => this.setState(() => ({ nameAvailable: true })))
-  }
-
   render() {
-    const { user, startCreateProject, history } = this.props
+    const { user, startCreateMilestone, history } = this.props
 
     return (
       <Fragment>
@@ -60,7 +46,7 @@ class NewMilestoneForm extends Component {
               validationSchema={NewMilestoneSchema} // handles sync validations
               onSubmit={async ({ title, description }, { setSubmitting, setFieldError }) => {
                 const name = createPermalink(title)
-                const projectData = {
+                const milestoneData = {
                   name,
                   url: name,
                   title,
@@ -83,7 +69,8 @@ class NewMilestoneForm extends Component {
                 }
 
                 try {
-                  const newProject = await startCreateProject(client, projectData)
+                  const newMilestone = await startCreateMilestone(client, milestoneData)
+                  console.log('newMilestone', newMilestone)
                   setSubmitting(false)
                   history.replace('/')
                 } catch (errors) {
@@ -94,28 +81,37 @@ class NewMilestoneForm extends Component {
               }}>
               {({ isSubmitting }) => (
                 <div className="row pv5">
-                  <div className="col-xs-12 col-md-4 col-md-offset-4">
-                    <div className="f3 fw6 mb3">Create a new milestone</div>
+                  <div className="col-xs-12 col-md-6 col-md-offset-3">
+                    <div className="f3 fw4 mb3">Create a new milestone</div>
+                    
+                    {/* heading */}
+                    <div className="row">
+                        <div className="col-xs-12 col-md-4"><span className="fw4">Title</span></div>
+                        <div className="col-xs-12 col-md-4"><span className="fw4">Deadline</span></div>
+                    </div>
+                    {/* end: heading */}
 
                     <Form noValidate>
-                      <div>
-                        <Field
-                          name="title"
-                          placeholder="Project title"
-                        />
+                      <div className="row">
+                        <div className="col-xs-12 col-md-4">
+                          <Field
+                            name="title"
+                            placeholder="Milestone title"
+                          />
+                        </div>
+                        <div className="col-xs-12 col-md-4">
+                          <Field
+                            name="deadline"
+                            placeholder="Milestone deadline"
+                          />
+                        </div>
+                        <div className="col-xs-12 col-md-4">
+                          <ButtonPrimary type="submit" loading={isSubmitting}>Add a milestone</ButtonPrimary>
+                        </div>
+                        <FormErrorMessage />
                       </div>
 
-                      <div>
-                        <Field
-                          name="description"
-                          placeholder="Project description"
-                        />
-                      </div>
-
-                      <div>
-                        <ButtonPrimary type="submit" className="mt2" loading={isSubmitting}>Create Project</ButtonPrimary>
-                      </div>
-                      <FormErrorMessage />
+                      
                     </Form>
                   </div>
                 </div>
@@ -132,4 +128,4 @@ const mapStateToProps = state => ({
   user: state.user,
 })
 
-export default withRouter(connect(mapStateToProps, { startCreateProject })(NewMilestoneForm))
+export default withRouter(connect(mapStateToProps, { startCreateMilestone })(NewMilestoneForm))

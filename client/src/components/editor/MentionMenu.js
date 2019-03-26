@@ -65,7 +65,7 @@ class MentionMenu extends Component {
           return (
             <Suggestion key={user.id} active={isActive} onClick={() => this.props.onSelect(user)}>
               <span className="br3 mr2" style={{ width: '20px', height: '20px' }}>{user.picture}</span>
-              <span className="fw6 mr2">{user.username}</span>
+              <span className="fw4 mr2">{user.username}</span>
               <span>{user.name}</span>
             </Suggestion>
           )

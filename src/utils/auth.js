@@ -131,6 +131,8 @@ export const getMyEmail = async (request, { requireAuth = true } = {}) => {
 export const getUserEmail = async (prisma, request, where) => {
 	const myEmail = await getMyEmail(request)
 
+	console.log('where', where)
+
 	// If another user is not requested, just return caller's email
 	if (!where) { return myEmail }
 	
@@ -143,19 +145,17 @@ export const getUserEmail = async (prisma, request, where) => {
 		}
 	})
 
-	const requestedUserQuery = prisma.query.user({
-		where: {
-			...where
-		}
-	})
+	const requestedUserQuery = prisma.query.user({ where })
 
 	const [me, requestedUser] = await Promise.all([meQuery, requestedUserQuery])
 		.then(([meData, requestedUserData]) => {
-			return [meData.data.user, requestedUserData.data.user]
+			console.log('meData', meData)
+			console.log('requestedUserData', requestedUserData)
+			return [meData, requestedUserData]
 		})
 	
 	// only allow the user to update its own email if not ROOT
-	return me.role === 'ROOT' ? requestedUser.email : myEmail
+	return me.role === 'ROOT' && requestedUser ? requestedUser.email : myEmail
 }
 
 export const checkIsAdmin = async (prisma, request) => {
@@ -166,9 +166,7 @@ export const checkIsAdmin = async (prisma, request) => {
 		}
 	})
 	const { role } = userData
-	const isAmdin = role === 'ADMIN' || role === 'ROOT'
-	if (!isAmdin) { throw new Error('Action not authorized - lack of role permission.') }
-	return true
+	return role === 'ADMIN' || role === 'ROOT'
 }
 
 export const checkIsRoot = async (prisma, request) => {
@@ -179,7 +177,5 @@ export const checkIsRoot = async (prisma, request) => {
 		}
 	})
 	const { role } = userData
-	const isAmdin = role === 'ROOT'
-	if (!isAmdin) { throw new Error('Action not authorized - lack of role permission.') }
-	return true
+	return role === 'ROOT'
 }

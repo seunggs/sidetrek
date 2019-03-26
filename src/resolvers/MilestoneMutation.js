@@ -12,7 +12,7 @@ const MilestoneMutation = {
 	async updateMilestone(parent, args, { prisma, request }, info) {
 		await getUserEmail(prisma, request)
 		
-		const milestoneExists = prisma.exists.Milestone({
+		const milestoneExists = await prisma.exists.Milestone({
 			...args.where,
 			author: {
 				email
@@ -27,7 +27,7 @@ const MilestoneMutation = {
   async deleteMilestone(parent, args, { prisma, request }, info) {
 		const email = await getUserEmail(prisma, request, args.where)
 
-		const milestoneExists = prisma.exists.Milestone({
+		const milestoneExists = await prisma.exists.Milestone({
 			...args.where,
 			author: {
 				email

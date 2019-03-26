@@ -4,7 +4,15 @@ import Button from 'antd/es/button'
 import 'antd/es/button/style/css'
 
 const ButtonOutline = ({ children, type, style = {}, ...rest }) => (
-  <Button type="outline" htmlType={type} style={R.merge({ fontWeight: '500' }, style)} {...rest}>{children}</Button>
+  <Button 
+    type="outline" 
+    size="large" 
+    htmlType={type} 
+    style={R.merge({}, style)}
+    {...rest}
+  >
+    <span style={{ marginTop: '4px' }}>{children}</span>
+  </Button>
 )
 
 export default ButtonOutline

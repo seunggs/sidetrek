@@ -12,7 +12,7 @@ const LoginPage = () => {
 
       <div className="row">
         <div className="col-xs-12 col-md-4 col-md-offset-4">
-          <div className="f3 fw6 mb4 tc">Login to Sidetrek</div>
+          <div className="f3 fw4 mb4 tc">Login to Sidetrek</div>
 
           <div>
             <GoogleLogin block />

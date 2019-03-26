@@ -8,7 +8,7 @@ const ButtonEditor = ({ children, size = 'default', theme = 'light', className =
    */
 
   let sizeStyle
-  switch(size) {
+  switch (size) {
     case 'large':
       sizeStyle = {
         padding: '1rem 1.3rem'
@@ -20,7 +20,6 @@ const ButtonEditor = ({ children, size = 'default', theme = 'light', className =
       }
   }
   const baseStyle = R.merge({
-    fontWeight: '500',
     color: theme === 'dark' ? '#fff' : '#000',
     outline: 0,
     cursor: 'pointer',
@@ -28,7 +27,9 @@ const ButtonEditor = ({ children, size = 'default', theme = 'light', className =
     borderColor: 'transparent',
   }, sizeStyle)
   return (
-    <button className={`${className} o-50 glow`} style={R.merge(baseStyle, style)} {...rest}>{children}</button>
+    <button className={`${className} o-50 glow`} style={R.merge(baseStyle, style)} {...rest}>
+      <span style={{ marginTop: '4px' }}>{children}</span>
+    </button>
   )
 }
 

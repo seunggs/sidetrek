@@ -10,10 +10,10 @@ import * as R from 'ramda'
  *  - IMPORTANT: make sure the field name for setFieldError is 'form' for this to work
  */
 
-const FormErrorMessage = ({ formik }) => {
+const FormErrorMessage = ({ formik, className }) => {
   const errors = formik.errors.form
   return (
-    <div className="f6 mt1 red" style={{ display: R.isEmpty(errors) ? 'none' : 'block' }}>{errors}</div>
+    <div className={`f6 mt1 red ${className}`} style={{ display: R.isEmpty(errors) ? 'none' : 'block' }}>{errors}</div>
   )
 }
 

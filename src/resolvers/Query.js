@@ -6,7 +6,8 @@ import MemberQuery from './MemberQuery'
 import PostQuery from './PostQuery'
 import CommentQuery from './CommentQuery'
 import MilestoneQuery from './MilestoneQuery'
-// import SubscriberQuery from './SubscriberQuery'
+import SubscriberQuery from './SubscriberQuery'
+import MailQuery from './MailQuery'
 
 const Query = R.mergeAll([
   UserQuery,
@@ -16,7 +17,8 @@ const Query = R.mergeAll([
   PostQuery,
   CommentQuery,
   MilestoneQuery,
-  // SubscriberQuery,
+  SubscriberQuery,
+  MailQuery,
 ])
 
 export { Query as default }

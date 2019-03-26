@@ -10,9 +10,11 @@ const ButtonSecondary = ({ children, type, icon, style = {}, ...rest }) => (
     size="large"
     htmlType={type}
     className="ant-btn-xlg"
-    style={R.merge({ fontWeight: '500' }, style)}
+    style={R.merge({}, style)}
     {...rest}
-  >{children}</Button>
+  >
+    <span style={{ marginTop: '4px' }}>{children}</span>
+  </Button>
 )
 
 export default ButtonSecondary

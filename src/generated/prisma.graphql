@@ -1,11 +1,15 @@
 # source: http://localhost:4466/default/dev
-# timestamp: Sun Mar 17 2019 22:17:49 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Mar 18 2019 18:13:21 GMT-0700 (Pacific Daylight Time)
 
 type AggregateComment {
   count: Int!
 }
 
 type AggregateFile {
+  count: Int!
+}
+
+type AggregateMail {
   count: Int!
 }
 
@@ -1346,6 +1350,478 @@ Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
 
+type Mail implements Node {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  to: [String!]!
+  from: String!
+  subject: String
+  text: String
+  html: String
+  isMultiple: Boolean
+  cc: [String!]!
+  bcc: [String!]!
+  replyTo: String
+}
+
+"""A connection to a list of items."""
+type MailConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MailEdge]!
+  aggregate: AggregateMail!
+}
+
+input MailCreatebccInput {
+  set: [String!]
+}
+
+input MailCreateccInput {
+  set: [String!]
+}
+
+input MailCreateInput {
+  from: String!
+  subject: String
+  text: String
+  html: String
+  isMultiple: Boolean
+  replyTo: String
+  to: MailCreatetoInput
+  cc: MailCreateccInput
+  bcc: MailCreatebccInput
+}
+
+input MailCreatetoInput {
+  set: [String!]
+}
+
+"""An edge in a connection."""
+type MailEdge {
+  """The item at the end of the edge."""
+  node: Mail!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum MailOrderByInput {
+  id_ASC
+  id_DESC
+  createdAt_ASC
+  createdAt_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  from_ASC
+  from_DESC
+  subject_ASC
+  subject_DESC
+  text_ASC
+  text_DESC
+  html_ASC
+  html_DESC
+  isMultiple_ASC
+  isMultiple_DESC
+  replyTo_ASC
+  replyTo_DESC
+}
+
+type MailPreviousValues {
+  id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  to: [String!]!
+  from: String!
+  subject: String
+  text: String
+  html: String
+  isMultiple: Boolean
+  cc: [String!]!
+  bcc: [String!]!
+  replyTo: String
+}
+
+type MailSubscriptionPayload {
+  mutation: MutationType!
+  node: Mail
+  updatedFields: [String!]
+  previousValues: MailPreviousValues
+}
+
+input MailSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MailSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MailSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MailSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: MailWhereInput
+}
+
+input MailUpdatebccInput {
+  set: [String!]
+}
+
+input MailUpdateccInput {
+  set: [String!]
+}
+
+input MailUpdateInput {
+  from: String
+  subject: String
+  text: String
+  html: String
+  isMultiple: Boolean
+  replyTo: String
+  to: MailUpdatetoInput
+  cc: MailUpdateccInput
+  bcc: MailUpdatebccInput
+}
+
+input MailUpdateManyMutationInput {
+  from: String
+  subject: String
+  text: String
+  html: String
+  isMultiple: Boolean
+  replyTo: String
+  to: MailUpdatetoInput
+  cc: MailUpdateccInput
+  bcc: MailUpdatebccInput
+}
+
+input MailUpdatetoInput {
+  set: [String!]
+}
+
+input MailWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MailWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MailWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MailWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  createdAt: DateTime
+
+  """All values that are not equal to given value."""
+  createdAt_not: DateTime
+
+  """All values that are contained in given list."""
+  createdAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  createdAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  createdAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  createdAt_lte: DateTime
+
+  """All values greater than the given value."""
+  createdAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  createdAt_gte: DateTime
+  updatedAt: DateTime
+
+  """All values that are not equal to given value."""
+  updatedAt_not: DateTime
+
+  """All values that are contained in given list."""
+  updatedAt_in: [DateTime!]
+
+  """All values that are not contained in given list."""
+  updatedAt_not_in: [DateTime!]
+
+  """All values less than the given value."""
+  updatedAt_lt: DateTime
+
+  """All values less than or equal the given value."""
+  updatedAt_lte: DateTime
+
+  """All values greater than the given value."""
+  updatedAt_gt: DateTime
+
+  """All values greater than or equal the given value."""
+  updatedAt_gte: DateTime
+  from: String
+
+  """All values that are not equal to given value."""
+  from_not: String
+
+  """All values that are contained in given list."""
+  from_in: [String!]
+
+  """All values that are not contained in given list."""
+  from_not_in: [String!]
+
+  """All values less than the given value."""
+  from_lt: String
+
+  """All values less than or equal the given value."""
+  from_lte: String
+
+  """All values greater than the given value."""
+  from_gt: String
+
+  """All values greater than or equal the given value."""
+  from_gte: String
+
+  """All values containing the given string."""
+  from_contains: String
+
+  """All values not containing the given string."""
+  from_not_contains: String
+
+  """All values starting with the given string."""
+  from_starts_with: String
+
+  """All values not starting with the given string."""
+  from_not_starts_with: String
+
+  """All values ending with the given string."""
+  from_ends_with: String
+
+  """All values not ending with the given string."""
+  from_not_ends_with: String
+  subject: String
+
+  """All values that are not equal to given value."""
+  subject_not: String
+
+  """All values that are contained in given list."""
+  subject_in: [String!]
+
+  """All values that are not contained in given list."""
+  subject_not_in: [String!]
+
+  """All values less than the given value."""
+  subject_lt: String
+
+  """All values less than or equal the given value."""
+  subject_lte: String
+
+  """All values greater than the given value."""
+  subject_gt: String
+
+  """All values greater than or equal the given value."""
+  subject_gte: String
+
+  """All values containing the given string."""
+  subject_contains: String
+
+  """All values not containing the given string."""
+  subject_not_contains: String
+
+  """All values starting with the given string."""
+  subject_starts_with: String
+
+  """All values not starting with the given string."""
+  subject_not_starts_with: String
+
+  """All values ending with the given string."""
+  subject_ends_with: String
+
+  """All values not ending with the given string."""
+  subject_not_ends_with: String
+  text: String
+
+  """All values that are not equal to given value."""
+  text_not: String
+
+  """All values that are contained in given list."""
+  text_in: [String!]
+
+  """All values that are not contained in given list."""
+  text_not_in: [String!]
+
+  """All values less than the given value."""
+  text_lt: String
+
+  """All values less than or equal the given value."""
+  text_lte: String
+
+  """All values greater than the given value."""
+  text_gt: String
+
+  """All values greater than or equal the given value."""
+  text_gte: String
+
+  """All values containing the given string."""
+  text_contains: String
+
+  """All values not containing the given string."""
+  text_not_contains: String
+
+  """All values starting with the given string."""
+  text_starts_with: String
+
+  """All values not starting with the given string."""
+  text_not_starts_with: String
+
+  """All values ending with the given string."""
+  text_ends_with: String
+
+  """All values not ending with the given string."""
+  text_not_ends_with: String
+  html: String
+
+  """All values that are not equal to given value."""
+  html_not: String
+
+  """All values that are contained in given list."""
+  html_in: [String!]
+
+  """All values that are not contained in given list."""
+  html_not_in: [String!]
+
+  """All values less than the given value."""
+  html_lt: String
+
+  """All values less than or equal the given value."""
+  html_lte: String
+
+  """All values greater than the given value."""
+  html_gt: String
+
+  """All values greater than or equal the given value."""
+  html_gte: String
+
+  """All values containing the given string."""
+  html_contains: String
+
+  """All values not containing the given string."""
+  html_not_contains: String
+
+  """All values starting with the given string."""
+  html_starts_with: String
+
+  """All values not starting with the given string."""
+  html_not_starts_with: String
+
+  """All values ending with the given string."""
+  html_ends_with: String
+
+  """All values not ending with the given string."""
+  html_not_ends_with: String
+  isMultiple: Boolean
+
+  """All values that are not equal to given value."""
+  isMultiple_not: Boolean
+  replyTo: String
+
+  """All values that are not equal to given value."""
+  replyTo_not: String
+
+  """All values that are contained in given list."""
+  replyTo_in: [String!]
+
+  """All values that are not contained in given list."""
+  replyTo_not_in: [String!]
+
+  """All values less than the given value."""
+  replyTo_lt: String
+
+  """All values less than or equal the given value."""
+  replyTo_lte: String
+
+  """All values greater than the given value."""
+  replyTo_gt: String
+
+  """All values greater than or equal the given value."""
+  replyTo_gte: String
+
+  """All values containing the given string."""
+  replyTo_contains: String
+
+  """All values not containing the given string."""
+  replyTo_not_contains: String
+
+  """All values starting with the given string."""
+  replyTo_starts_with: String
+
+  """All values not starting with the given string."""
+  replyTo_not_starts_with: String
+
+  """All values ending with the given string."""
+  replyTo_ends_with: String
+
+  """All values not ending with the given string."""
+  replyTo_not_ends_with: String
+}
+
+input MailWhereUniqueInput {
+  id: ID
+}
+
 type Member implements Node {
   id: ID!
   createdAt: DateTime!
@@ -2599,6 +3075,7 @@ type Mutation {
   createReaction(data: ReactionCreateInput!): Reaction!
   createMilestone(data: MilestoneCreateInput!): Milestone!
   createSubscriber(data: SubscriberCreateInput!): Subscriber!
+  createMail(data: MailCreateInput!): Mail!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
   updateFile(data: FileUpdateInput!, where: FileWhereUniqueInput!): File
   updateProject(data: ProjectUpdateInput!, where: ProjectWhereUniqueInput!): Project
@@ -2608,6 +3085,7 @@ type Mutation {
   updateReaction(data: ReactionUpdateInput!, where: ReactionWhereUniqueInput!): Reaction
   updateMilestone(data: MilestoneUpdateInput!, where: MilestoneWhereUniqueInput!): Milestone
   updateSubscriber(data: SubscriberUpdateInput!, where: SubscriberWhereUniqueInput!): Subscriber
+  updateMail(data: MailUpdateInput!, where: MailWhereUniqueInput!): Mail
   deleteUser(where: UserWhereUniqueInput!): User
   deleteFile(where: FileWhereUniqueInput!): File
   deleteProject(where: ProjectWhereUniqueInput!): Project
@@ -2617,6 +3095,7 @@ type Mutation {
   deleteReaction(where: ReactionWhereUniqueInput!): Reaction
   deleteMilestone(where: MilestoneWhereUniqueInput!): Milestone
   deleteSubscriber(where: SubscriberWhereUniqueInput!): Subscriber
+  deleteMail(where: MailWhereUniqueInput!): Mail
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertFile(where: FileWhereUniqueInput!, create: FileCreateInput!, update: FileUpdateInput!): File!
   upsertProject(where: ProjectWhereUniqueInput!, create: ProjectCreateInput!, update: ProjectUpdateInput!): Project!
@@ -2626,6 +3105,7 @@ type Mutation {
   upsertReaction(where: ReactionWhereUniqueInput!, create: ReactionCreateInput!, update: ReactionUpdateInput!): Reaction!
   upsertMilestone(where: MilestoneWhereUniqueInput!, create: MilestoneCreateInput!, update: MilestoneUpdateInput!): Milestone!
   upsertSubscriber(where: SubscriberWhereUniqueInput!, create: SubscriberCreateInput!, update: SubscriberUpdateInput!): Subscriber!
+  upsertMail(where: MailWhereUniqueInput!, create: MailCreateInput!, update: MailUpdateInput!): Mail!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
   updateManyFiles(data: FileUpdateManyMutationInput!, where: FileWhereInput): BatchPayload!
   updateManyProjects(data: ProjectUpdateManyMutationInput!, where: ProjectWhereInput): BatchPayload!
@@ -2635,6 +3115,7 @@ type Mutation {
   updateManyReactions(data: ReactionUpdateManyMutationInput!, where: ReactionWhereInput): BatchPayload!
   updateManyMilestones(data: MilestoneUpdateManyMutationInput!, where: MilestoneWhereInput): BatchPayload!
   updateManySubscribers(data: SubscriberUpdateManyMutationInput!, where: SubscriberWhereInput): BatchPayload!
+  updateManyMails(data: MailUpdateManyMutationInput!, where: MailWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyFiles(where: FileWhereInput): BatchPayload!
   deleteManyProjects(where: ProjectWhereInput): BatchPayload!
@@ -2644,6 +3125,7 @@ type Mutation {
   deleteManyReactions(where: ReactionWhereInput): BatchPayload!
   deleteManyMilestones(where: MilestoneWhereInput): BatchPayload!
   deleteManySubscribers(where: SubscriberWhereInput): BatchPayload!
+  deleteManyMails(where: MailWhereInput): BatchPayload!
   executeRaw(database: PrismaDatabase, query: String!): Json!
 }
 
@@ -4570,6 +5052,7 @@ type Query {
   reactions(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Reaction]!
   milestones(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Milestone]!
   subscribers(where: SubscriberWhereInput, orderBy: SubscriberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Subscriber]!
+  mails(where: MailWhereInput, orderBy: MailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Mail]!
   user(where: UserWhereUniqueInput!): User
   file(where: FileWhereUniqueInput!): File
   project(where: ProjectWhereUniqueInput!): Project
@@ -4579,6 +5062,7 @@ type Query {
   reaction(where: ReactionWhereUniqueInput!): Reaction
   milestone(where: MilestoneWhereUniqueInput!): Milestone
   subscriber(where: SubscriberWhereUniqueInput!): Subscriber
+  mail(where: MailWhereUniqueInput!): Mail
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
   filesConnection(where: FileWhereInput, orderBy: FileOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): FileConnection!
   projectsConnection(where: ProjectWhereInput, orderBy: ProjectOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ProjectConnection!
@@ -4588,6 +5072,7 @@ type Query {
   reactionsConnection(where: ReactionWhereInput, orderBy: ReactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ReactionConnection!
   milestonesConnection(where: MilestoneWhereInput, orderBy: MilestoneOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MilestoneConnection!
   subscribersConnection(where: SubscriberWhereInput, orderBy: SubscriberOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SubscriberConnection!
+  mailsConnection(where: MailWhereInput, orderBy: MailOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MailConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -6044,6 +6529,7 @@ type Subscription {
   reaction(where: ReactionSubscriptionWhereInput): ReactionSubscriptionPayload
   milestone(where: MilestoneSubscriptionWhereInput): MilestoneSubscriptionPayload
   subscriber(where: SubscriberSubscriptionWhereInput): SubscriberSubscriptionPayload
+  mail(where: MailSubscriptionWhereInput): MailSubscriptionPayload
 }
 
 type User implements Node {

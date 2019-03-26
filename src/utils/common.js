@@ -1,6 +1,6 @@
 import * as R from 'ramda'
-import toCamelcase from 'lodash.camelcase'
-import toSnakecase from 'lodash.snakecase'
+import toCamelcase from 'to-camel-case'
+import toSnakecase from 'to-snake-case'
 
 export const keysToCamelCase = R.curry(obj => {
   if (!obj || R.isEmpty(obj) || !R.is(Object, obj)) { return obj }

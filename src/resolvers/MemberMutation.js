@@ -12,7 +12,7 @@ const MemberMutation = {
 	async updateMember(parent, args, { prisma, request }, info) {		
 		const email = await getUserEmail(prisma, request)
 		
-		const memberExists = prisma.exists.Member({
+		const memberExists = await prisma.exists.Member({
 			...args.where,
 			user: {
 				email
@@ -27,7 +27,7 @@ const MemberMutation = {
   async deleteMember(parent, args, { prisma, request }, info) {
 		const email = await getUserEmail(prisma, request)
 		
-		const memberExists = prisma.exists.Member({
+		const memberExists = await prisma.exists.Member({
 			...args.where,
 			user: {
 				email

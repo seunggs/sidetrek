@@ -31,17 +31,6 @@ export const deleteProject = project => ({
   project
 })
 
-export const startCreateProject = (client, project) => async (dispatch) => {
-  const createdProject = await client.mutate({
-    mutation: CREATE_PROJECT_OP,
-    variables: { data: project },
-  })
-
-  dispatch(createProject(createdProject.data.createProject))
-
-  return createdProject
-}
-
 export const startSetProjects = client => dispatch => {
   return client.query({
     query: GET_PROJECTS_OP
@@ -54,6 +43,17 @@ export const startSetProjects = client => dispatch => {
 
       return projects
     })
+}
+
+export const startCreateProject = (client, project) => async (dispatch) => {
+  const createdProject = await client.mutate({
+    mutation: CREATE_PROJECT_OP,
+    variables: { data: project },
+  })
+
+  dispatch(createProject(createdProject.data.createProject))
+
+  return createdProject
 }
 
 export const startUpdateProject = (client, projectId, updates) => async (dispatch) => {

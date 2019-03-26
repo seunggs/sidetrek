@@ -19,7 +19,7 @@ const PostMutation = {
 	async updatePost(parent, args, { prisma, request }, info) {
 		const email = await getUserEmail(prisma, request, args.where)
 
-		const postExists = prisma.exists.Post({
+		const postExists = await prisma.exists.Post({
 			...args.where,
 			author: {
 				email
@@ -34,7 +34,7 @@ const PostMutation = {
   async deletePost(parent, args, { prisma, request }, info) {
 		const email = await getUserEmail(prisma, request, args.where)
 
-		const postExists = prisma.exists.Post({
+		const postExists = await prisma.exists.Post({
 			...args.where,
 			author: {
 				email

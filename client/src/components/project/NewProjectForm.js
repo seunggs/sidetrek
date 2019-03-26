@@ -96,7 +96,7 @@ class NewProjectForm extends Component {
               {({ values, isSubmitting }) => (
                 <div className="row pv5">
                   <div className="col-xs-12 col-md-4 col-md-offset-4">
-                    <div className="f3 fw6 mb3">Create a new project</div>
+                    <div className="f3 fw4 mb3">Create a new project</div>
 
                     <Form noValidate>
                       <div>

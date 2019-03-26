@@ -11,3 +11,5 @@ export const DRIP_API_URL = 'https://api.getdrip.com/'
 export const DEFAULT_NODE = 'paragraph'
 export const DEFAULT_IMAGE_WIDTH = 50
 
+// Mail
+export const FROM_EMAIL = 'namikim@sidetrek.com'

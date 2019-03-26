@@ -171,3 +171,19 @@ enum SubscriberEuConsent {
   DENIED,
   UNKNOWN
 }
+
+# Mapping Sendgrid mail object
+type Mail {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  to: [String!]!
+  from: String!
+  subject: String
+  text: String
+  html: String
+  isMultiple: Boolean @default(value: true) # if true, recipients won't see each other's email addresses
+  cc: [String!]
+  bcc: [String!]
+  replyTo: String
+}

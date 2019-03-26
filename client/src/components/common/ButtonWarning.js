@@ -4,7 +4,14 @@ import Button from 'antd/es/button'
 import 'antd/es/button/style/css'
 
 const ButtonWarning = ({ children, type, style = {}, ...rest }) => (
-  <Button type="danger" htmlType={type} style={R.merge({ fontWeight: '500' }, style)} {...rest}>{children}</Button>
+  <Button
+    type="danger"
+    htmlType={type}
+    style={R.merge({}, style)}
+    {...rest}
+  >
+    <span style={{ marginTop: '4px' }}>{children}</span>
+  </Button>
 )
 
 export default ButtonWarning

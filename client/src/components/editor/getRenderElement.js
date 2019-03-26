@@ -16,9 +16,9 @@ const getRenderElement = ({ type, children, attributes = {}, data = { get: () =>
     case 'block-quote':
       return <blockquote {...attributes}>{children}</blockquote>
     case 'heading-one':
-      return <h1 className="f2 fw5" {...attributes}>{children}</h1>
+      return <h1 className="f2 fw4" {...attributes}>{children}</h1>
     case 'heading-two':
-      return <h2 className="f3 fw5" {...attributes}>{children}</h2>
+      return <h2 className="f3 fw4" {...attributes}>{children}</h2>
     case 'align-left':
       return <div className="tl" {...attributes}>{children}</div>
     case 'align-center':

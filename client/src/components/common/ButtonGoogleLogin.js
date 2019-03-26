@@ -11,7 +11,7 @@ const ButtonGoogleLogin = ({ children, style = {}, type, ...rest }) => (
     icon="google"
     style={R.merge({ backgroundColor: '#FF725C', borderColor: '#FF725C' }, style)}
     {...rest}
-  >{children}</Button>
+  ><span style={{ marginTop: '4px' }}>{children}</span></Button>
 )
 
 export default ButtonGoogleLogin
